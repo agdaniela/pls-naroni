@@ -11,6 +11,7 @@ dataprep = function(file){
   return(df)
 }
 
+
 ##############################################################################################
 # Resumen por fila
 #NAS por fila
@@ -21,6 +22,23 @@ resumenporfila = function(df){
   
   return(nasporfila)
 }
+##############################################################################################
+#Resumen por variable
+
+resumenporvariable = function(df){
+  naporvar = sapply(df, function(y) sum(is.na(y)))  #cantidad de NAs por variable
+  pertotal = round((naporvar/249)*100,2) #Cantidad de NAs en porcentaje del total
+  
+  
+  res = data.frame("nas" = naporvar, "porcentaje"=pertotal) #ordenamos las variables por porcentaje de NAs
+  
+  varorden = res[order(res[,2]),] #ordenamos las variables por porcentaje de NAs
+  
+  resumen = cbind(res, rownames(varorden),varorden[,colnames(varorden)]) #ponemos todo en el mismo coso
+  
+  return(resumen)
+}
+
 
 ##############################################################################################
 # Resumen por año 
