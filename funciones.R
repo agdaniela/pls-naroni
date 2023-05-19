@@ -12,6 +12,17 @@ dataprep = function(file){
 }
 
 ##############################################################################################
+# Resumen por fila
+#NAS por fila
+
+resumenporfila = function(df){
+  nasperrow = data.frame("cantidadNAs" = apply(df, 1, function(x) sum(is.na(x))))
+  nasporfila = cbind(df$iso, df$country, nasperrow)
+  
+  return(nasporfila)
+}
+
+##############################################################################################
 # Resumen por año 
 
 resumenporyear = function(df){

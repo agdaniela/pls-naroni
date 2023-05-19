@@ -15,101 +15,101 @@ selectrawdfs = function(df, num){
     datafr = df
   }
   # (2) Datos menos los paises que tienen una sola observacion (años) ----
-  if (num == 2){
+  else if (num == 2){
     datafr = paisessinunaobs(df)
   }
   # (3) Datos menos los paises que  tienen mas de 60 NAS ----
-  if (num == 3){
+  else if (num == 3){
     datafr = data3(df)
   }
   # (4) Datos menos los paises/obs que haga a la/s variables tener un NA (8 variables) ----
-  if (num == 4){
+  else if (num == 4){
     datafr = data4(df)
   }
   # (5) Idem (5 variables con 1 NA) ----
-  if (num == 5){
+  else if (num == 5){
     datafr = data5(df)
   }
   # (6) Idem (2 variables con 1 NA) ----
-  if (num == 6){
+  else if (num == 6){
     datafr = data6(df)
   }
   # (7) Idem (1variables con 1 NA) ----
-  if (num == 7){
+  else if (num == 7){
     datafr = data7(df)
   }
   
   # (8) Idem (35 variables con 2 NA) ----
-  if (num == 8){
+  else if (num == 8){
     datafr = data8(df)
   }
   
   # (9) idem (6 variables con 1 NA) ----
-  if (num == 9){
+  else if (num == 9){
     datafr = data9(df)
   }
   # (10) Idem (1 variables con 1 NA) ----
-  if (num == 10){
+  else if (num == 10){
     datafr = data10(df)
   }
   # (11) Idem (2 variables con 3 NA) ----
-  if (num == 11){
+  else if (num == 11){
     datafr = data11(df)
   }
   # (12) Idem (4 variables con 4 NA) ----
-  if (num == 12){
+  else if (num == 12){
     datafr = data12(df)
   }
   # (13) Idem (1 variables con 1 NA) ----
-  if (num == 13){
+  else if (num == 13){
     datafr = data13(df)
   }
   # (14) Idem (1 variables con 3 NA) ----
-  if (num == 14){
+  else if (num == 14){
     datafr = data14(df)
   }
   # (15) Idem (3 variables con 1 NA) ----
-  if (num == 15){
+  else if (num == 15){
     datafr = data15(df)
   }
   # (16) Idem (2 variables con 4 NA) ----
-  if (num == 16){
+  else if (num == 16){
     datafr = data16(df)
   }
   # (17) Idem (2 variables con 3 NA) ----
-  if (num == 17){
+  else if (num == 17){
     datafr = data17(df)
   }
   # (18) Idem (9 variables con 4 NA) ----
-  if (num == 18){
+  else if (num == 18){
     datafr = data18(df)
   }
   # (19) Idem (1 variables con 2 NA) ----
-  if (num == 19){
+  else if (num == 19){
     datafr = data19(df)
   }
   # (20) idem (1 variables con 2 NA) ----
-  if (num == 20){
+  else if (num == 20){
     datafr = data20(df)
   }
   # (21) idem (1 variables con 3 NA)----
-  if (num == 21){
+  else if (num == 21){
     datafr = data21(df)
   }
   # (22) idem (1 variables con 2 NA)  ----
-  if (num == 22){
+  else if (num == 22){
     datafr = data22(df)
   }
   # (23) idem (1 variables con 6 NA)  ----
-  if (num == 23){
+  else if (num == 23){
     datafr = data23(df)
   }
   # (24) idem (18 variables con 7 NA) ----
-  if (num == 24){
+  else if (num == 24){
     datafr = data24(df)
   }
   # (25) Data sacando las  ́ultimas variables----
-  if (num == 25){
+  else if (num == 25){
     datafr = data25(df)
   }
 return(datafr)
@@ -149,101 +149,101 @@ olvidadosrawdfs = function(df, num){
     datafr = df
   }
   # (2) Datos menos los paises que tienen una sola observacion (años) ----
-  if (num == 2){
+  else if (num == 2){
     datafr = paisesconunaobs(df)
   }
   # (3) Datos menos los paises que  tienen mas de 60 NAS ----
-  if (num == 3){
+  else if (num == 3){
     datafr = nodata3(df)
   }
   # (4) Datos menos los paises/obs que haga a la/s variables tener un NA (8 variables) ----
-  if (num == 4){
+  else if (num == 4){
     datafr = nodata4(df)
   }
   # (5) Idem (5 variables con 1 NA) ----
-  if (num == 5){
+  else if (num == 5){
     datafr = nodata5(df)
   }
   # (6) Idem (2 variables con 1 NA) ----
-  if (num == 6){
+  else if (num == 6){
     datafr = nodata6(df)
   }
   # (7) Idem (1variables con 1 NA) ----
-  if (num == 7){
+  else if (num == 7){
     datafr = nodata7(df)
   }
   
   # (8) Idem (35 variables con 2 NA) ----
-  if (num == 8){
+  else if (num == 8){
     datafr = nodata8(df)
   }
   
   # (9) idem (6 variables con 1 NA) ----
-  if (num == 9){
+  else if (num == 9){
     datafr = nodata9(df)
   }
   # (10) Idem (1 variables con 1 NA) ----
-  if (num == 10){
+  else if (num == 10){
     datafr = nodata10(df)
   }
   # (11) Idem (2 variables con 3 NA) ----
-  if (num == 11){
+  else if (num == 11){
     datafr = nodata11(df)
   }
   # (12) Idem (4 variables con 4 NA) ----
-  if (num == 12){
+  else if (num == 12){
     datafr = nodata12(df)
   }
   # (13) Idem (1 variables con 1 NA) ----
-  if (num == 13){
+  else if (num == 13){
     datafr = nodata13(df)
   }
   # (14) Idem (1 variables con 3 NA) ----
-  if (num == 14){
+  else if (num == 14){
     datafr = nodata14(df)
   }
   # (15) Idem (3 variables con 1 NA) ----
-  if (num == 15){
+  else if (num == 15){
     datafr = nodata15(df)
   }
   # (16) Idem (2 variables con 4 NA) ----
-  if (num == 16){
+  else if (num == 16){
     datafr = nodata16(df)
   }
   # (17) Idem (2 variables con 3 NA) ----
-  if (num == 17){
+  else if (num == 17){
     datafr = nodata17(df)
   }
   # (18) Idem (9 variables con 4 NA) ----
-  if (num == 18){
+  else if (num == 18){
     datafr = nodata18(df)
   }
   # (19) Idem (1 variables con 2 NA) ----
-  if (num == 19){
+  else if (num == 19){
     datafr = nodata19(df)
   }
   # (20) idem (1 variables con 2 NA) ----
-  if (num == 20){
+  else if (num == 20){
     datafr = nodata20(df)
   }
   # (21) idem (1 variables con 3 NA)----
-  if (num == 21){
+  else if (num == 21){
     datafr = nodata21(df)
   }
   # (22) idem (1 variables con 2 NA)  ----
-  if (num == 22){
+  else if (num == 22){
     datafr = nodata22(df)
   }
   # (23) idem (1 variables con 6 NA)  ----
-  if (num == 23){
+  else if (num == 23){
     datafr = nodata23(df)
   }
   # (24) idem (18 variables con 7 NA) ----
-  if (num == 24){
+  else if (num == 24){
     datafr = nodata24(df)
   }
   # (25) Data sacando las  ́ultimas variables----
-  if (num == 25){
+  else {
     datafr = nodata25(df)
   }
   return(datafr)
