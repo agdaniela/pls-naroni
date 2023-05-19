@@ -5,7 +5,7 @@ dataprep = function(file){
   df = read.delim(file, header = TRUE, sep = " ", dec = ".")
   df$iso = as.factor(df$iso)
   df$country = as.factor(df$country)
-  df$year = lubridate::ymd(df$year, truncated = 2L)
+  df$year <- as.numeric(df$year)
   df = df[,-7]
   
   return(df)
