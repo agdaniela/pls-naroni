@@ -116,8 +116,6 @@ return(datafr)
   
 }
 
-View(selectrawdfs(plsdata, 12))
-View(resumenporvariable(plsdata))
 
 
 ########################################################################################
@@ -129,7 +127,6 @@ selectdfs = function(df, num){
   return(datafr)
 }
 
-View(selectdfs(plsdata, 12))
 
 #checks  
 #try = sacarnas(plsdata)
