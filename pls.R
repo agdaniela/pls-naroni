@@ -29,6 +29,6 @@ cv.pls <- function(X, y, nfolds, max.directions) {
       results[d, i] <- MSE_test
     }
   }
-  min.MSE <- which.min(apply(pls.fit, MARGIN = 1, FUN = mean))
+  min.MSE <- which.min(apply(results, MARGIN = 1, FUN = mean))
   return(list(d.min = min.MSE))
 }
