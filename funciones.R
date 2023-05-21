@@ -7,10 +7,15 @@ dataprep = function(file){
   df$country = as.factor(df$country)
   df$year <- as.numeric(df$year)
   df = df[,-7]
+  regs = read.csv("regions.csv")
+  regions = regs[(regs$Country.Code %in% paste((df$iso))), c(1,2)] 
+  regions = cbind(regions, aggregate(year ~ iso, data = df, FUN = length)[,2])
+  regions = regions[rep(1:nrow(regions), regions$`aggregate(year ~ iso, data = df, FUN = length)[, 2]`),]
+  df$region = regions$Region
+  df = df[, c("iso", "country", "region", colnames(df)[3:156] )]
   
   return(df)
 }
-
 
 ##############################################################################################
 # Resumen por fila
