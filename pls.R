@@ -15,9 +15,9 @@ cv.pls <- function(X, y, nfolds, max.directions) {
       W <- chemometrics::pls1_nipals(Xtrain, ytrain, a = d, scale = FALSE)$W
     
       # Projection in train set
-      Pr_train <- Xtrain%*%W
+      Pr_train <- (Xtrain - colMeans(Xtrain))%*%W
       # Projection in test set
-      Pr_test <- Xtest%*%W
+      Pr_test <- (Xtest - colMeans(Xtrain))%*%W
     
       # Fit linear model
       lm.fit <- lm("ytrain~.",data=data.frame(ytrain,Pr_train), na.action="na.exclude")
