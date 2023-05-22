@@ -8,7 +8,7 @@ pls.directions <- 9
 nfolds <- 5
 
 # Select dataframe ####
-df <- subset(selectdfs(plsdata,3), MPI < 0.2)
+df <- subset(selectdfs(plsdata,3))
 
 # Train and Test split ####
 data <- random.split(df, 0.8)
