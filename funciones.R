@@ -161,10 +161,10 @@ nodata4 = function (df){
 # (5) Idem (5 variables con 1 NA) ----
 data5 = function(df){
   datafr = data4(df)
-  datafr = datafr[!(datafr$country == "Burundi" & datafr$year == "2005-01-01" ),]
-  datafr = datafr[!(datafr$country == "Belize" & datafr$year == "2006-01-01" ),]
-  datafr = datafr[!(datafr$country == "Lesotho" & datafr$year == "2009-01-01" ),]
-  datafr = datafr[!(datafr$country == "Senegal" & datafr$year == "2019-01-01" ),]
+  datafr = datafr[!(datafr$country == "Burundi" & datafr$year == 2005 ),]
+  datafr = datafr[!(datafr$country == "Belize" & datafr$year == 2006 ),]
+  datafr = datafr[!(datafr$country == "Lesotho" & datafr$year == 2009 ),]
+  datafr = datafr[!(datafr$country == "Senegal" & datafr$year == 2019 ),]
   return(datafr)
 }
 
@@ -193,7 +193,7 @@ nodata6 = function (df){
 # (7) Idem (1variables con 1 NA) ---- 
 data7 = function(df){
   datafr = data6(df)
-  datafr = datafr[!(datafr$country == "Rwanda" & datafr$year == "2020-01-01" ),]
+  datafr = datafr[!(datafr$country == "Rwanda" & datafr$year == 2020 ),]
 return(datafr)
 }
 
@@ -208,7 +208,7 @@ nodata7 = function (df){
 data8 = function(df){
   datafr = data7(df)
   datafr =  datafr[!(datafr$country %in% c("Argentina", "Armenia", "Lao PDR", "Lesotho", "Mozambique", "Rwanda", "Trinidad and Tobago" )),]
-  datafr = datafr[!(datafr$country == "Mexico" & datafr$year == "2020-01-01" ),]
+  datafr = datafr[!(datafr$country == "Mexico" & datafr$year == 2020 ),]
   
   return(datafr)
 }
@@ -224,7 +224,7 @@ nodata8 = function (df){
 data9 = function(df){
   datafr = data8(df)
   datafr = datafr[!(datafr$country %in% c("Angola", "Guinea-Bissau")),]
-  datafr = datafr[!(datafr$country == "Dominican Republic" & datafr$year == "2000-01-01" ),]
+  datafr = datafr[!(datafr$country == "Dominican Republic" & datafr$year == 2000 ),]
   
   return(datafr)
 }
@@ -253,7 +253,7 @@ nodata10 = function (df){
 data11 = function(df){
   datafr = data10(df)
   datafr = datafr[!(datafr$country %in% c("Ghana")),] 
-  datafr = datafr[!(datafr$country == "Nigeria" & datafr$year == "2003-01-01" ),]
+  datafr = datafr[!(datafr$country == "Nigeria" & datafr$year == 2003 ),]
   
   
   return(datafr)
@@ -269,9 +269,9 @@ nodata11 = function (df){
 data12 = function(df){
   datafr = data11(df)
   datafr = datafr[!(datafr$country %in% c("China", "Kenya", "Cambodia", "Tajikistan")),]
-  datafr = datafr[!(datafr$country == "Bangladesh" & datafr$year == "2007-01-01" ),]
-  datafr = datafr[!(datafr$country == "Peru" & datafr$year == "2004-01-01" ),]
-  datafr = datafr[!(datafr$country == "Philippines" & datafr$year == "2005-01-01" ),]
+  datafr = datafr[!(datafr$country == "Bangladesh" & datafr$year == 2007 ),]
+  datafr = datafr[!(datafr$country == "Peru" & datafr$year == 2004 ),]
+  datafr = datafr[!(datafr$country == "Philippines" & datafr$year == 2005 ),]
   
   return(datafr)
 }
@@ -285,7 +285,7 @@ nodata12 = function (df){
 # (13) Idem (1 variables con 1 NA) ----
 data13 = function(df){
   datafr = data12(df)
-  datafr = datafr[!(datafr$country == "Philippines" & datafr$year == "2003-01-01" ),]
+  datafr = datafr[!(datafr$country == "Philippines" & datafr$year == 2003 ),]
   
   return(datafr)
 }
@@ -300,7 +300,7 @@ nodata13 = function (df){
 data14 = function(df){
   datafr = data13(df)
   datafr = datafr[!(datafr$country %in% c("Georgia", "Zambia")),]
-  datafr = datafr[!(datafr$country == "Mongolia" & datafr$year == "2018-01-01" ),]
+  datafr = datafr[!(datafr$country == "Mongolia" & datafr$year == 2018 ),]
   
   return(datafr)
 }
@@ -329,7 +329,7 @@ nodata15 = function (df){
 data16 = function(df){
   datafr = data15(df)
   datafr = datafr[!(datafr$country %in% c("Jamaica")),]
-  datafr = datafr[!(datafr$country == "Dominican Republic" & datafr$year == "2019-01-01" ),]
+  datafr = datafr[!(datafr$country == "Dominican Republic" & datafr$year == 2019 ),]
   
   return(datafr)
 }
@@ -343,7 +343,7 @@ nodata16 = function (df){
 data17 = function(df){
   datafr = data16(df)
   datafr = datafr[!(datafr$country %in% c("Dominican Republic")),]
-  datafr = datafr[!(datafr$country == "Mali" & datafr$year == "2015-01-01" ),]
+  datafr = datafr[!(datafr$country == "Mali" & datafr$year == 2015 ),]
   
   return(datafr)
 }
@@ -356,10 +356,10 @@ nodata17 = function (df){
 # (18) Idem (9 variables con 4 NA) ----
 data18 = function(df){
   datafr = data17(df)
-  datafr = datafr[!(datafr$country == "Bangladesh" & datafr$year == "2019-01-01" ),]
-  datafr = datafr[!(datafr$country == "Mali" & datafr$year == "2013-01-01" ),]
-  datafr = datafr[!(datafr$country == "Nepal" & datafr$year == "2006-01-01" ),]
-  datafr = datafr[!(datafr$country == "Togo" & datafr$year == "2006-01-01" ),]
+  datafr = datafr[!(datafr$country == "Bangladesh" & datafr$year == 2019 ),]
+  datafr = datafr[!(datafr$country == "Mali" & datafr$year == 2013 ),]
+  datafr = datafr[!(datafr$country == "Nepal" & datafr$year == 2006 ),]
+  datafr = datafr[!(datafr$country == "Togo" & datafr$year == 2006 ),]
   
   
   return(datafr)
@@ -374,8 +374,8 @@ nodata18 = function (df){
 # (19) Idem (1 variables con 2 NA) ----
 data19 = function(df){
   datafr = data18(df)
-  datafr = datafr[!(datafr$country == "Nepal" & datafr$year == "2016-01-01" ),]
-  datafr = datafr[!(datafr$country == "Nepal" & datafr$year == "2019-01-01" ),]
+  datafr = datafr[!(datafr$country == "Nepal" & datafr$year == 2016 ),]
+  datafr = datafr[!(datafr$country == "Nepal" & datafr$year == 2019 ),]
   return(datafr)
 }
 nodata19 = function (df){
@@ -388,7 +388,7 @@ nodata19 = function (df){
 data20 = function(df){
   datafr = data19(df)
   datafr = datafr[!(datafr$country %in% c("Mali")),]
-  datafr = datafr[!(datafr$country == "Cameroon" & datafr$year == "2018-01-01" ),]
+  datafr = datafr[!(datafr$country == "Cameroon" & datafr$year == 2018 ),]
   
   return(datafr)
 }
@@ -403,8 +403,8 @@ nodata20 = function (df){
 data21 = function(df){
   datafr = data20(df)
   datafr = datafr[!(datafr$country %in% c("Madagascar")),]
-  datafr = datafr[!(datafr$country == "Nigeria" & datafr$year == "2017-01-01" ),]
-  datafr = datafr[!(datafr$country == "Nigeria" & datafr$year == "2018-01-01" ),]
+  datafr = datafr[!(datafr$country == "Nigeria" & datafr$year == 2017 ),]
+  datafr = datafr[!(datafr$country == "Nigeria" & datafr$year == 2018 ),]
   
   return(datafr)
 }
@@ -418,7 +418,7 @@ nodata21 = function (df){
 data22 = function(df){
   datafr = data21(df)
   datafr = datafr[!(datafr$country %in% c("Pakistan")),]
-  datafr = datafr[!(datafr$country == "Cameroon" & datafr$year == "2004-01-01" ),]
+  datafr = datafr[!(datafr$country == "Cameroon" & datafr$year == 2004 ),]
   
   return(datafr)
 }
@@ -446,7 +446,7 @@ nodata23 = function (df){
 data24 = function(df){
   datafr = data23(df)
   datafr = datafr[!(datafr$country %in% c("Honduras", "Kazakhstan", "Sri Lanka", "Morocco", "Tunisia")),]
-  datafr = datafr[!(datafr$country == "Jordan" & datafr$year == "2018-01-01" ),]
+  datafr = datafr[!(datafr$country == "Jordan" & datafr$year == 2018 ),]
   
   return(datafr)
 }
