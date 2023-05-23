@@ -141,11 +141,11 @@ unanodata2 = function(df){
 
 
 # (3) Datos menos los paises/obs que haga a la/s variables tener un NA (11 variables) ----
-View(resumenporvariable(unadata2(plsdata)))
+#View(resumenporvariable(unadata2(plsdata)))
 # encontramos las variables con un NAs
-variablesconNAs(unadata2(plsdata),1) 
+#variablesconNAs(unadata2(plsdata),1) 
 # vemos los paises que tienen el NA de la columa
-View(datossolona(unadata2(plsdata),1))
+#View(datossolona(unadata2(plsdata),1))
 # saco las observaciones, no importa si el pais tiene dos observaciones
 
 unadata3 = function (df){
@@ -156,15 +156,15 @@ unadata3 = function (df){
   return(datafr)
 }
 
-View(unadata3(plsdata))
-View(resumenporvariable(unadata3(plsdata)))
+#View(unadata3(plsdata))
+#View(resumenporvariable(unadata3(plsdata)))
 
 # (4) Idem (4 variables con 1 NA) ----
-View(resumenporvariable(unadata3(plsdata)))
+#View(resumenporvariable(unadata3(plsdata)))
 # encontramos las variables con un NAs
-variablesconNAs(unadata3(plsdata),1) 
+#variablesconNAs(unadata3(plsdata),1) 
 # vemos los paises que tienen el NA de la columa
-View(datossolona(unadata3(plsdata),1))
+#View(datossolona(unadata3(plsdata),1))
 
 
 unadata4 = function(df){
@@ -175,18 +175,18 @@ unadata4 = function(df){
   return(datafr)
 }
 
-View(unadata4(plsdata))
-View(resumenporvariable(unadata4(plsdata)))
+#View(unadata4(plsdata))
+#View(resumenporvariable(unadata4(plsdata)))
 
 
 # (5) Idem (1 variables con 1 NA) ----
-View(resumenporvariable(unadata4(plsdata)))
+#View(resumenporvariable(unadata4(plsdata)))
 # encontramos las variables con un NAs
-variablesconNAs(unadata4(plsdata),1) 
+#variablesconNAs(unadata4(plsdata),1) 
 # vemos los paises que tienen el NA de la columa
-View(datossolona(unadata4(plsdata),1))
+#View(datossolona(unadata4(plsdata),1))
 # controlo que los paises tengan mas de 2 
-View(datosconunna(unadata4(plsdata),1))
+#View(datosconunna(unadata4(plsdata),1))
 
 
 unadata5 = function(df){
@@ -199,11 +199,11 @@ unadata5 = function(df){
 
  
 # (6) Idem (5 variables con 2 NA) ---- 
-View(resumenporvariable(unadata5(plsdata)))
+#View(resumenporvariable(unadata5(plsdata)))
 # encontramos las variables con un NAs
-variablesconNAs(unadata5(plsdata),2) 
+#variablesconNAs(unadata5(plsdata),2) 
 # vemos los paises que tienen el NA de la columa
-View(datossolona(unadata5(plsdata),2))
+#View(datossolona(unadata5(plsdata),2))
 
 
 unadata6 = function(df){
@@ -222,9 +222,9 @@ unadata6 = function(df){
 
 # (7) Idem (2 variables con 1 NA) ---- 
 # encontramos las variables con un NAs
-variablesconNAs(unadata6(plsdata),1) 
+#variablesconNAs(unadata6(plsdata),1) 
 # vemos los paises que tienen el NA de la columa
-View(datossolona(unadata6(plsdata),1))
+#View(datossolona(unadata6(plsdata),1))
 
 
 unadata7 = function(df){
@@ -235,14 +235,12 @@ unadata7 = function(df){
   return(datafr)
 }
 
-View(unadata7(plsdata))
-
 
 # (8) Idem (14 variables con 2 NA) ---- 
 # encontramos las variables con un NAs
-variablesconNAs(unadata7(plsdata),2) 
+#variablesconNAs(unadata7(plsdata),2) 
 # vemos los paises que tienen el NA de la columa
-View(datossolona(unadata7(plsdata),2))
+#View(datossolona(unadata7(plsdata),2))
 
 
 unadata8 = function(df){
@@ -256,13 +254,13 @@ unadata8 = function(df){
 }
 
 
-variablesconNAs(unadata8(plsdata),2) 
+#variablesconNAs(unadata8(plsdata),2) 
 
 # (9) Idem (11 variables con 2 NA) ---- 
 # encontramos las variables con un NAs
-variablesconNAs(unadata8(plsdata),2) 
+#variablesconNAs(unadata8(plsdata),2) 
 # vemos los paises que tienen el NA de la columa
-View(datossolona(unadata8(plsdata),2))
+#View(datossolona(unadata8(plsdata),2))
 
 
 unadata9 = function(df){
@@ -276,14 +274,14 @@ unadata9 = function(df){
 }
 
 
-variablesconNAs(unadata9(plsdata),2) 
+#variablesconNAs(unadata9(plsdata),2) 
 
 
 # (10) Idem (6 variables con 1 NA) ---- 
 # encontramos las variables con un NAs
-variablesconNAs(unadata9(plsdata),1) 
+#variablesconNAs(unadata9(plsdata),1) 
 # vemos los paises que tienen el NA de la columa
-View(datossolona(unadata9(plsdata),1))
+#View(datossolona(unadata9(plsdata),1))
 
 
 unadata10 = function(df){
@@ -296,14 +294,14 @@ unadata10 = function(df){
 }
 
 
-variablesconNAs(unadata10(plsdata),1) 
+#variablesconNAs(unadata10(plsdata),1) 
 
 
 # (11) Idem (5 variables con 2 NA) ---- 
 # encontramos las variables con un NAs
-variablesconNAs(unadata10(plsdata),2) 
+#variablesconNAs(unadata10(plsdata),2) 
 # vemos los paises que tienen el NA de la columa
-View(datossolona(unadata10(plsdata),2))
+#View(datossolona(unadata10(plsdata),2))
 
 
 unadata11 = function(df){
@@ -317,13 +315,13 @@ unadata11 = function(df){
 }
 
 
-variablesconNAs(unadata11(plsdata),2) 
+#variablesconNAs(unadata11(plsdata),2) 
 
 # (12) Idem (2 variables con 2 NA) ---- 
 # encontramos las variables con un NAs
-variablesconNAs(unadata11(plsdata),2) 
+#variablesconNAs(unadata11(plsdata),2) 
 # vemos los paises que tienen el NA de la columa
-View(datossolona(unadata11(plsdata),2))
+#View(datossolona(unadata11(plsdata),2))
 
 
 unadata12 = function(df){
@@ -336,13 +334,13 @@ unadata12 = function(df){
 }
 
 
-variablesconNAs(unadata12(plsdata),2) 
+#variablesconNAs(unadata12(plsdata),2) 
 
 # (13) Idem (10 variables con 3 NA) ---- 
 # encontramos las variables con un NAs
-variablesconNAs(unadata12(plsdata),3) 
+#variablesconNAs(unadata12(plsdata),3) 
 # vemos los paises que tienen el NA de la columa
-View(datossolona(unadata12(plsdata),3))
+#View(datossolona(unadata12(plsdata),3))
 
 
 unadata13 = function(df){
@@ -361,13 +359,13 @@ unadata13 = function(df){
 }
 
 
-variablesconNAs(unadata13(plsdata),3) 
+#variablesconNAs(unadata13(plsdata),3) 
 
 # (14) Idem (2 variables con 4 NA) ---- 
 # encontramos las variables con un NAs
-variablesconNAs(unadata13(plsdata),4) 
+#variablesconNAs(unadata13(plsdata),4) 
 # vemos los paises que tienen el NA de la columa
-View(datossolona(unadata13(plsdata),4))
+#View(datossolona(unadata13(plsdata),4))
 
 
 unadata14 = function(df){
@@ -381,14 +379,14 @@ unadata14 = function(df){
 }
 
 
-variablesconNAs(unadata14(plsdata),4) 
+#variablesconNAs(unadata14(plsdata),4) 
 
 
 # (15) Idem (1 variables con 5 NA) ---- 
 # encontramos las variables con un NAs
-variablesconNAs(unadata14(plsdata),5) 
+#variablesconNAs(unadata14(plsdata),5) 
 # vemos los paises que tienen el NA de la columa
-View(datossolona(unadata14(plsdata),5))
+#View(datossolona(unadata14(plsdata),5))
 
 
 unadata15 = function(df){
@@ -403,14 +401,14 @@ unadata15 = function(df){
 }
 
 
-variablesconNAs(unadata15(plsdata),5) 
+#variablesconNAs(unadata15(plsdata),5) 
 
 
 # (16) Idem (1 variables con 3 NA) ---- 
 # encontramos las variables con un NAs
-variablesconNAs(unadata15(plsdata),3)
+#variablesconNAs(unadata15(plsdata),3)
 # vemos los paises que tienen el NA de la columa
-View(datossolona(unadata15(plsdata),3))
+#View(datossolona(unadata15(plsdata),3))
 
 
 unadata16 = function(df){
@@ -423,14 +421,14 @@ unadata16 = function(df){
 }
 
 
-variablesconNAs(unadata16(plsdata),3) 
+#variablesconNAs(unadata16(plsdata),3) 
 
 
 # (17) Idem (5 variables con 6 NA) ---- 
 # encontramos las variables con un NAs
-variablesconNAs(unadata16(plsdata),6)
+#variablesconNAs(unadata16(plsdata),6)
 # vemos los paises que tienen el NA de la columa
-View(datossolona(unadata16(plsdata),6))
+#View(datossolona(unadata16(plsdata),6))
 
 
 unadata17 = function(df){
@@ -457,14 +455,14 @@ unadata17 = function(df){
 }
 
 
-variablesconNAs(unadata17(plsdata),6) 
+#variablesconNAs(unadata17(plsdata),6) 
 
 
 # (18) Idem (4 variables con 1 NA) ---- 
 # encontramos las variables con un NAs
-variablesconNAs(unadata17(plsdata),1)
+#variablesconNAs(unadata17(plsdata),1)
 # vemos los paises que tienen el NA de la columa
-View(datossolona(unadata17(plsdata),1))
+#View(datossolona(unadata17(plsdata),1))
 
 
 unadata18 = function(df){
@@ -476,13 +474,13 @@ unadata18 = function(df){
 }
 
 
-variablesconNAs(unadata18(plsdata),1) 
+#variablesconNAs(unadata18(plsdata),1) 
 
 # (19) Idem ( 1 variables con 4 NA) ---- 
 # encontramos las variables con un NAs
-variablesconNAs(unadata18(plsdata),4)
+#variablesconNAs(unadata18(plsdata),4)
 # vemos los paises que tienen el NA de la columa
-View(datossolona(unadata18(plsdata),4))
+#View(datossolona(unadata18(plsdata),4))
 
 
 unadata19 = function(df){
@@ -496,13 +494,13 @@ unadata19 = function(df){
 }
 
 
-variablesconNAs(unadata19(plsdata),4) 
+#variablesconNAs(unadata19(plsdata),4) 
 
 # (20) Idem ( 1 variables con 4 NA) ---- 
 # encontramos las variables con un NAs
-variablesconNAs(unadata19(plsdata),5)
+#variablesconNAs(unadata19(plsdata),5)
 # vemos los paises que tienen el NA de la columa
-View(datossolona(unadata19(plsdata),5))
+#View(datossolona(unadata19(plsdata),5))
 
 
 unadata20 = function(df){
@@ -517,13 +515,13 @@ unadata20 = function(df){
 }
 
 
-variablesconNAs(unadata20(plsdata),5) 
+#variablesconNAs(unadata20(plsdata),5) 
 
 # (21) Idem ( 1 variables con 4 NA) ---- 
 # encontramos las variables con un NAs
-variablesconNAs(unadata20(plsdata),1)
+#variablesconNAs(unadata20(plsdata),1)
 # vemos los paises que tienen el NA de la columa
-View(datossolona(unadata20(plsdata),1))
+#View(datossolona(unadata20(plsdata),1))
 
 
 unadata21 = function(df){
@@ -534,14 +532,14 @@ unadata21 = function(df){
 }
 
 
-variablesconNAs(unadata21(plsdata),1) 
+#variablesconNAs(unadata21(plsdata),1) 
 
 
 # (22) Idem ( 1 variables con 4 NA) ---- 
 # encontramos las variables con un NAs
-variablesconNAs(unadata21(plsdata),3)
+#variablesconNAs(unadata21(plsdata),3)
 # vemos los paises que tienen el NA de la columa
-View(datossolona(unadata21(plsdata),3))
+#View(datossolona(unadata21(plsdata),3))
 
 
 unadata22 = function(df){
@@ -554,14 +552,14 @@ unadata22 = function(df){
 }
 
 
-variablesconNAs(unadata22(plsdata),3) 
+#variablesconNAs(unadata22(plsdata),3) 
 
 
 # (22) Idem ( 1 variables con 4 NA) ---- 
 # encontramos las variables con un NAs
-variablesconNAs(unadata21(plsdata),3)
+#variablesconNAs(unadata21(plsdata),3)
 # vemos los paises que tienen el NA de la columa
-View(datossolona(unadata21(plsdata),3))
+#View(datossolona(unadata21(plsdata),3))
 
 
 unadata22 = function(df){
@@ -574,14 +572,14 @@ unadata22 = function(df){
 }
 
 
-variablesconNAs(unadata22(plsdata),3) 
+#variablesconNAs(unadata22(plsdata),3) 
 
 
 # (23) Idem ( 9 variables con 5 NA) ---- 
 # encontramos las variables con un NAs
-variablesconNAs(unadata22(plsdata),5)
+#variablesconNAs(unadata22(plsdata),5)
 # vemos los paises que tienen el NA de la columa
-View(datossolona(unadata22(plsdata),5))
+#View(datossolona(unadata22(plsdata),5))
 
 
 unadata23 = function(df){
@@ -596,16 +594,14 @@ unadata23 = function(df){
 }
 
 
-variablesconNAs(unadata23(plsdata),5) 
-
-View(resumenporvariable(unadata23(plsdata)))
+#variablesconNAs(unadata23(plsdata),5) 
 
 
 # (24) Idem ( 2 variables con 1 NA) ---- 
 # encontramos las variables con un NAs
-variablesconNAs(unadata23(plsdata),1)
+#variablesconNAs(unadata23(plsdata),1)
 # vemos los paises que tienen el NA de la columa
-View(datossolona(unadata23(plsdata),1))
+#View(datossolona(unadata23(plsdata),1))
 
 
 unadata24 = function(df){
@@ -617,6 +613,165 @@ unadata24 = function(df){
 }
 
 
-variablesconNAs(unadata24(plsdata),1) 
+#variablesconNAs(unadata24(plsdata),1) 
 
-View(resumenporvariable(unadata24(plsdata)))
+
+# (25) Idem ( 2 variables con 1 NA) ---- 
+# encontramos las variables con un NAs
+#variablesconNAs(unadata24(plsdata),7)
+# vemos los paises que tienen el NA de la columa
+#View(datossolona(unadata24(plsdata),7))
+
+
+unadata25 = function(df){
+  datafr = unadata24(df)
+  datafr = datafr[!(datafr$country == "Benin" & datafr$year == 2006 ),]
+  datafr = datafr[!(datafr$country == "Benin" & datafr$year == 2012 ),]
+  datafr = datafr[!(datafr$country == "Benin" & datafr$year == 2014 ),]
+  datafr = datafr[!(datafr$country == "Benin" & datafr$year == 2018 ),]
+  datafr = datafr[!(datafr$country == "Mali" & datafr$year == 2006 ),]
+  datafr = datafr[!(datafr$country == "Togo" & datafr$year == 2010 ),]
+  datafr = datafr[!(datafr$country == "Togo" & datafr$year == 2017 ),]
+  
+  return(datafr)
+}
+
+
+#variablesconNAs(unadata25(plsdata),7) 
+
+
+# (26) Idem ( 2 variables con 1 NA) ---- 
+# encontramos las variables con un NAs
+#variablesconNAs(unadata25(plsdata),11)
+# vemos los paises que tienen el NA de la columa
+#View(datossolona(unadata25(plsdata),11))
+
+
+unadata26 = function(df){
+  datafr = unadata25(df)
+  datafr = datafr[!(datafr$country == "Belarus" & datafr$year == 2005 ),]
+  datafr = datafr[!(datafr$country == "Georgia" & datafr$year == 2018 ),]
+  datafr = datafr[!(datafr$country == "Honduras" & datafr$year == 2019 ),]
+  datafr = datafr[!(datafr$country == "Jordan" & datafr$year == 2018 ),]
+  datafr = datafr[!(datafr$country == "Kazakhstan" & datafr$year == 2006 ),]
+  datafr = datafr[!(datafr$country == "Libya" & datafr$year == 2007 ),]
+  datafr = datafr[!(datafr$country == "Sri Lanka" & datafr$year == 2016 ),]
+  datafr = datafr[!(datafr$country == "Morocco" & datafr$year == 2004 ),]
+  datafr = datafr[!(datafr$country == "Morocco" & datafr$year == 2018 ),]
+  datafr = datafr[!(datafr$country == "Russian Federation" & datafr$year == 2003 ),]
+  datafr = datafr[!(datafr$country == "Tunisia" & datafr$year == 2018 ),]
+  
+  return(datafr)
+}
+
+
+#variablesconNAs(unadata26(plsdata),11) 
+
+
+# (27) Idem ( 2 variables con 1 NA) ---- 
+# encontramos las variables con un NAs
+#variablesconNAs(unadata26(plsdata),20)
+# vemos los paises que tienen el NA de la columa
+#View(datossolona(unadata26(plsdata),20))
+
+
+unadata27 = function(df){
+  datafr = unadata26(df)
+  datafr = datafr[!(datafr$country == "Cameroon" & datafr$year == 2011 ),]
+  datafr = datafr[!(datafr$country == "Costa Rica" & datafr$year == 2018 ),]
+  datafr = datafr[!(datafr$country == "Ecuador" & datafr$year == 2003 ),]
+  datafr = datafr[!(datafr$country == "Gabon" & datafr$year == 2000 ),]
+  datafr = datafr[!(datafr$country == "Guatemala" & datafr$year == 2003 ),]
+  datafr = datafr[!(datafr$country == "Honduras" & datafr$year == 2006 ),]
+  datafr = datafr[!(datafr$country == "Moldova" & datafr$year == 2005 ),]
+  datafr = datafr[!(datafr$country == "North Macedonia" & datafr$year == 2019 ),]
+  datafr = datafr[!(datafr$country == "Mongolia" & datafr$year == 2018 ),]
+  datafr = datafr[!(datafr$country == "Mozambique" & datafr$year == 2009 ),]
+  datafr = datafr[!(datafr$country == "Niger" & datafr$year == 2006 ),]
+  datafr = datafr[!(datafr$country == "Peru" & datafr$year == 2008 ),]
+  datafr = datafr[!(datafr$country == "Paraguay" & datafr$year == 2003 ),]
+  datafr = datafr[!(datafr$country == "Paraguay" & datafr$year == 2016 ),]
+  datafr = datafr[!(datafr$country == "Rwanda" & datafr$year == 2010 ),]
+  datafr = datafr[!(datafr$country == "Tanzania" & datafr$year == 2008 ),]
+  datafr = datafr[!(datafr$country == "Tanzania" & datafr$year == 2010 ),]
+  datafr = datafr[!(datafr$country == "Ukraine" & datafr$year == 2007 ),]
+  datafr = datafr[!(datafr$country == "South Africa" & datafr$year == 2003 ),]
+  datafr = datafr[!(datafr$country == "South Africa" & datafr$year == 2016 ),]
+  
+  return(datafr)
+}
+
+
+#variablesconNAs(unadata27(plsdata),20) 
+
+# (28) Idem ( 2 variables con 1 NA) ---- 
+# encontramos las variables con un NAs
+#variablesconNAs(unadata27(plsdata),18)
+# vemos los paises que tienen el NA de la columa
+#View(datossolona(unadata27(plsdata),18))
+
+
+unadata28 = function(df){
+  datafr = unadata27(df)
+  datafr = datafr[!(datafr$country == "Albania" & datafr$year == 2018 ),]
+  datafr = datafr[!(datafr$country == "Armenia" & datafr$year == 2016 ),]
+  datafr = datafr[!(datafr$country == "Bolivia" & datafr$year == 2016 ),]
+  datafr = datafr[!(datafr$country == "Brazil" & datafr$year == 2015 ),]
+  datafr = datafr[!(datafr$country == "Botswana" & datafr$year == 2016 ),]
+  datafr = datafr[!(datafr$country == "Colombia" & datafr$year == 2016 ),]
+  datafr = datafr[!(datafr$country == "Ecuador" & datafr$year == 2018 ),]
+  datafr = datafr[!(datafr$country == "Indonesia" & datafr$year == 2017 ),]
+  datafr = datafr[!(datafr$country == "Mexico" & datafr$year == 2016 ),]
+  datafr = datafr[!(datafr$country == "Peru" & datafr$year == 2018 ),]
+  datafr = datafr[!(datafr$country == "Peru" & datafr$year == 2019 ),]
+  datafr = datafr[!(datafr$country == "Philippines" & datafr$year == 2017 ),]
+  datafr = datafr[!(datafr$country == "Senegal" & datafr$year == 2015 ),]
+  datafr = datafr[!(datafr$country == "Senegal" & datafr$year == 2016 ),]
+  datafr = datafr[!(datafr$country == "Senegal" & datafr$year == 2017 ),]
+  datafr = datafr[!(datafr$country == "Uganda" & datafr$year == 2006 ),]
+  datafr = datafr[!(datafr$country == "Uganda" & datafr$year == 2011 ),]
+  datafr = datafr[!(datafr$country == "Uganda" & datafr$year == 2016 ),]
+  
+  return(datafr)
+}
+
+
+#variablesconNAs(unadata28(plsdata),18) 
+
+
+
+# (29) Idem ( 2 variables con 1 NA) ---- 
+# encontramos las variables con un NAs
+#variablesconNAs(unadata28(plsdata),19)
+# vemos los paises que tienen el NA de la columa
+#View(datossolona(unadata28(plsdata),19))
+
+
+unadata29 = function(df){
+  datafr = unadata28(df)
+  datafr = datafr[!(datafr$country == "Bangladesh" & datafr$year == 2011 ),]
+  datafr = datafr[!(datafr$country == "Bangladesh" & datafr$year == 2013 ),]
+  datafr = datafr[!(datafr$country == "Brazil" & datafr$year == 2014 ),]
+  datafr = datafr[!(datafr$country == "Cameroon" & datafr$year == 2014 ),]
+  datafr = datafr[!(datafr$country == "Colombia" & datafr$year == 2010 ),]
+  datafr = datafr[!(datafr$country == "Jamaica" & datafr$year == 2010 ),]
+  datafr = datafr[!(datafr$country == "Jordan" & datafr$year == 2009 ),]
+  datafr = datafr[!(datafr$country == "Kazakhstan" & datafr$year == 2011 ),]
+  datafr = datafr[!(datafr$country == "Cambodia" & datafr$year == 2010 ),]
+  datafr = datafr[!(datafr$country == "Mexico" & datafr$year == 2012 ),]
+  datafr = datafr[!(datafr$country == "Mexico" & datafr$year == 2015 ),]
+  datafr = datafr[!(datafr$country == "Nigeria" & datafr$year == 2011 ),]
+  datafr = datafr[!(datafr$country == "Nigeria" & datafr$year == 2013 ),]
+  datafr = datafr[!(datafr$country == "Nepal" & datafr$year == 2011 ),]
+  datafr = datafr[!(datafr$country == "Nepal" & datafr$year == 2014 ),]
+  datafr = datafr[!(datafr$country == "Senegal" & datafr$year == 2011 ),]
+  datafr = datafr[!(datafr$country == "Senegal" & datafr$year == 2013 ),]
+  datafr = datafr[!(datafr$country == "Senegal" & datafr$year == 2014 ),]
+  datafr = datafr[!(datafr$country == "South Africa" & datafr$year == 2012 ),]
+  
+  return(datafr)
+}
+
+
+#variablesconNAs(unadata29(plsdata),19) 
+#View(resumenporvariable(unadata29(plsdata)))

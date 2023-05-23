@@ -1,7 +1,13 @@
-rm(list = ls())
+# dataframes incluyendo los paises con una observacion, sacando NAS conforme a la cantidad de NAs por variable
 
 
+source("unaobs.R")
 
+########################################################################################
+# Datos ----
+plsdata = dataprep("plsdata.txt")
+
+########################################################################################
 unaobselectraw = function(df, num){
   # (1) Data original ----
   if (num == 1){
@@ -34,77 +40,98 @@ unaobselectraw = function(df, num){
   
   # (8) Idem (35 variables con 2 NA) ----
   else if (num == 8){
-    datafr = data8(df)
+    datafr = unadata8(df)
   }
   
   # (9) idem (6 variables con 1 NA) ----
   else if (num == 9){
-    datafr = data9(df)
+    datafr = unadata9(df)
   }
   # (10) Idem (1 variables con 1 NA) ----
   else if (num == 10){
-    datafr = data10(df)
+    datafr = unadata10(df)
   }
   # (11) Idem (2 variables con 3 NA) ----
   else if (num == 11){
-    datafr = data11(df)
+    datafr = unadata11(df)
   }
   # (12) Idem (4 variables con 4 NA) ----
   else if (num == 12){
-    datafr = data12(df)
+    datafr = unadata12(df)
   }
   # (13) Idem (1 variables con 1 NA) ----
   else if (num == 13){
-    datafr = data13(df)
+    datafr = unadata13(df)
   }
   # (14) Idem (1 variables con 3 NA) ----
   else if (num == 14){
-    datafr = data14(df)
+    datafr = unadata14(df)
   }
   # (15) Idem (3 variables con 1 NA) ----
   else if (num == 15){
-    datafr = data15(df)
+    datafr = unadata15(df)
   }
   # (16) Idem (2 variables con 4 NA) ----
   else if (num == 16){
-    datafr = data16(df)
+    datafr = unadata16(df)
   }
   # (17) Idem (2 variables con 3 NA) ----
   else if (num == 17){
-    datafr = data17(df)
+    datafr = unadata17(df)
   }
   # (18) Idem (9 variables con 4 NA) ----
   else if (num == 18){
-    datafr = data18(df)
+    datafr = unadata18(df)
   }
   # (19) Idem (1 variables con 2 NA) ----
   else if (num == 19){
-    datafr = data19(df)
+    datafr = unadata19(df)
   }
   # (20) idem (1 variables con 2 NA) ----
   else if (num == 20){
-    datafr = data20(df)
+    datafr = unadata20(df)
   }
   # (21) idem (1 variables con 3 NA)----
   else if (num == 21){
-    datafr = data21(df)
+    datafr = unadata21(df)
   }
   # (22) idem (1 variables con 2 NA)  ----
   else if (num == 22){
-    datafr = data22(df)
+    datafr = unadata22(df)
   }
   # (23) idem (1 variables con 6 NA)  ----
   else if (num == 23){
-    datafr = data23(df)
+    datafr = unadata23(df)
   }
   # (24) idem (18 variables con 7 NA) ----
   else if (num == 24){
-    datafr = data24(df)
+    datafr = unadata24(df)
   }
-  # (25) Data sacando las  ́ultimas variables----
+  # (25) idem (18 variables con 7 NA) ----
   else if (num == 25){
-    datafr = data25(df)
+    datafr = unadata25(df)
+  }# (26) idem (18 variables con 7 NA) ----
+  else if (num == 26){
+    datafr = unadata26(df)
+  }# (27) idem (18 variables con 7 NA) ----
+  else if (num == 27){
+    datafr = unadata27(df)
+  }# (28) idem (18 variables con 7 NA) ----
+  else if (num == 28){
+    datafr = unadata28(df)
+  }
+  # (29) Data sacando las  ́ultimas variables----
+  else {
+    datafr = unadata29(df)
   }
   return(datafr)
   
 }
+
+unaobselectdfs = function(df, num){
+  connas = unaobselectraw(df, num)
+  datafr = sacarnas(connas)
+  return(datafr)
+}
+
+#View(unaobselectdfs(plsdata,11))
