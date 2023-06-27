@@ -1,18 +1,43 @@
 ############################################################################################
 
 
+datos1 = plsdata
+datos2 = paisessinunaobs(plsdata)
+datos3 = datasacandopaises(paisessinunaobs(datos2), paisesasacar(paisessinunaobs(datos2), 60))
 
-data1 = plsdata
-data2 = paisessinunaobs(plsdata)
+                          
+                           
+############################################################################################
+datossolona = function(df, cantNAS){
+  vars = variablesconNAs(df,cantNAS)
+  datos = cbind(df[,1:4],df[,(colnames(df) %in% vars),])
+  datosunna = datos[!complete.cases(datos), ]
+  return(datosunna)
+}
 
-#datos sin paises con mas de 60 NAS
+variablesconNAs =function(df, cantdeNAs){
+  res = resumenporvariable(df)
+  datavariables = res[res[,4] == cantdeNAs,]
+  variables = c( paste(datavariables[,3]))
+  return(variables)
+}
+
 data3 = function(df){
-  datafr = datasacandopaises(paisessinunaobs(df), paisesasacar(paisessinunaobs(df), 60))
+  data = df[(duplicated(df$country)|duplicated(df$country, fromLast=TRUE)),]
+  datafr = datasacandopaises(data, paisesasacar(data, 60))
   return(datafr)
 } 
 
+#paisessinunaobs = function(df){
+ # paisesunaobs = paisesasacarporyear(df)
+  #dfdosomas = df[!(df$country %in% paisesunaobs),]
+  
+#  return(dfdosomas)
+  
+#}
 
-data3 = data3(data2)
+
+
 ############################################################################################
 
 # (4) Datos menos los paises/obs que haga a la/s variables tener un NA (8 variables) ----
@@ -22,24 +47,15 @@ data4 = function (df){
   return(datafr)
 }
 
+ 
+pais = paste(datossolona(datos3,1)[1,2])
+ 
 
+resumenporpais(datos3)$pais == pais
 
-View(resumenporvariable(plsdata)) # ocho variable con un NA
-variablesconNAs(data3,1) #8
-# vemos los paises que tienen el NA de la columa
-View(datossolona(data3,1))
-pais = paste(datossolona(data3,1)[1,2])
+View(resumenporpais(datos3)[resumenporpais(datos3)$pais == pais,])
 
-# vemos que onda las otras observaciones
-
-View(datosconunna(data3,1))
-View(resumenporpais(data3))
-
-resumenporpais(data3)$pais == pais
-
-View(resumenporpais(data3)[resumenporpais(data3)$pais == pais,])
-
-if (resumenporpais(data3)[resumenporpais(data3)$pais == pais,][1,2] == 2){
+if (resumenporpais(datos3)[resumenporpais(datos3)$pais == pais,][1,2] == 2){
   print("ok")
 } else {
   print("ojo al piojo")
@@ -50,8 +66,11 @@ if (resumenporpais(data3)[resumenporpais(data3)$pais == pais,][1,2] == 2){
 ############################################################################################
 #vemos que es Nicaragua que tiene dos observaciones por lo que se va completo 
 #sacamos nicaragua
-data4 = data3[!(data3$country %in% "Nicaragua"),]
- 
+datos4 = datos3[!(datos3$country %in% "Nicaragua"),]
+datos4 = datos4[!(datos4$country == "Senegal" & datos4$year == 2019 ),]
+# datos4 deberia tener 149
+
+
 
 generico1 = function(df, cantNa){
   pais = paste(datossolona(df,cantNa)[1,2])
@@ -64,8 +83,8 @@ generico1 = function(df, cantNa){
   return(data)
  }
 
-try1 = generico1(data3,1)  
-all.equal(data4,try1) #ok
+#try1 = generico1(data3,1)  
+#all.equal(data4,try1) #ok
 ############################################################################################
 
 #buscamos de nuevo variables con 1 nas
@@ -79,15 +98,12 @@ View(resumenporpais(data4))
 resumenporpais(data3)[resumenporpais(data3)$pais == pais,][1,2]
 # este tiene 3 
 
-
-# todos tienen más de 2 por lo que hay que eliminar solo ese año para cada uno
-plsdata602 = plsdata601[!(plsdata601$country == "Burundi" & plsdata601$year == "2005-01-01" ),]
-
-data5 = data4[!(data4$country == "Burundi" & data4$year == 2005 ),]
-data5 = data5[!(data5$country == "Belize" & data5$year == 2006 ),]
-data5 = data5[!(data5$country == "Lesotho" & data5$year == 2009 ),]
-data5 = data5[!(data5$country == "Senegal" & data5$year == 2019 ),]
-
+View(resumenporpais(datos4))
+View(datossolona(datos4,1))
+datos5 = datos4[!(datos4$country == "Burundi" & datos4$year == 2005 ),]
+datos5 = datos5[!(datos5$country == "Belize" & datos5$year == 2006 ),]
+datos5 = datos5[!(datos5$country == "Lesotho" & datos5$year == 2009 ),]
+datos5 = datos5[!(datos5$country %in% "Libya"),]
 
 try1 = data4[!(data4$country == pais & data4$year == datossolona(data4,1)[1,4] ),]
 try2 = data4[!(data4$country == paises[1] & data4$year == datossolona(data4,1)[1,4] ),]
@@ -95,9 +111,6 @@ try2 = data4[!(data4$country == paises[1] & data4$year == datossolona(data4,1)[1
 datis = datossolona(data4,1)
 
 all.equal(data4,try1) #ok
-
-
- 
 
 #hay que hacer el loop con los los paises 
 
@@ -189,10 +202,11 @@ for (i in 1:nrow(combi)) {
   
 ############################################################################################
 
-data5 = data4[!(data4$country == "Burundi" & data4$year == 2005 ),]
-data5 = data5[!(data5$country == "Belize" & data5$year == 2006 ),]
-data5 = data5[!(data5$country == "Lesotho" & data5$year == 2009 ),]
-data5 = data5[!(data5$country == "Senegal" & data5$year == 2019 ),]
+
+datos5 = datos4[!(datos4$country == "Burundi" & datos4$year == 2005 ),]
+datos5 = datos5[!(datos5$country == "Belize" & datos5$year == 2006 ),]
+datos5 = datos5[!(datos5$country == "Lesotho" & datos5$year == 2009 ),]
+datos5 = datos5[!(datos5$country %in% "Libya"),]
 
 paises = paste(datossolona(data4,1)[,2]) #lista de paises
 paises
@@ -258,19 +272,31 @@ try = generico4(data4)
   
 ############################################################################################
 #todo en una funcion
+library(dplyr)
 
-generico5 = function(df){
-  for (cantNAS in 1:max(resumenporvariable(data3)[,4])) {
-    if(identical(paste(datossolona(df,cantNAS)$country), character(0))){
+generico5 = function(df,times){
+  
+  for (cantNAS in 1:max(resumenporvariable(df)[,4])) {
+    
+    if(sum(is.na(df)) == 0){
+      print("Ya no hay mas Nas")
+      break 
+    }else if (identical(paste(datossolona(df,cantNAS)$country), character(0))){
       print(paste("Tengo que tomar variables con", cantNAS+1, "NAs"))
       next 
       
     }else{ 
       
       paises = paste(datossolona(df,cantNAS)$country) #lista de paises con ciertos nas
-      obsdelpais = resumenporpais(df)[resumenporpais(df)$pais %in% paises,][,2] #cantidad de observaciones de la lista de paises
+      resu = resumenporpais(df)[resumenporpais(df)$pais %in% paises,] #cantidad de observaciones de la lista de paises
+      obsdelpais = numeric()
+      for (pais in paises) {
+             obs = resu[resu$pais == pais,][,2]
+             obsdelpais = c(obsdelpais,obs)
+             }
       years = datossolona(df,cantNAS)$year #año de la observacion
       combi = data.frame(paises,obsdelpais, years) #combinacion de todos
+      
       sacados = data.frame()
       for (i in 1:nrow(combi)) {
         
@@ -285,6 +311,10 @@ generico5 = function(df){
         
       }
       datos = df %>% anti_join(sacados)
+      # si despues de todo esto queda algun pais con 1 sola observacion, lo saco
+      if(sum(!(duplicated(datos$country)|duplicated(datos$country, fromLast=TRUE))) != 0){
+        datos = datos[(duplicated(datos$country)|duplicated(datos$country, fromLast=TRUE)),]
+      }
       
       print(paste("Se tomaron variables con", cantNAS, "NAs"))
       break
@@ -293,41 +323,84 @@ generico5 = function(df){
   return(datos)
 } 
 
-try = generico5(data4)
+try = generico5(datos4)
+all.equal(datos5,try)
 
 #ojo cuando se llegue al final
+View(resumenporvariable(ojo))
+try3 = generico5(selectrawdfs(plsdata,25))
 
-ojo = data25(plsdata)
+ 
 
-
-
-
-
-
-
-
+# ahora lo que hacemos es anidar la funcion
+try4 = Reduce(generico5, 1:2, init = datos3)
+all.equal(datos5,try4) #ok
 
 
+selecdfsconna = function(df,num){
+  # (1) Data original ----
+  if (num == 1){
+    datafr = df
+  }
+  # (2) Datos menos los paises que tienen una sola observacion (años) ----
+  else if (num == 2){
+    datafr = df[(duplicated(df$country)|duplicated(df$country, fromLast=TRUE)),]
+  }
+  # (3) Datos menos los paises que  tienen mas de 60 NAS ----
+  else if (num == 3){
+    datafr = data3(df)
+  }
+  # (4) Datos menos los paises/obs que haga a la/s variables tener un NA (8 variables) ----
+  else {
+    data = data3(df)
+    datafr = Reduce(generico5, 1:(num-3), init = data) #repito (num-3) la funcion para ir generando los dfs
+    
+  }
+  return(datafr)
+} 
+
+
+all.equal(datos3,selecdfsconna(plsdata,3))
+
+try6 = selecdfsconna(plsdata,25)
+try7 = selecdfsconna(plsdata,26)
+
+
+View(resumenporvariable(try6))
+View(datossolona(try6,16))
+try = Reduce(generico5, 1:1, init = datos3) #datos4
+
+# aca nos damos cuenta de que, cuando saca dos obs, si el pais tiene 3, me queda una sola
+# por lo que, hay que chequear si luego de sacar una obs, me queda el pais con dos
+
+
+#bolean que indica si el pais tiene una sola obs en el dataframe
+!(duplicated(try6$country)|duplicated(try6$country, fromLast=TRUE))
+#datos de este pais con una obs
+try6[!(duplicated(try6$country)|duplicated(try6$country, fromLast=TRUE)),]
+#sacarlo del dataframe (me quedo con los paises que son duplicados, mas de dos obs)
+try6[(duplicated(try6$country)|duplicated(try6$country, fromLast=TRUE)),]
+
+#try = plsdata[(duplicated(plsdata$country)|duplicated(plsdata$country, fromLast=TRUE)),]
+#all.equal(try,datos2) #ok
+#si no hay duplicados el dataframe es el mismo y el anterior es vacio
+#View(datos2[!(duplicated(datos2$country)|duplicated(datos2$country, fromLast=TRUE)),])
+
+#para el if, veo si hay algun pais con una sola obs:
+sum(!(duplicated(try6$country)|duplicated(try6$country, fromLast=TRUE)))
+# si es == 0 es porque no hay paises con una sola obs
 
 
 
+if(sum(!(duplicated(try6$country)|duplicated(try6$country, fromLast=TRUE))) != 0){
+  try6 = try6[(duplicated(try6$country)|duplicated(try6$country, fromLast=TRUE)),]
+  
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+if(sum(!(duplicated(datos2$country)|duplicated(datos2$country, fromLast=TRUE))) != 0){
+  datos2 = datos2[(duplicated(datos2$country)|duplicated(datos2$country, fromLast=TRUE)),]
+  
+}
 
 
 
