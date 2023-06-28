@@ -403,7 +403,92 @@ if(sum(!(duplicated(datos2$country)|duplicated(datos2$country, fromLast=TRUE))) 
 }
 
 
+############################################################################################
+
+# funcion que guarda tambien los olvidados
+
+library(dplyr)
+
+generico6 = function(df,times){
+  df = df[["data_filtrada"]]
+  for (cantNAS in 1:max(resumenporvariable(df)[,4])) {
+    
+    if(sum(is.na(df)) == 0){
+      print("Ya no hay mas Nas")
+      break 
+    }else if (identical(paste(datossolona(df,cantNAS)$country), character(0))){
+      print(paste("Tengo que tomar variables con", cantNAS+1, "NAs"))
+      next 
+      
+    }else{ 
+      
+      paises = paste(datossolona(df,cantNAS)$country) #lista de paises con ciertos nas
+      resu = resumenporpais(df)[resumenporpais(df)$pais %in% paises,] #cantidad de observaciones de la lista de paises
+      obsdelpais = numeric()
+      for (pais in paises) {
+        obs = resu[resu$pais == pais,][,2]
+        obsdelpais = c(obsdelpais,obs)
+      }
+      years = datossolona(df,cantNAS)$year #año de la observacion
+      combi = data.frame(paises,obsdelpais, years) #combinacion de todos
+      
+      sacados = data.frame()
+      for (i in 1:nrow(combi)) {
+        
+        if(combi$obsdelpais[i] == 2){
+          sacar = df[(df$country %in% combi$paises[i]),] #saco el pais entero
+          sacados = rbind(sacados,sacar) #saco la observacion correspondiente
+          
+        }else{
+          sacar = df[(df$country == combi$paises[i] & df$year == combi$years[i] ),]
+          sacados = rbind(sacados,sacar) #saco la observacion correspondiente
+        }
+        
+      }
+      datos = df %>% anti_join(sacados)
+      # si despues de todo esto queda algun pais con 1 sola observacion, lo saco
+      if(sum(!(duplicated(datos$country)|duplicated(datos$country, fromLast=TRUE))) != 0){
+        datos = datos[(duplicated(datos$country)|duplicated(datos$country, fromLast=TRUE)),]
+        sacar = datos[!(duplicated(datos$country)|duplicated(datos$country, fromLast=TRUE)),]
+        sacados = rbind(sacados,sacar)  
+        
+      }
+      
+      print(paste("Se tomaron variables con", cantNAS, "NAs"))
+      break
+    }
+  }
+  return(list(data_filt = datos, data_olvi = sacados))
+} 
+
+
+# Función para sacar dataframes  1 - 25 con NAs
 
 
 
-
+selectrawdfs = function(df,num){
+  # (1) Data original ----
+  if (num == 1){
+    datafr = df
+    nodata = data.frame()
+  }
+  # (2) Datos menos los paises que tienen una sola observacion (años) ----
+  else if (num == 2){
+    datafr = df[(duplicated(df$country)|duplicated(df$country, fromLast=TRUE)),]
+    nodata = df[!(duplicated(df$country)|duplicated(df$country, fromLast=TRUE)),]
+  }
+  # (3) Datos menos los paises que  tienen mas de 60 NAS ----
+  else if (num == 3){
+    datafr = data3(df)
+    nodata = nodata3(df)
+  }
+  # (4) Datos menos los paises/obs que haga a la/s variables tener cierta cantidad de un NAs ----
+  else {
+    data = list("data_filtrada" = data3(df), "data_olvidada" = nodata3(df))
+    lista = Reduce(generico6, 1:(num-3), init = data) #repito (num-3) la funcion para ir generando los dfs
+    datafr = lista[["data_filt"]]
+    nodata = lista[["data_olvi"]]
+  }
+  
+  return(list(data_filtrada = datafr, data_olvidada = nodata))
+} 

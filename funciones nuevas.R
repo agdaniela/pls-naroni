@@ -10,7 +10,7 @@ dataprep = function(file){
   regions = cbind(regions, aggregate(year ~ iso, data = df, FUN = length)[,2])
   regions = regions[rep(1:nrow(regions), regions$`aggregate(year ~ iso, data = df, FUN = length)[, 2]`),]
   df$region = regions$Region
-  df = df[, c("iso", "country", "region", colnames(df)[3:156] )]
+  df = df[, c("iso", "country", "region", colnames(df)[3:1219] )]
   
   return(df)
 }
@@ -28,17 +28,34 @@ datasacandopaises = function(df, paises, paisadc = NULL){
 
 data3 = function(df){
   data = df[(duplicated(df$country)|duplicated(df$country, fromLast=TRUE)),]
-  datafr = datasacandopaises(data, paisesasacar(data, 60))
+  datafr = datasacandopaises(data, paisesasacar(data, 600))
   return(datafr)
 } 
 
+nodata3 = function(df){
+  datafr = rbind(df[!(duplicated(df$country)|duplicated(df$country, fromLast=TRUE)),], df[df$country %in% paisesasacar(df,600),])
+  return(datafr)
+} 
+
+# si vemos resumenporpais(selectrawsdfs(plsdata,2)) vemos que tienen muchos nas, por los que en este paso saco los paises con mas de 600
+# se podria aumentar
+
+paisesasacar =function(df, cantdeNAs){
+  respais = resumenporpais(df)
+  datapaises = respais[respais[,6] >= cantdeNAs,]
+  paises = c( paste(datapaises[,4]))
+  
+  
+  return(paises)
+}
 
 
 
 variablesconNAs =function(df, cantdeNAs){
   res = resumenporvariable(df)
-  datavariables = res[res[,4] == cantdeNAs,]
-  variables = c( paste(datavariables[,3]))
+  res$names = rownames(res)
+  datavariables = res[res[,1] == cantdeNAs,]
+  variables = paste(datavariables[,2])
   return(variables)
 }
 
@@ -67,19 +84,16 @@ resumenporfila = function(df){
 ##############################################################################################
 #Resumen por variable
 
+ 
+
 resumenporvariable = function(df){
   naporvar = sapply(df, function(y) sum(is.na(y)))  #cantidad de NAs por variable
-  pertotal = round((naporvar/249)*100,2) #Cantidad de NAs en porcentaje del total
-  
-  
-  res = data.frame("nas" = naporvar, "porcentaje"=pertotal) #ordenamos las variables por porcentaje de NAs
-  
-  varorden = res[order(res[,2]),] #ordenamos las variables por porcentaje de NAs
-  
-  resumen = cbind(res, rownames(varorden),varorden[,colnames(varorden)]) #ponemos todo en el mismo coso
+  res = data.frame("nas" = naporvar ) #ordenamos las variables por porcentaje de NAs
+  resumen = res %>% arrange(res$nas) #ordenamos las variables por porcentaje de NAs
   
   return(resumen)
 }
+
 
 
 ##############################################################################################
@@ -100,15 +114,6 @@ resumenporpais = function(df){
   
 }
 
-paisesasacar =function(df, cantdeNAs){
-  respais = resumenporpais(df)
-  datapaises = respais[respais[,6] >= cantdeNAs,]
-  paises = c( paste(datapaises[,4]))
-  
-  
-  return(paises)
-}
-
 ############################################################################################
 
 # funcion que limpia los paises conforme a la cantidad de nas de las variables
@@ -117,7 +122,7 @@ library(dplyr)
 
 generico5 = function(df,times){
   
-  for (cantNAS in 1:max(resumenporvariable(df)[,4])) {
+  for (cantNAS in 1:max(resumenporvariable(df)[,1])) {
     
     if(sum(is.na(df)) == 0){
       print("Ya no hay mas Nas")
@@ -163,5 +168,68 @@ generico5 = function(df,times){
   }
   return(datos)
 } 
+
+
+
+
+##############################################################################################
+
+# Resumen general (tablita) ----
+resumen = function(df){
+  
+  res = data.frame("Total de observaciones" = nrow(df), 
+                   "Total de predictores (WBI)"= length(colnames(df)[!((colnames(df) %in% c("iso","country","region","year","MPI","H","A")))]),
+                   "Total de paises" = length(unique(df$iso)),
+                   "Total de columnas" = ncol(df),
+                   "Total de NAS" = sum(is.na(df)),
+                   "Total de predictores sin NAS" = length(colnames(df))-7)
+   
+  return(res)
+}
+
+
+
+
+#la tablita para el overleaf
+
+tablita1 = function(df,num){
+  tabla = data.frame()
+  for (i in 1:num) {
+    fila1 = resumen(selectrawdfs(df,i))
+    tabla = rbind(tabla,fila1)
+  }
+  numdedf = seq(1:nrow(tabla))
+  tabla = cbind(numdedf,tabla)
+   
+  return(tabla)
+}
+
+
+tablita2 = function(df,num){
+  tabla = data.frame()
+  for (i in 1:num) {
+    fila1 = resumen(selectdfs(df,i))
+    tabla = rbind(tabla,fila1)
+  }
+  numdedf = seq(1:nrow(tabla))
+  tabla = cbind(numdedf,tabla)
+  
+  return(tabla)
+}
+
+
+# sacando los NAs
+
+sacarnas = function(df){
+  datafr = df[ , apply(df, 2, function(x) !any(is.na(x)))]
+  
+  return(datafr)
+}
+
+
+#tabla1 = tablita1(plsdata,26)
+#tabla2 = tablita1(plsdata,26)
+#tabla1$Total.de.predictores.sin.NAS = tabla2$Total.de.predictores.sin.NAS
+#tabla = tabla1
 
 
