@@ -26,12 +26,12 @@ grepl('Other', colnames(plsdata))
 
 View(plsdata[, grepl('Other', colnames(plsdata))])
 View(plsdata[, grepl('Agriculture...Rural.Development', colnames(plsdata))])
-View(plsdata[, grepl('Private.Sector', colnames(plsdata))]) #una sola variable, la 135 [1] "Arms.imports..SIPRI.trend.indicator.values._Public.Sector"
+View(plsdata[, grepl('Private.Sector', colnames(plsdata))]) 
 
 View(plsdata[, grepl('Energy...Mining', colnames(plsdata))])
 View(plsdata[, grepl('Infrastructure', colnames(plsdata))]) #una sola variable, la 90 "ICT.goods.imports....total.goods.imports._Infrastructure"
 
 View(plsdata[, grepl('Economy...Growth', colnames(plsdata))])
-View(plsdata[, grepl('Public.Sector', colnames(plsdata))])
+View(plsdata[, grepl('Public.Sector', colnames(plsdata))]) #una sola variable, la 135 [1] "Arms.imports..SIPRI.trend.indicator.values._Public.Sector"
 
 
