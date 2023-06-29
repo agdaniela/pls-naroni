@@ -32,3 +32,5 @@ cv.pls <- function(X, y, nfolds, max.directions) {
   min.MSE <- which.min(apply(results, MARGIN = 1, FUN = mean))
   return(list(d.min = min.MSE))
 }
+
+
