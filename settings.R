@@ -1,4 +1,4 @@
-source("funciones.R")
+source("funciones nuevas.R")
 source("dataframes.R")
 source("splits.R")
 source("kfold_cv_selection.R")
@@ -8,7 +8,8 @@ pls.directions <- 9
 nfolds <- 5
 
 # Select dataframe ####
-df <- subset(selectdfs(plsdata,3))
+
+df <- selectdfs(plsdata,1)
 
 # Train and Test split ####
 data <- random.split(df, 0.8)

@@ -4,7 +4,10 @@
 
 vars = read.csv("variables.csv")
 vars <- vars[!duplicated(vars$variable),] #saco dupes
+
+
 vars = data.frame(lapply(vars, function(x) {gsub(",", ".", x)})) #saco comas de mas
+vars = data.frame(lapply(vars, function(x) {gsub(":", ".", x)})) #saco : de mas
 vars[29,1] = colnames(plsdata)[28] #cambio uno rari
 variables = vars[(vars$variable %in% colnames(plsdata)),] #ahora saco las que estan en nuestra base
 
@@ -43,6 +46,7 @@ names(hola) <- sub('\\.x$', '', names(hola))
 names(hola) <- sub('\\.y$', '', names(hola))
 hola = hola[!duplicated(as.list(hola))]
 #aca le saque la terminacion de punto a ambos para ver si era eso y no, siguen coincidiendo 758 variables nomas
+
 names(hola) <- sub('\\.$', '', names(hola))
 vars$variable <- sub('\\.$', '', vars$variable)
 
