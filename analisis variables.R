@@ -35,3 +35,19 @@ View(plsdata[, grepl('Economy...Growth', colnames(plsdata))])
 View(plsdata[, grepl('Public.Sector', colnames(plsdata))])
 
 
+#tratando de ver que esta mal
+hola = read.delim("bigdata.txt", header = TRUE, sep = " ", dec = ".")
+names(hola) <- sub('\\...y$', '..', names(hola))
+names(hola) <- sub('\\...x$', '..', names(hola))
+names(hola) <- sub('\\.x$', '', names(hola))
+names(hola) <- sub('\\.y$', '', names(hola))
+hola = hola[!duplicated(as.list(hola))]
+#aca le saque la terminacion de punto a ambos para ver si era eso y no, siguen coincidiendo 758 variables nomas
+names(hola) <- sub('\\.$', '', names(hola))
+vars$variable <- sub('\\.$', '', vars$variable)
+
+
+
+
+
+

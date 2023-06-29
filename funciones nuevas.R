@@ -10,8 +10,7 @@ dataprep = function(file){
   regions = cbind(regions, aggregate(year ~ iso, data = df, FUN = length)[,2])
   regions = regions[rep(1:nrow(regions), regions$`aggregate(year ~ iso, data = df, FUN = length)[, 2]`),]
   df$region = regions$Region
-  df = df[, c("iso", "country", "region", colnames(df)[3:1219] )]
-  
+  df = df[, c("iso", "country", "region", colnames(df)[3:1218] )]
   return(df)
 }
 
