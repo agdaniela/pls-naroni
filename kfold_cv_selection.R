@@ -12,3 +12,5 @@ kfoldCV.selection <- function(Xtrain, ytrain, nfolds, max.d) {
   return(list(lambda.min = lasso.fit$lambda.min, d.min = pls.fit$d.min))
 }
 
+
+
