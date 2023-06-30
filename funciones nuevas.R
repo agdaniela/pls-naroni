@@ -1,4 +1,6 @@
 ############################################################################################
+source("analisis variables.R")
+
 dataprep = function(file){
   df = read.delim(file, header = TRUE, sep = " ", dec = ".")
   df$iso = as.factor(df$iso)
@@ -11,7 +13,8 @@ dataprep = function(file){
   regions = regions[rep(1:nrow(regions), regions$`aggregate(year ~ iso, data = df, FUN = length)[, 2]`),]
   df$region = regions$Region
   df = df[, c("iso", "country", "region", colnames(df)[3:1484])]
-  
+  df = categoriavar(df)
+  df = dummiesregion(df)
   return(df)
 }
 
@@ -28,12 +31,12 @@ datasacandopaises = function(df, paises, paisadc = NULL){
 
 data3 = function(df){
   data = df[(duplicated(df$country)|duplicated(df$country, fromLast=TRUE)),]
-  datafr = datasacandopaises(data, paisesasacar(data, 600))
+  datafr = datasacandopaises(data, paisesasacar(data, 2000))
   return(datafr)
 } 
 
 nodata3 = function(df){
-  datafr = rbind(df[!(duplicated(df$country)|duplicated(df$country, fromLast=TRUE)),], df[df$country %in% paisesasacar(df,600),])
+  datafr = rbind(df[!(duplicated(df$country)|duplicated(df$country, fromLast=TRUE)),], df[df$country %in% paisesasacar(df,2000),])
   return(datafr)
 } 
 
@@ -100,7 +103,7 @@ resumenporvariable = function(df){
 #Funciones para sacar paises en función de los NAS
 
 resumenporpais = function(df){
-  obs = aggregate(year ~ country, data = df, FUN = length) #contamos la cantidad de años por pais
+  obs = aggregate(year_Other ~ country_Other, data = df, FUN = length) #contamos la cantidad de años por pais
   nasporfila = resumenporfila(df) #tomamos los nas por fila
   nasporpais2 = aggregate(cantidadNAs ~ df$country, data = nasporfila, FUN = sum)[2] #sumamos los nas por pais
   
@@ -178,11 +181,11 @@ generico5 = function(df,times){
 resumen = function(df){
   
   res = data.frame("Total de observaciones" = nrow(df), 
-                   "Total de predictores (WBI)"= length(colnames(df)[!((colnames(df) %in% c("iso","country","region","year","MPI","H","A")))]),
+                   "Total de predictores (WBI)"= length(colnames(df)[!((colnames(df) %in% c("iso","country","region","year","MPI","H","A",colnames(df)[8:13])))]),
                    "Total de paises" = length(unique(df$iso)),
                    "Total de columnas" = ncol(df),
                    "Total de NAS" = sum(is.na(df)),
-                   "Total de predictores sin NAS" = length(colnames(df))-7)
+                   "Total de predictores sin NAS" = length(colnames(df))-13)
    
   return(res)
 }
@@ -227,9 +230,9 @@ sacarnas = function(df){
 }
 
 
-#tabla1 = tablita1(plsdata,26)
-#tabla2 = tablita1(plsdata,26)
+#tabla1 = tablita1(plsdata,29)
+#tabla2 = tablita2(plsdata,29)
 #tabla1$Total.de.predictores.sin.NAS = tabla2$Total.de.predictores.sin.NAS
 #tabla = tabla1
-
+#View(tabla)
 

@@ -9,7 +9,7 @@ plsdata = dataprep("bigdata.txt")
 ########################################################################################
 #Se usa igual que antes, con selectrawdfs(plsdata,num) tenemos un dataframe de la tablita con NAS
 # y con selectdfs(plsdata,num) tenemos el mismo pero sin NAs
-
+# ahora los WBI empiezan en la columna 14
 ########################################################################################
 selectrawdfs = function(df,num){
   # (1) Data original ----

@@ -1,22 +1,21 @@
-source("funciones nuevas.R")
 source("dataframes.R")
 source("splits.R")
 source("kfold_cv_selection.R")
 
-target <- "MPI"
+target <- "mpi_Other"
 pls.directions <- 9
 nfolds <- 5
 
 # Select dataframe ####
 
-df <- selectdfs(plsdata,1)
+df <- selectdfs(plsdata,1) #ahora los WBI son a partir de la col 14
 
 # Train and Test split ####
 data <- random.split(df, 0.8)
 
-ytrain <- data$data_train[, target]; Xtrain <- data$data_train[,-c(1:6)]
+ytrain <- data$data_train[, target]; Xtrain <- data$data_train[,-c(1:13)]
 
-ytest <- data$data_test[, target]; Xtest <- data$data_test[,-c(1:6)]
+ytest <- data$data_test[, target]; Xtest <- data$data_test[,-c(1:13)]
 
 # Hyperparameter selection ####
 hyperparam <- kfoldCV.selection(Xtrain, ytrain, nfolds, pls.directions)
