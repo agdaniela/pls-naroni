@@ -8,12 +8,14 @@ vars <- vars[!duplicated(vars$variable),] #saco dupes
 
 vars = data.frame(lapply(vars, function(x) {gsub(",", ".", x)})) #saco comas de mas
 vars = data.frame(lapply(vars, function(x) {gsub(":", ".", x)})) #saco : de mas
-vars[29,1] = colnames(plsdata)[28] #cambio uno rari
+#vars[29,1] = colnames(plsdata)[29] #cambio uno rari
 variables = vars[(vars$variable %in% colnames(plsdata)),] #ahora saco las que estan en nuestra base
-
+variables$variable <- tolower(variables$variable)
+colnames(plsdata) <- tolower(colnames(plsdata))
 #control
-(colnames(plsdata) %in% variables$variable)
-(variables$variable %in%  colnames(plsdata))
+length(colnames(plsdata)[!(colnames(plsdata) %in% variables$variable)])
+
+length(colnames(variables)[!(variables$variable %in%  colnames(plsdata))])
 
 # cambio el orden para que quede igual que el de la base
 variables = variables[match(colnames(plsdata), variables$variable),]
