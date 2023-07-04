@@ -3,12 +3,12 @@ source("splits.R")
 source("kfold_cv_selection.R")
 
 target <- "mpi_Other"
-pls.directions <- 9
 nfolds <- 5
+pls.directions <- 10
 
 # Select dataframe ####
 
-df <- selectdfs(plsdata,1) #ahora los WBI son a partir de la col 14
+df <- selectdfs(plsdata,5) #ahora los WBI son a partir de la col 14
 
 # Train and Test split ####
 data <- random.split(df, 0.8)
@@ -61,3 +61,7 @@ mean((ytest-ytest_pred.lasso)^2)
 mean((ytest-ytest_pred.pls)^2)
 mean((ytest-ytest_pred.np)^2)
 
+cat("k-fold CV dimension reduction PLS selection: ",hyperparam$d.min,"\n\n")
+
+cat("Variables shrunk by LASSO: ", sum(as.vector(unname(coefficients(lasso.fit))) == 0),
+    "\n over a total of: ", length(as.vector(unname(coefficients(lasso.fit)))),"\n\n")
