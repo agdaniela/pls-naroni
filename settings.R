@@ -8,15 +8,15 @@ pls.directions <- 10
 
 # Select dataframe ####
 
-df <- selectdfs(plsdata,5) #ahora los WBI son a partir de la col 14
+df <- selectdfs(plsdata,2) #ahora los WBI son a partir de la col 14
 
 # Train and Test split ####
 data <- random.split(df, 0.8)
 
-ytrain <- data$data_train[, target]; Xtrain <- data$data_train[,-c(1:13)]
-
-ytest <- data$data_test[, target]; Xtest <- data$data_test[,-c(1:13)]
-
+ytrain <- data$data_train[, target]; Xtrain <- scale(data$data_train[,-c(1:13)])
+ytrain <- (ytrain - mean(ytrain))/sd(ytrain)
+ytest <- data$data_test[, target]; Xtest <- scale(data$data_test[,-c(1:13)])
+ytest <- (ytest - mean(ytest))/sd(ytest)
 # Hyperparameter selection ####
 hyperparam <- kfoldCV.selection(Xtrain, ytrain, nfolds, pls.directions)
 
@@ -38,30 +38,43 @@ lasso.fit <- glmnet::glmnet(x = Xtrain, y = ytrain, lambda = hyperparam$lambda.m
 ytest_pred.lasso <- glmnet::predict.glmnet(lasso.fit, as.matrix(newdata))
 
   # PLS model
-    # Fit model
+    # Fit linear model
 pls.projections <- chemometrics::pls1_nipals(Xtrain, ytrain, a = hyperparam$d.min, scale = FALSE)
-data <- as.data.frame(cbind(ytrain, as.matrix(Xtrain- colMeans(Xtrain)) %*% pls.projections$W))
+data <- as.data.frame(cbind(ytrain, as.matrix(Xtrain) %*% pls.projections$W))
 pls.fit <- lm(ytrain ~ . , data)
 
-
-newdata <- data.frame(as.matrix(Xtest- colMeans(Xtest)) %*% pls.projections$W)
+newdata <- data.frame(as.matrix(Xtest) %*% pls.projections$W)
 colnames(newdata) <- colnames(data)[-1]
     # Predict over Xtest
 ytest_pred.pls <- predict(pls.fit, newdata)
 
-
+    # Fit non-parametric model
 
 bw <- np::npregbw(ytrain ~ V2, data=data)
 np_PLS <- np::npreg(bw)
+    # Predict over Xtest
 ytest_pred.np = predict(np_PLS, newdata=newdata, type="response")
+
+  # PFC model
+    # Fit model
+PFC <- abundant::fit.pfc(Xtrain, ytrain, r = 3, d=1)
+#PFC$Rmat
+    # Predict over Xtest
+ytest_pred.pfc <- abundant::pred.response(PFC, Xtest)
+
 
 # Test results ####
 mean((ytest-ytest_pred.lm)^2)
 mean((ytest-ytest_pred.lasso)^2)
 mean((ytest-ytest_pred.pls)^2)
 mean((ytest-ytest_pred.np)^2)
+mean((ytest-ytest_pred.pfc)^2)
 
 cat("k-fold CV dimension reduction PLS selection: ",hyperparam$d.min,"\n\n")
 
 cat("Variables shrunk by LASSO: ", sum(as.vector(unname(coefficients(lasso.fit))) == 0),
     "\n over a total of: ", length(as.vector(unname(coefficients(lasso.fit)))),"\n\n")
+plot(as.matrix(Xtrain)%*% pls.projections$W[,1], ytrain)
+
+
+
