@@ -22,7 +22,7 @@ resultados = function(){
     df <- datas[[i]]
     
     #train and test
-    target <- "mpi_Other"
+    target <- "h_Other"
     data <- random.split(df, 0.8)
     ytrain <- data$data_train[, target]; Xtrain <- scale(data$data_train[,-c(1:13)])
     ytrain <- (ytrain - mean(ytrain))/sd(ytrain)
@@ -70,32 +70,6 @@ resultados = function(){
     ytest_pred.lasso <- glmnet::predict.glmnet(lasso.fit, as.matrix(newdata))
     
     
-    
-    pfc_d1 = "no se puede"  
-    pfc_dopt = "no se puede" 
-    tryCatch(
-      #try to do this
-      {
-        #PFC d = 1 
-        PFC <- abundant::fit.pfc(Xtrain, ytrain, r = 3, d=d_1)
-        # Predict over Xtest
-        ytest_pred.pfc_d1 <- abundant::pred.response(PFC, Xtest)
-        pfc_d1 = mean((ytest-ytest_pred.pfc_d1)^2)
-        
-        #PFC d optimo
-        PFC <- abundant::fit.pfc(Xtrain, ytrain, r = d_opt, d= d_opt)
-        ytest_pred.pfc_dopt <- abundant::pred.response(PFC, Xtest)
-        pfc_dopt = mean((ytest-ytest_pred.pfc_dopt)^2)
-        
-      },
-      #if an error occurs, tell me the error
-      error=function(e) {
-        message('An Error Occurred')
-        print(e)
-        
-      } 
-    )
-    
     fila1 = data.frame("nombre del df" = paste("plsdata",i,sep = "_"), 
                        "n" = nrow(df), #Total de observaciones
                        "p"= length(colnames(df)[!((colnames(df) %in% c("iso","country","region","year","MPI","H","A",colnames(df)[8:13])))]), #Total de predictores (WBI)
@@ -104,22 +78,22 @@ resultados = function(){
                        "MSE pls_d1" = mean((ytest-ytest_pred.pls_d1)^2),
                        "MSE pls_opt" = mean((ytest-ytest_pred.pls_dopt)^2),
                        "d optimo" = d_opt,
-                       "PFC_d1" = pfc_d1,
-                       "PFC_dopt" = pfc_dopt
+                       "variables lasso" = length(as.vector(unname(coefficients(lasso.fit))))-sum(as.vector(unname(coefficients(lasso.fit))) == 0)
                        
     )
     tabla = rbind(tabla,fila1)
   }
   numdedf = seq(1:nrow(tabla))
   tabla = cbind(numdedf,tabla)
-  tabla$Ganador <- apply(tabla[,5:11], 1, function(x){names(tabla[,5:11])[which.min(x)]})
+  tabla$Ganador <- apply(tabla[,5:9], 1, function(x){names(tabla[,5:9])[which.min(x)]})
   
   return(tabla)
 }
 
 
 res2 =resultados()
-
+res_a =resultados()
+res_h =resultados()
 
 
 #########################################################

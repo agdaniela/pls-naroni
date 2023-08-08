@@ -78,3 +78,16 @@ plot(as.matrix(Xtrain)%*% pls.projections$W[,1], ytrain)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
