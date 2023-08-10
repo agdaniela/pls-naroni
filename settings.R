@@ -30,6 +30,10 @@ lm.fit <- lm(ytrain ~ . , data)
 newdata <- data.frame(Xtest)
     # Predict over Xtest
 ytest_pred.lm <- predict(lm.fit, newdata)
+  
+  # XGBoost model
+  # Predict over Xtest
+ytest_pred.xgb <- predict(model, Xtest)
 
   # LASSO model
     # Fit model
@@ -69,6 +73,7 @@ mean((ytest-ytest_pred.lasso)^2)
 mean((ytest-ytest_pred.pls)^2)
 mean((ytest-ytest_pred.np)^2)
 mean((ytest-ytest_pred.pfc)^2)
+mean((ytest-ytest_pred.xgb)^2)
 
 cat("k-fold CV dimension reduction PLS selection: ",hyperparam$d.min,"\n\n")
 
