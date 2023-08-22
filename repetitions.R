@@ -67,12 +67,15 @@ repetitions_alldfs = function(df_init, df_final, target, nreps){
 
 #resultados de a dos dfs
 
-resultsdf1_2 = repetitions_alldfs(1, 2, "mpi_Other",50); saveRDS(resultsdf1_2, file = "resultsdf1_2.Rdata")
+resultsdf1_8 = repetitions_alldfs(1, 8, "mpi_Other",50); saveRDS(resultsdf1_8, file = "resultsdf1_8.Rdata")
 
-#readRDS("resultsdf1_2.Rdata")
+#readRDS("resultsdf1_8.Rdata")
 
 
 
+#una prueba para ver que funcione:
+#try2 = repetitions(df,"mpi_Other",1); saveRDS(try2, file = "try2.Rdata")
+#try2 = readRDS("try2.Rdata")
 
 
 
