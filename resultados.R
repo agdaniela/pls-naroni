@@ -104,7 +104,7 @@ main_function = function(df, target){
                      "MAE pls_np_opt" = mean(abs(ytest-ytest_pred.np_opt)),
                      "MAE xgBoost" = mean(abs(ytest-ytest_pred.xgb)),
                      "n" = nrow(df),  
-                     "p"= length(colnames(df)[!((colnames(df) %in% c("iso","country","region","year","MPI","H","A",colnames(df)[8:13])))]),  
+                     "p"= length(colnames(df)[!((colnames(df) %in% c(colnames(df)[1:13])))]),  
                      "Total de paises" = length(unique(df$iso)),
                      "d optimo" = d_opt,
                      "variables elastic" = length(as.vector(unname(coefficients(elastic.fit))))-sum(as.vector(unname(coefficients(elastic.fit))) == 0)

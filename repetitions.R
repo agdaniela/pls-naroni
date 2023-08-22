@@ -46,10 +46,10 @@ repetitions = function(df, target, nreps){
 #res4 = repetitions(df,"mpi_Other",10)
 #save(res4, file = "df2_10reps")
 
-repetitions_alldfs = function(totaldfs, target, nreps){
+repetitions_alldfs = function(df_init, df_final, target, nreps){
   results_total = list()
   
-  for (i in c(1:totaldfs)) {
+  for (i in c(df_init:df_final)) {
     df <- datas[[i]]
     name <- paste('df',i,sep='_')
     
@@ -63,7 +63,7 @@ repetitions_alldfs = function(totaldfs, target, nreps){
   
 }
 
-hola = repetitions_alldfs(2, "mpi_Other",2) #replace (8,"mpi_Other",50)
+try = repetitions_alldfs(5, 6, "mpi_Other",2) #replace (8,"mpi_Other",50)
 
 
 
