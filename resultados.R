@@ -52,7 +52,7 @@ main_function = function(df, target){
   #PLS model, optimal d
   # Hyperparameter selection 
   pls.directions = 30
-  hyperparam <- kfoldCV.selection(Xtrain, ytrain, nfolds, pls.directions)
+  hyperparam <- kfoldCV.selection2(Xtrain, ytrain, nfolds, pls.directions)
   d_opt = hyperparam$d.min
   pls.projections_dopt <- chemometrics::pls1_nipals(Xtrain, ytrain, a = d_opt, scale = FALSE)
   data_dopt <- as.data.frame(cbind(ytrain, as.matrix(Xtrain) %*% pls.projections_dopt$W))
@@ -72,10 +72,18 @@ main_function = function(df, target){
   
   
   # LASSO model
-  newdata <- data.frame(Xtest)
-  lasso.fit <- glmnet::glmnet(x = Xtrain, y = ytrain, lambda = hyperparam$lambda.min)
+  #newdata <- data.frame(Xtest)
+  #lasso.fit <- glmnet::glmnet(x = Xtrain, y = ytrain, lambda = hyperparam$lambda.min)
   # Predict over Xtest
-  ytest_pred.lasso <- glmnet::predict.glmnet(lasso.fit, as.matrix(newdata))
+  #ytest_pred.lasso <- glmnet::predict.glmnet(lasso.fit, as.matrix(newdata))
+  
+  #Elastic net
+  newdata <- data.frame(Xtest)
+  elastic.fit <- glmnet::glmnet(x = Xtrain, y = ytrain, family = "gaussian", alpha = hyperparam$best.alpha, lambda = hyperparam$best.lambda)
+  # Predict over Xtest
+  ytest_pred.elastic <- glmnet::predict.glmnet(elastic.fit, as.matrix(newdata))
+  
+  
   
   # XGBoost model
   # Predict over Xtest
@@ -83,17 +91,23 @@ main_function = function(df, target){
   
   # Saving results
   results = data.frame( 
-                     #"n" = nrow(df), #Total de observaciones
-                     #"p"= length(colnames(df)[!((colnames(df) %in% c("iso","country","region","year","MPI","H","A",colnames(df)[8:13])))]), #Total de predictores (WBI)
-                     #"Total de paises" = length(unique(df$iso)),
-                     "MSE lasso" = mean((ytest-ytest_pred.lasso)^2),
+                     "MSE elastic" = mean((ytest-ytest_pred.elastic)^2),
                      "MSE pls_d1" = mean((ytest-ytest_pred.pls_d1)^2),
                      "MSE pls_opt" = mean((ytest-ytest_pred.pls_dopt)^2),
                      "MSE pls_np_d1" = mean((ytest-ytest_pred.np_d1)^2),
                      "MSE pls_np_opt" = mean((ytest-ytest_pred.np_opt)^2),
-                     "MSE xgBoost" = mean((ytest-ytest_pred.xgb)^2)
-                     #"d optimo" = d_opt,
-                     #"variables lasso" = length(as.vector(unname(coefficients(lasso.fit))))-sum(as.vector(unname(coefficients(lasso.fit))) == 0)
+                     "MSE xgBoost" = mean((ytest-ytest_pred.xgb)^2),
+                     "MAE elastic" = mean(abs(ytest-ytest_pred.elastic)),
+                     "MAE pls_d1" = mean(abs(ytest-ytest_pred.pls_d1)),
+                     "MAE pls_opt" = mean(abs(ytest-ytest_pred.pls_dopt)),
+                     "MAE pls_np_d1" = mean(abs(ytest-ytest_pred.np_d1)),
+                     "MAE pls_np_opt" = mean(abs(ytest-ytest_pred.np_opt)),
+                     "MAE xgBoost" = mean(abs(ytest-ytest_pred.xgb)),
+                     "n" = nrow(df),  
+                     "p"= length(colnames(df)[!((colnames(df) %in% c("iso","country","region","year","MPI","H","A",colnames(df)[8:13])))]),  
+                     "Total de paises" = length(unique(df$iso)),
+                     "d optimo" = d_opt,
+                     "variables elastic" = length(as.vector(unname(coefficients(elastic.fit))))-sum(as.vector(unname(coefficients(elastic.fit))) == 0)
                      
   )
    

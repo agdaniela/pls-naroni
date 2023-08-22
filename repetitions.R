@@ -16,12 +16,25 @@ repetitions = function(df, target, nreps){
     print(paste("rep = ",rep))
     main = main_function(df,target)
     
-    results$MSE.lasso[rep] = main$MSE.lasso
+    results$MSE.elastic[rep] = main$MSE.elastic
     results$MSE.pls_d1[rep] = main$MSE.pls_d1
     results$MSE.pls_opt[rep] = main$MSE.pls_opt
     results$MSE.pls_np_d1[rep] = main$MSE.pls_np_d1
     results$MSE.pls_np_opt[rep] = main$MSE.pls_np_opt
     results$MSE.xgBoost[rep] = main$MSE.xgBoost
+    
+    results$MAE.elastic[rep] = main$MAE.elastic
+    results$MAE.pls_d1[rep] = main$MAE.pls_d1
+    results$MAE.pls_opt[rep] = main$MAE.pls_opt
+    results$MAE.pls_np_d1[rep] = main$MAE.pls_np_d1
+    results$MAE.pls_np_opt[rep] = main$MAE.pls_np_opt
+    results$MAE.xgBoost[rep] = main$MAE.xgBoost
+    
+    results$n[rep] = main$n
+    results$p[rep] = main$p
+    results$Total.de.paises[rep] = main$Total.de.paises
+    results$d.optimo[rep] = main$d.optimo
+    results$variables.elastic[rep] = main$variables.elastic
     
     }
   
@@ -51,7 +64,6 @@ repetitions_alldfs = function(totaldfs, target, nreps){
 }
 
 hola = repetitions_alldfs(2, "mpi_Other",2) #replace (8,"mpi_Other",50)
-
 
 
 
