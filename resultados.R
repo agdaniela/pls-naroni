@@ -15,7 +15,7 @@ for (i in c(1,2,5,8,9,10,13,15)){
 }
 
 #########################################################
-
+df = datas[[4]]
 
 main_function = function(df, target){
   results = data.frame()
