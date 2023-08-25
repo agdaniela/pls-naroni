@@ -77,9 +77,9 @@ repetitions = function(df, target, nreps){
 for (i in 1:8){
   print(paste("df = ", i))
   
-  results = repetitions(datas[[i]], "mpi_Other", 50)
+  results = repetitions(datas[[i]], "mpi_Other", 10)
   
-  name_file = paste0("results_df",i, ".Rdata")
+  name_file = paste0("results_se_df",i, ".Rdata")
   
   saveRDS(results, file = name_file)
   
@@ -87,6 +87,44 @@ for (i in 1:8){
 
 #try2 = readRDS("results_df1.Rdata")
 #try2 = readRDS("results_df2.Rdata")
+
+
+
+#dropbox saving
+library(rdrop2)
+token <- drop_auth()
+saveRDS(token, file = "token.rds")
+library(dplyr)
+drop_acc() %>% data.frame()
+
+drop_dir('PLS/pls-codigos/10 repeticiones')
+
+
+for (i in 1:8){
+  print(paste("df = ", i))
+  
+  results = repetitions(datas[[i]], "mpi_Other", 10)
+  
+  name_file = paste0("results_se_df",i, ".Rdata")
+  
+  saveRDS(results, file = name_file)
+  
+  drop_upload(name_file, path = 'PLS/pls-codigos/10 repeticiones')
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

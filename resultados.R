@@ -7,12 +7,12 @@ library(caret)
 
 #########################################################
 #dataframes
-datas = list()
-for (i in c(1,2,5,8,9,10,13,15)){
-  nombre <- paste("plsdata", i, sep="_")
-  datas[[nombre]] = selectdfs(plsdata,i)
+#datas = list()
+#for (i in c(1,2,5,8,9,10,13,15)){
+ # nombre <- paste("plsdata", i, sep="_")
+  #datas[[nombre]] = selectdfs(plsdata,i)
   
-}
+#}
 
 #########################################################
 df = datas[[4]]
@@ -24,10 +24,10 @@ main_function = function(df, target){
   
   # Train and test datasets
   data <- random.split(df, 0.8)
-  ytrain <- data$data_train[, target]; Xtrain <- scale(data$data_train[,-c(1:13)])
-  ytrain <- (ytrain - mean(ytrain))/sd(ytrain)
-  ytest <- data$data_test[, target]; Xtest <- scale(data$data_test[,-c(1:13)])
-  ytest <- (ytest - mean(ytest))/sd(ytest)
+  ytrain <- data$data_train[, target]; Xtrain <- data$data_train[,-c(1:13)] #scale
+  #ytrain <- (ytrain - mean(ytrain))/sd(ytrain)
+  ytest <- data$data_test[, target]; Xtest <- data$data_test[,-c(1:13)]
+  #ytest <- (ytest - mean(ytest))/sd(ytest)
   # Create data frame for prediction
   data <- as.data.frame(cbind(ytrain, Xtrain))
   
