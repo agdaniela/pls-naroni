@@ -17,7 +17,7 @@ library(caret)
 #holis
 
 #########################################################
-df = datas[[8]]
+#df = datas[[8]]
 
 main_function = function(df, target){
   results = data.frame()
