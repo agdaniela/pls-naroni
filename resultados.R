@@ -14,8 +14,10 @@ library(caret)
   
 #}
 
+#holis
+
 #########################################################
-df = datas[[4]]
+df = datas[[8]]
 
 main_function = function(df, target){
   results = data.frame()
@@ -108,6 +110,8 @@ main_function = function(df, target){
                      "Total de paises" = length(unique(df$iso)),
                      "d optimo" = d_opt,
                      "variables elastic" = length(as.vector(unname(coefficients(elastic.fit))))-sum(as.vector(unname(coefficients(elastic.fit))) == 0)
+                      
+                     
                      
   )
    

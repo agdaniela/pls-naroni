@@ -1,9 +1,9 @@
 source("resultados.R")
 
 
-
+#holis 
 #Repeticiones
-df = datas[[1]]
+#df = datas[[1]]
 
 #funcion de prueba
 
@@ -40,7 +40,6 @@ repetitions = function(df, target, nreps){
       results$d.optimo[rep] = main$d.optimo
       results$variables.elastic[rep] = main$variables.elastic
       
-      
       }else{
         paste("Algo está mal con la rep", i)
         results$MSE.elastic[rep] = NA
@@ -62,6 +61,7 @@ repetitions = function(df, target, nreps){
         results$Total.de.paises[rep] = NA
         results$d.optimo[rep] = NA
         results$variables.elastic[rep] = NA
+        
         next
         }
     
@@ -74,10 +74,10 @@ repetitions = function(df, target, nreps){
 #try = repetitions(datas[[2]], "mpi_Other", 2)
 #try = repetitions(datas[[2]], "cualq_Other", 2)
 
-for (i in 1:8){
+for (i in 8:8){
   print(paste("df = ", i))
   
-  results = repetitions(datas[[i]], "mpi_Other", 10)
+  results = repetitions(datas[[i]], "mpi_Other", 1)
   
   name_file = paste0("results_se_df",i, ".Rdata")
   
