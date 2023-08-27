@@ -74,10 +74,10 @@ repetitions = function(df, target, nreps){
 #try = repetitions(datas[[2]], "mpi_Other", 2)
 #try = repetitions(datas[[2]], "cualq_Other", 2)
 
-for (i in 8:8){
+for (i in 6:6){
   print(paste("df = ", i))
   
-  results = repetitions(datas[[i]], "mpi_Other", 1)
+  results = repetitions(datas[[i]], "mpi_Other", 50)
   
   name_file = paste0("results_se_df",i, ".Rdata")
   
