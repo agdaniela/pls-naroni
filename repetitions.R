@@ -13,9 +13,9 @@ repetitions = function(df, target, nreps){
   
   
   for (rep in 1:nreps) {
-    print(paste("rep = ",rep))
+    print(paste("rep = ",rep)) #OJO QUE CAMBIE LA MAIN PARA HACER TEST EN UNA
     
-    main <- tryCatch(main_function(df,target) , error= function(e) {return(list())}  )
+    main <- tryCatch(main_function_unaobs(df,target) , error= function(e) {return(list())}  )
     if (length(main) != 0) {
       print("ok con la rep")
       
@@ -71,9 +71,7 @@ repetitions = function(df, target, nreps){
   return(results)
 }  
 
-#try = repetitions(datas[[2]], "mpi_Other", 2)
-#try = repetitions(datas[[2]], "cualq_Other", 2)
-
+ 
 for (i in 6:6){
   print(paste("df = ", i))
   
@@ -85,35 +83,18 @@ for (i in 6:6){
   
 }
 
-#try2 = readRDS("results_df1.Rdata")
-#try2 = readRDS("results_df2.Rdata")
+# Para dejar en test lo de una obs
 
-
-
-#dropbox saving
-library(rdrop2)
-token <- drop_auth()
-saveRDS(token, file = "token.rds")
-library(dplyr)
-drop_acc() %>% data.frame()
-
-drop_dir('PLS/pls-codigos/10 repeticiones')
-
-
-for (i in 1:8){
+for (i in 2:2){
   print(paste("df = ", i))
   
-  results = repetitions(datas[[i]], "mpi_Other", 10)
+  results = repetitions(datas[[i]], "mpi_Other", 50)
   
   name_file = paste0("results_se_df",i, ".Rdata")
   
   saveRDS(results, file = name_file)
   
-  drop_upload(name_file, path = 'PLS/pls-codigos/10 repeticiones')
-  
 }
-
-
 
 
 
