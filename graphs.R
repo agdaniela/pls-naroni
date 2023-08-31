@@ -290,8 +290,8 @@ ggplot(data = NULL ) +
   )
 
 
-
-
+# para ver quien gana individual
+sapply(exper_unaobs_mpi_medium[exper_unaobs_mpi_medium$country_Other == "Latvia",][,4:9], function(x) abs(0.006000000-x))
 
 
 
