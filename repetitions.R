@@ -5,9 +5,8 @@ source("main_function_dum.R")
 
  
 #Repeticiones
-#df = datas[[1]]
-
-#funcion de prueba
+ 
+#funcion para repetir cambiando entre sin estandarizar, dejando una obs en test e incluyendo las variables 
 
 funciones = list(main_function = main_function, main_function_unaobs=main_function_unaobs, main_function_dum = main_function_dum, main_function_unaobs_dum = main_function_unaobs_dum )
 
@@ -77,12 +76,12 @@ repetitions = function(df, target, nreps, fun){
 }  
 
  
-for (i in 3:8){
+for (i in 8:8){
   print(paste("df = ", i))
   
-  results = repetitions(datas[[i]], "mpi_Other", 10, "main_function_dum")
+  results = repetitions(datas[[i]], "mpi_Other", 2, "main_function_dum")
   
-  name_file = paste0("results_se_dum",i, ".Rdata")
+  name_file = paste0("results_se_dum_",i, ".Rdata")
   
   saveRDS(results, file = name_file)
   

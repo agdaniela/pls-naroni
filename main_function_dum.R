@@ -6,12 +6,12 @@ library(xgboost)
 library(caret)
 
 #########################################################
-#dataframes
+#dataframes  (correr la primera vez sin comentar)
 # datas = list()
 # for (i in c(1,2,5,8,9,10,13,15)){
 #  nombre <- paste("plsdata", i, sep="_")
 # datas[[nombre]] = selectdfs(plsdata,i)
-# 
+ 
 # }
 
 
