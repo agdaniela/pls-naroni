@@ -7,143 +7,86 @@ library(caret)
 
 #########################################################
 #dataframes
-#datas = list()
-#for (i in c(1,2,5,8,9,10,13,15)){
- # nombre <- paste("plsdata", i, sep="_")
-  #datas[[nombre]] = selectdfs(plsdata,i)
+datas = list()
+for (i in c(1,2,5,8,9,10,13,15)){
+  nombre <- paste("plsdata", i, sep="_")
+  datas[[nombre]] = selectdfs(plsdata,i)
   
-#}
-
-#holis
+}
 
 #########################################################
-#df = datas[[8]]
-
-
+df = datas[[1]]
 
 main_function = function(df, target){
   results = data.frame()
   nfolds <- 5
   
   
-  # Train and test datasets
+  # Train and test datasets option 1
   data <- random.split(df, 0.8)
-  ytrain <- data$data_train[, target]; Xtrain <- data$data_train[,-c(1:13)] #scale
-  #ytrain <- (ytrain - mean(ytrain))/sd(ytrain)
+  ytrain <- data$data_train[, target]; Xtrain <- scale(data$data_train[,-c(1:13)])
+  ytrain <- (ytrain - mean(ytrain))/sd(ytrain)
+  ytest <- data$data_test[, target]; Xtest <- scale(data$data_test[,-c(1:13)])
+  ytest <- (ytest - mean(ytest))/sd(ytest)
+ 
+  # Train and test datasets option 2
+  data <- random.split(df, 0.8)
+  ytrain <- data$data_train[, target]; Xtrain <- scale(data$data_train[,-c(1:13)])
+  ytrain <- (ytrain - mean(ytrain))/sd(ytrain)
+  
+  meantrain <- colMeans(as.matrix(data$data_train[,-c(1:13)]))
+  sdtrain <- sapply(data$data_train[,-c(1:13)], function(x) sd(x))
+  ytest <- data$data_test[, target]; Xtest <- (data$data_test[,-c(1:13)] - meantrain)/sdtrain
+  ytest <- (ytest - mean(data$data_train[, target]))/sd(data$data_train[, target])
+  
+  # Train and test datasets option 3
+  data <- random.split(df, 0.8)
+  ytrain <- data$data_train[, target]; Xtrain <- scale(data$data_train[,-c(1:13)])
+  ytrain <- log(ytrain)
+  
+  meantrain <- colMeans(as.matrix(data$data_train[,-c(1:13)]))
+  sdtrain <- sapply(data$data_train[,-c(1:13)], function(x) sd(x))
+  ytest <- data$data_test[, target]; Xtest <- (data$data_test[,-c(1:13)] - meantrain)/sdtrain
+  ytest <- log(ytest)
+  
+  # Train and test datasets option 4
+  data <- random.split(df, 0.8)
+  ytrain <- data$data_train[, target]; Xtrain <- scale(data$data_train[,-c(1:13)])
+  meantrain <- colMeans(as.matrix(data$data_train[,-c(1:13)]))
+  sdtrain <- sapply(data$data_train[,-c(1:13)], function(x) sd(x))
+  ytest <- data$data_test[, target]; Xtest <- (data$data_test[,-c(1:13)] - meantrain)/sdtrain
+  
+  # Train and test datasets option 5
+  data <- random.split(df, 0.8)
+  ytrain <- data$data_train[, target]; Xtrain <- (data$data_train[,-c(1:13)])
+  
   ytest <- data$data_test[, target]; Xtest <- data$data_test[,-c(1:13)]
-  #ytest <- (ytest - mean(ytest))/sd(ytest)
-  # Create data frame for prediction
-  data <- as.data.frame(cbind(ytrain, Xtrain))
   
-  # Methods for estimation
-  # PLS model, d = 1 
-  d_1 = 1
-  pls.projections <- chemometrics::pls1_nipals(Xtrain, ytrain, a = d_1, scale = FALSE)
-  data <- as.data.frame(cbind(ytrain, as.matrix(Xtrain) %*% pls.projections$W))
-  pls.fit <- lm(ytrain ~ . , data)
-  newdata <- data.frame(as.matrix(Xtest) %*% pls.projections$W)
-  colnames(newdata) <- colnames(data)[-1]
-  # Predict over Xtest
-  ytest_pred.pls_d1 <- predict(pls.fit, newdata)
+  # Train and test datasets option 6
+  data <- random.split(df, 0.8)
+  meantrain <- colMeans(as.matrix(data$data_train[,-c(1:13)]))
+  ytrain <- data$data_train[, target]; Xtrain <- data$data_train[,-c(1:13)] - meantrain
+  ytest <- data$data_test[, target]; Xtest <- (data$data_test[,-c(1:13)] - meantrain)
   
-  #Non parametric PLS model, d = 1
-  bw_d1 <- np::npregbw(ytrain ~ V2, data=data)
-  np_PLS_d1 <- np::npreg(bw_d1)
-  # Predict over Xtest
-  ytest_pred.np_d1 = predict(np_PLS_d1, newdata=newdata, type="response")
+  # Train and test datasets option 6
+  data <- random.split(df, 0.8)
+  meantrain <- colMeans(as.matrix(data$data_train[,-c(1:13)]))
+  ytrain <- data$data_train[, target]; Xtrain <- data$data_train[,-c(1:13)] - meantrain
   
+  Sumtrain <- colSums(as.matrix(data$data_train[,-c(1:13)]))
+  ytest <- data$data_test[, target]
   
-  #PLS model, optimal d
-  # Hyperparameter selection 
-  pls.directions = 30
-  hyperparam <- kfoldCV.selection2(Xtrain, ytrain, nfolds, pls.directions)
-  d_opt = hyperparam$d.min
-  pls.projections_dopt <- chemometrics::pls1_nipals(Xtrain, ytrain, a = d_opt, scale = FALSE)
-  data_dopt <- as.data.frame(cbind(ytrain, as.matrix(Xtrain) %*% pls.projections_dopt$W))
-  pls.fit_dopt <- lm(ytrain ~ . , data_dopt)
-  newdata_dopt <- data.frame(as.matrix(Xtest) %*% pls.projections_dopt$W)
-  colnames(newdata_dopt) <- colnames(data_dopt)[-1]
-  # Predict over Xtest
-  ytest_pred.pls_dopt <- predict(pls.fit_dopt, newdata_dopt)
-  
-  
-  # Non-parametric PLS model, optimal d
-  formu = as.formula(paste("ytrain", paste(names(data_dopt)[-1], collapse=" + "), sep=" ~ ")) 
-  bw_dopt <- np::npregbw(formu, data=data_dopt) 
-  np_PLS_dopt <- np::npreg(bw_dopt)
-  # Predict over Xtest
-  ytest_pred.np_opt = predict(np_PLS_dopt, newdata=newdata_dopt, type="response")
-  
-  
-  # LASSO model
-  #newdata <- data.frame(Xtest)
-  #lasso.fit <- glmnet::glmnet(x = Xtrain, y = ytrain, lambda = hyperparam$lambda.min)
-  # Predict over Xtest
-  #ytest_pred.lasso <- glmnet::predict.glmnet(lasso.fit, as.matrix(newdata))
-  
-  #Elastic net
-  newdata <- data.frame(Xtest)
-  elastic.fit <- glmnet::glmnet(x = Xtrain, y = ytrain, family = "gaussian", alpha = hyperparam$best.alpha, lambda = hyperparam$best.lambda)
-  # Predict over Xtest
-  ytest_pred.elastic <- glmnet::predict.glmnet(elastic.fit, as.matrix(newdata))
-  
-  
-  
-  # XGBoost model
-  # Predict over Xtest
-  ytest_pred.xgb <- predict(hyperparam$xgb.model, Xtest)
-  
-  # Saving results
-  results = data.frame( 
-                     "MSE elastic" = mean((ytest-ytest_pred.elastic)^2),
-                     "MSE pls_d1" = mean((ytest-ytest_pred.pls_d1)^2),
-                     "MSE pls_opt" = mean((ytest-ytest_pred.pls_dopt)^2),
-                     "MSE pls_np_d1" = mean((ytest-ytest_pred.np_d1)^2),
-                     "MSE pls_np_opt" = mean((ytest-ytest_pred.np_opt)^2),
-                     "MSE xgBoost" = mean((ytest-ytest_pred.xgb)^2),
-                     "MAE elastic" = mean(abs(ytest-ytest_pred.elastic)),
-                     "MAE pls_d1" = mean(abs(ytest-ytest_pred.pls_d1)),
-                     "MAE pls_opt" = mean(abs(ytest-ytest_pred.pls_dopt)),
-                     "MAE pls_np_d1" = mean(abs(ytest-ytest_pred.np_d1)),
-                     "MAE pls_np_opt" = mean(abs(ytest-ytest_pred.np_opt)),
-                     "MAE xgBoost" = mean(abs(ytest-ytest_pred.xgb)),
-                     "n" = nrow(df),  
-                     "p"= length(colnames(df)[!((colnames(df) %in% c(colnames(df)[1:13])))]),  
-                     "Total de paises" = length(unique(df$iso)),
-                     "d optimo" = d_opt,
-                     "variables elastic" = length(as.vector(unname(coefficients(elastic.fit))))-sum(as.vector(unname(coefficients(elastic.fit))) == 0)
-                      
-                     
-                     
-  )
+  p = ncol(as.matrix(as.matrix(data$data_train[,-c(1:13)])))
+  ntest = nrow(as.matrix(ytest))
+  ntrain = nrow(as.matrix(ytrain))
+  Meantest = data.frame(matrix(nrow= ntest,ncol=p))
+  for (i in 1:ntest){
+  Meantest[i,] <- (data$data_test[i,-c(1:13)] + t(Sumtrain))/(ntrain+1)
+  }
+  Xtest<-as.matrix(data$data_test[,-c(1:13)]) - Meantest
    
-  return(results)
   
-}
-
-
-########################################################
-#train y test con una obs
-#target = "mpi_Other"
-df1 = datas[[1]]
-df2 = datas[[2]]
-df_unaobs = df1[!(duplicated(df1$country)|duplicated(df1$country, fromLast=TRUE)),]
-#df = df2
-
-
-main_function_unaobs = function(df, target){
-  results = data.frame()
-  nfolds <- 5
-  
-  
-  # Train and test datasets
-  #data <- random.split(df, 0.8)
-  ytrain <- df[, target]; 
-  Xtrain <- df[,(colnames(df) %in% colnames(df_unaobs))] 
-  Xtrain <- Xtrain[,-c(1:13)] 
-  ytest <- df_unaobs[, target]; Xtest <- df_unaobs[,-c(1:13)]
-  #ytest <- (ytest - mean(ytest))/sd(ytest)
-  # Create data frame for prediction
+  # Create data frame for training
   data <- as.data.frame(cbind(ytrain, Xtrain))
   
   # Methods for estimation
@@ -224,13 +167,13 @@ main_function_unaobs = function(df, target){
     "d optimo" = d_opt,
     "variables elastic" = length(as.vector(unname(coefficients(elastic.fit))))-sum(as.vector(unname(coefficients(elastic.fit))) == 0)
     
-    
-    
   )
   
   return(results)
   
 }
+
+
 
 
 
@@ -307,7 +250,7 @@ resultados = function(){
     ytest_pred.lasso <- glmnet::predict.glmnet(lasso.fit, as.matrix(newdata))
     
     
-   
+    
     
     # XGBoost model
     # Predict over Xtest
@@ -398,18 +341,18 @@ resultadosviejos = function(nom,num){
     np_PLS <- np::npreg(bw)
     # Predict over Xtest
     ytest_pred.np = predict(np_PLS, newdata=newdata, type="response")
-     
+    
     
     
     fila1 = data.frame("nombre del df" = paste("plsdata",i), 
-                      "n" = nrow(df), #Total de observaciones
+                       "n" = nrow(df), #Total de observaciones
                        "p"= length(colnames(df)[!((colnames(df) %in% c("iso","country","region","year","MPI","H","A",colnames(df)[8:13])))]), #Total de predictores (WBI)
-    "Total de paises" = length(unique(df$iso)),
-    "MSE lm" = mean((ytest-ytest_pred.lm)^2),
-    "MSE lasso" = mean((ytest-ytest_pred.lasso)^2),
-    "MSE pls" = mean((ytest-ytest_pred.pls)^2),
-    "MSE np" = mean((ytest-ytest_pred.np)^2)
-    
+                       "Total de paises" = length(unique(df$iso)),
+                       "MSE lm" = mean((ytest-ytest_pred.lm)^2),
+                       "MSE lasso" = mean((ytest-ytest_pred.lasso)^2),
+                       "MSE pls" = mean((ytest-ytest_pred.pls)^2),
+                       "MSE np" = mean((ytest-ytest_pred.np)^2)
+                       
     )
     tabla = rbind(tabla,fila1)
   }
@@ -428,4 +371,4 @@ resultadosviejos = function(nom,num){
 #res5 = resultados(plsdata,15)
 
 
- 
+

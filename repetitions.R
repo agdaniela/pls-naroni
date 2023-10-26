@@ -1,13 +1,18 @@
-source("resultados.R")
+source("main_function_se.R")
+source("main_function_unaobs.R")
+source("main_function_dum.R")
 
 
-#holis 
+ 
 #Repeticiones
 #df = datas[[1]]
 
 #funcion de prueba
 
-repetitions = function(df, target, nreps){
+funciones = list(main_function = main_function, main_function_unaobs=main_function_unaobs, main_function_dum = main_function_dum, main_function_unaobs_dum = main_function_unaobs_dum )
+
+
+repetitions = function(df, target, nreps, fun){
   results = list()
   nreps = nreps
   
@@ -15,7 +20,7 @@ repetitions = function(df, target, nreps){
   for (rep in 1:nreps) {
     print(paste("rep = ",rep)) #OJO QUE CAMBIE LA MAIN PARA HACER TEST EN UNA
     
-    main <- tryCatch(main_function_unaobs(df,target) , error= function(e) {return(list())}  )
+    main <- tryCatch(funciones[[fun]](df,target) , error= function(e) {return(list())}  )
     if (length(main) != 0) {
       print("ok con la rep")
       
@@ -72,16 +77,18 @@ repetitions = function(df, target, nreps){
 }  
 
  
-for (i in 6:6){
+for (i in 3:8){
   print(paste("df = ", i))
   
-  results = repetitions(datas[[i]], "mpi_Other", 50)
+  results = repetitions(datas[[i]], "mpi_Other", 10, "main_function_dum")
   
-  name_file = paste0("results_se_df",i, ".Rdata")
+  name_file = paste0("results_se_dum",i, ".Rdata")
   
   saveRDS(results, file = name_file)
   
 }
+
+
 
 # Para dejar en test lo de una obs
 

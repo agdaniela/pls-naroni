@@ -1,5 +1,5 @@
 ############################################################################################
-source("analisis variables.R")
+source("dataframes_analisis_variables.R")
 
 dataprep = function(file){
   df = read.delim(file, header = TRUE, sep = " ", dec = ".")
@@ -7,7 +7,7 @@ dataprep = function(file){
   df$country = as.factor(df$country)
   df$year <- as.numeric(df$year)
   df = df[,-7]
-  regs = read.csv("regions.csv")
+  regs = read.csv("dataframes_regions.csv")
   regions = regs[(regs$Country.Code %in% paste((df$iso))), c(1,2)] 
   regions = cbind(regions, aggregate(year ~ iso, data = df, FUN = length)[,2])
   regions = regions[rep(1:nrow(regions), regions$`aggregate(year ~ iso, data = df, FUN = length)[, 2]`),]

@@ -2,7 +2,7 @@
 ####################################################################################################
 
 categoriavar = function(df){
-  vars = read.csv("variables.csv")
+  vars = read.csv("dataframes_variables.csv")
   vars = vars[!duplicated(vars$variable),] #saco dupes
   vars = data.frame(lapply(vars, function(x) {gsub(",", ".", x)})) #saco comas de mas
   vars = data.frame(lapply(vars, function(x) {gsub(":", ".", x)})) #saco : de mas
