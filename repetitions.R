@@ -89,21 +89,6 @@ for (i in 8:8){
 
 
 
-# Para dejar en test lo de una obs
-
-for (i in 2:2){
-  print(paste("df = ", i))
-  
-  results = repetitions(datas[[i]], "mpi_Other", 50)
-  
-  name_file = paste0("results_se_df",i, ".Rdata")
-  
-  saveRDS(results, file = name_file)
-  
-}
-
-
-
 
 
 
