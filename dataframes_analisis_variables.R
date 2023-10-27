@@ -53,24 +53,51 @@ categoriavar = function(df){
 
 
 ####################################################################################################
+# dummiesregion = function(df){
+#   for (i in unique(df$region_Other)){
+#     df[[paste(i, "Other", sep = "_")]] = NA
+#   }
+#   
+#   for (i in colnames(df)[1486:1491]) {
+#     for (j in 1:nrow(df)){
+#       if (paste(df$region_Other[j], "Other", sep = "_") == i){
+#         df[[i]][j] = 1
+#       }else{
+#         df[[i]][j] = 0
+#       }
+#     }
+#   }
+#   df <- df[, c(1:7,1486:1491,8:1485)]
+#   return(df)
+# }
+
 dummiesregion = function(df){
-  for (i in unique(df$region_Other)){
-    df[[paste(i, "Other", sep = "_")]] = NA
-  }
   
-  for (i in colnames(df)[1486:1491]) {
-    for (j in 1:nrow(df)){
-      if (paste(df$region_Other[j], "Other", sep = "_") == i){
-        df[[i]][j] = 1
-      }else{
-        df[[i]][j] = 0
-      }
-    }
-  }
-  df <- df[, c(1:7,1486:1491,8:1485)]
+  
+  df$region_Other = as.factor(df$region_Other) 
+  region_dummies = model.matrix( ~ df$region_Other )
+  region_dummies = region_dummies[,-1]
+  df = data.frame(df, region_dummies)
+  
+  df <- df[, c(1:7,1486:1490,8:1485)]
   return(df)
 }
 
+# year 
+dummiesyear = function(df){
+  df$year_Other = as.factor(df$year_Other) 
+  year_dummies = model.matrix( ~ df$year_Other )
+  year_dummies = year_dummies[,-1]
+  
+  df = data.frame(df, year_dummies)
+  df = df[, c(1:12, 1491:1511,13:1490)]
+  return(df)
+}
+
+
+
+
+ 
 #plsdata=dummiesregion(plsdata)
 
 #dummies por region

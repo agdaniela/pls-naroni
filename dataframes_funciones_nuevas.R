@@ -15,6 +15,7 @@ dataprep = function(file){
   df = df[, c("iso", "country", "region", colnames(df)[3:1484])]
   df = categoriavar(df)
   df = dummiesregion(df)
+  df = dummiesyear(df)
   return(df)
 }
 
