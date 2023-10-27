@@ -17,7 +17,7 @@ library(caret)
 
 #########################################################
 #df = datas[[8]]
-#target = "mpi_Other"
+target = "mpi_Other"
 
 main_function_beta = function(df, target){
   results = data.frame()
@@ -26,8 +26,17 @@ main_function_beta = function(df, target){
   
   # Train and test datasets
   data <- random.split(df, 0.8)
-  ytrain <- data$data_train[, target]; Xtrain <- data$data_train[,-c(1:13)] #scale
-  ytest <- data$data_test[, target]; Xtest <- data$data_test[,-c(1:13)]
+  ytrain <- data$data_train[, target]
+  Xtrain <- data$data_train[,-c(1:33)]
+  Ttrain = data$data_train[, c(13:33)]
+  Rtrain = data$data_train[, c(8:12)]
+  
+  ytest <- data$data_test[, target]
+  Xtest <- data$data_test[,-c(1:33)]
+  Ttest = data$data_test[, c(13:33)]
+  Rtest = data$data_test[, c(8:12)]
+  
+  
    # Create data frame for prediction
   data <- as.data.frame(cbind(ytrain, Xtrain))
   
@@ -49,15 +58,17 @@ main_function_beta = function(df, target){
   ytest_pred.np_d1 = predict(np_PLS_d1, newdata=newdata, type="response")
   
   #Beta-regression d=1
-  formu = as.formula(paste("ytrain", paste(names(data_dopt)[-1], collapse=" + "), sep=" ~ ")) 
-  beta.fit = betareg::betareg(ytrain ~ V2, data = data)
+  data_beta = data.frame(data, Ttrain, Rtrain)
+  formu = as.formula(paste("ytrain", paste(names(data_beta)[-1], collapse=" + "), sep=" ~ ")) 
+  beta.fit = betareg::betareg(formu , data = data_beta)
   # Predict over Xtest
-  ytest_pred.beta = predict(beta.fit, newdata)
+  newdata_beta = data.frame(newdata,Ttest,Rtest)
+  ytest_pred.beta_d1 = predict(beta.fit, newdata_beta)
   
   
   #PLS model, optimal d
   # Hyperparameter selection 
-  pls.directions = 30
+  pls.directions = 4
   hyperparam <- kfoldCV.selection2(Xtrain, ytrain, nfolds, pls.directions)
   d_opt = hyperparam$d.min
   pls.projections_dopt <- chemometrics::pls1_nipals(Xtrain, ytrain, a = d_opt, scale = FALSE)
@@ -76,6 +87,16 @@ main_function_beta = function(df, target){
   # Predict over Xtest
   ytest_pred.np_opt = predict(np_PLS_dopt, newdata=newdata_dopt, type="response")
   
+  #Beta-regression d optimo
+  data_beta_opt = data.frame(data_dopt, Ttrain, Rtrain)
+  formu = as.formula(paste("ytrain", paste(names(data_beta_opt)[-1], collapse=" + "), sep=" ~ ")) 
+  beta.fit = betareg::betareg(formu , data = data_beta_opt)
+  # Predict over Xtest
+  newdata_beta = data.frame(newdata_dopt,Ttest,Rtest)
+  ytest_pred.beta_opt = predict(beta.fit, newdata_beta)
+  
+  #mean((ytest-ytest_pred.beta_opt)^2)
+  
   
   # LASSO model
   #newdata <- data.frame(Xtest)
@@ -84,14 +105,15 @@ main_function_beta = function(df, target){
   #ytest_pred.lasso <- glmnet::predict.glmnet(lasso.fit, as.matrix(newdata))
   
   #Elastic net
-  newdata <- data.frame(Xtest)
-  elastic.fit <- glmnet::glmnet(x = Xtrain, y = ytrain, family = "gaussian", alpha = hyperparam$best.alpha, lambda = hyperparam$best.lambda)
+  data_ela = data.frame(Xtrain,Ttrain,Rtrain)
+  newdata <- data.frame(Xtest,Ttest,Rtest)
+  elastic.fit <- glmnet::glmnet(x = data_ela, y = ytrain, family = "gaussian", alpha = hyperparam$best.alpha, lambda = hyperparam$best.lambda)
   # Predict over Xtest
   ytest_pred.elastic <- glmnet::predict.glmnet(elastic.fit, as.matrix(newdata))
   
   # XGBoost model
   # Predict over Xtest
-  ytest_pred.xgb <- predict(hyperparam$xgb.model, Xtest)
+  ytest_pred.xgb <- predict(hyperparam$xgb.model, newdata)
   
   
   
@@ -105,13 +127,16 @@ main_function_beta = function(df, target){
     "MSE pls_np_d1" = mean((ytest-ytest_pred.np_d1)^2),
     "MSE pls_np_opt" = mean((ytest-ytest_pred.np_opt)^2),
     "MSE xgBoost" = mean((ytest-ytest_pred.xgb)^2),
+    "MSE beta_d1" = mean((ytest-ytest_pred.beta_d1)^2),
+    "MSE beta_dopt" = mean((ytest-ytest_pred.beta_opt)^2),
     "MAE elastic" = mean(abs(ytest-ytest_pred.elastic)),
     "MAE pls_d1" = mean(abs(ytest-ytest_pred.pls_d1)),
     "MAE pls_opt" = mean(abs(ytest-ytest_pred.pls_dopt)),
     "MAE pls_np_d1" = mean(abs(ytest-ytest_pred.np_d1)),
     "MAE pls_np_opt" = mean(abs(ytest-ytest_pred.np_opt)),
     "MAE xgBoost" = mean(abs(ytest-ytest_pred.xgb)),
-    "MAE beta" = mean(abs(ytest-ytest_pred.beta)),
+    "MAE beta_d1" = mean(abs(ytest-ytest_pred.beta_d1)),
+    "MAE beta_dopt" = mean(abs(ytest-ytest_pred.beta_opt)),
     "n" = nrow(df),  
     "p"= length(colnames(df)[!((colnames(df) %in% c(colnames(df)[1:13])))]),  
     "Total de paises" = length(unique(df$iso)),
