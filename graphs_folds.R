@@ -455,19 +455,15 @@ year_data_bw = function(datos){
 df = datas[[2]]
 folds = graph_data(df, predichos_0)
 
-
 # Densidades y vs yhat  
 data_plot_bw = all_data_bw(folds)
  
-
 ggplot(data_plot_bw, aes(x=value, color = variable)) + 
   geom_density(lwd = 1, linetype = 1) 
 
 # Densidades por region  
  
 data_plot_bwr = region_data_bw(folds)
-
- 
 
 ggplot(data_plot_bwr, aes(x=value, color = variable)) + 
   geom_density(lwd = 1, linetype = 1) +
