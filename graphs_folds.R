@@ -292,13 +292,6 @@ for(i in 1:5){
 #saveRDS(predichos,"graphs_predichos_0.Rdata") #4cols + tc
 # saveRDS(predichos,"graphs_predichos_1.Rdata")#tc
 # saveRDS(predichos,"graphs_predichos_2.Rdata") #tc y td
-# 
-# View(predichos[["yhats_1"]]$predicted)
-# View(predichos[["yhats_2"]]$predicted)
-# View(predichos[["yhats_3"]]$predicted)
-# View(predichos[["yhats_4"]]$predicted)
-# View(predichos[["yhats_5"]]$predicted)
-
 
 # View(predichos_0[["yhats_1"]]$predicted)
 # View(predichos_0[["yhats_2"]]$predicted)
@@ -313,16 +306,35 @@ for(i in 1:5){
  
 library(dplyr)
 library(ggplot2)
-library(reshape2)
+ 
 theme_set(
   theme_light() +
       theme(panel.grid.major.x = element_blank() ,
         panel.grid.major.y = element_line( size=.1, color="grey" ),
         panel.border = element_blank(),
         axis.text = element_text(size = 12),
-        legend.text = element_text(size = 12),
-        legend.position = "top")
+        legend.text = element_text(size = 12), #legend.position = "top"
+        )
 )
+
+best_methods = function(lista){
+  results = data.frame()
+  for (i in 1:5) {
+    res = lista[[i]]$results
+    results = rbind(results, res)
+  }
+  average = sapply(results, function(x) mean(x))
+  average = average[-c(21:23)]
+  best_mse = names(average[which.min(average[c(1:10)])])
+  worst_mse = names(average[which.max(average[c(1:10)])])
+  best_dist = names(sa[c(11:20)])[which.min(sa[c(11:20)])]
+  worst_dist = names(sa[c(11:20)])[which.max(sa[c(11:20)])]
+  print(paste("best mse = ",best_mse))
+  print(paste("worst mse = ",worst_mse))
+  print(paste("best dist = ",best_dist))
+  print(paste("worst dist = ",worst_dist))
+  return(average)
+}
 
 
 graph_data = function(df, lista){
@@ -343,109 +355,52 @@ graph_data = function(df, lista){
   return(data_graph)
 }
 
-# todos los metodos
-all_data = function(df){
-  data_plot = df[,c(1,35:ncol(df))]
-  data_plot = melt(data_plot, id.vars = "iso_Other")
-  return(data_plot)
-}
 
-region_data = function(df){
-  data_plot = df[,c(3,34:ncol(df))]
-  data_plot$year_trend = NULL #asi puedo borrar las columnas que quiera
+
+plot_data = function(df, division){
+  
+  data_plot = df
+  
+  # choose methods by comment
+  data_plot$yhat.elastic_td = NULL # 
+  #data_plot$yhat.beta_td_de = NULL # 
+  data_plot$yhat.beta_td_ela_de = NULL # 
+  data_plot$yhat.beta_td_ela_sr = NULL  
+  
+  #data_plot$yhat.elastic_tc = NULL  
+  data_plot$yhat.beta_tc_de = NULL  
+  data_plot$yhat.beta_tc_ela_de = NULL  
+  data_plot$yhat.beta_tc_ela_sr = NULL  
+  #data_plot$yhat.beta_tc_tree_de = NULL  
+  data_plot$yhat.beta_tc_tree_ela_sr = NULL
+  
+  if (division == "region"){
+    data_plot = data_plot[,c(3,34:ncol(data_plot))]
+    data_plot$year_trend = NULL  
+    data_plot = reshape2::melt(data_plot,id.vars = "region_Other")
     
-  data_plot = melt(data_plot,id.vars = "region_Other")
+  }
+  
+  else if (division == "period"){
+    data_plot = data_plot[,c(4,34:ncol(data_plot))]
+    data_plot$year_Other = as.numeric(levels(data_plot$year_Other))[data_plot$year_Other]
+    period <- seq(min(data_plot$year_Other), max(data_plot$year_Other), by = 5)
+    data_plot$period <- findInterval(data_plot$year_Other,  period)
+    
+    data_plot$year_Other = NULL
+    data_plot$year_trend = NULL
+    
+    data_plot = reshape2::melt(data_plot, id.vars = "period")
+    
+  } else {
+    data_plot = data_plot[,c(1,35:ncol(data_plot))]
+    data_plot = reshape2::melt(data_plot, id.vars = "iso_Other")
+    
+  }
+  
   
   return(data_plot)
 }
-
-year_data = function(df){
-  
-  data_plot_y = df[,c(4,34:ncol(df))]
-  data_plot_y$year_Other = as.numeric(levels(data_plot_y$year_Other))[data_plot_y$year_Other]
-  period <- seq(min(data_plot_y$year_Other), max(data_plot_y$year_Other), by = 5)
-  data_plot_y$period <- findInterval(data_plot_y$year_Other,  period)
-  
-  data_plot_y$year_Other = NULL
-  data_plot_y$year_trend = NULL
-  
-  data_plot_y = melt(data_plot_y, id.vars = "period")
-  
-  return(data_plot_y)
-}
-
-# seleccionando metodos
-
-all_data_bw = function(df){
-  data_plot = df[,c(1,35:ncol(df))]
-  
-  data_plot$yhat.elastic_td = NULL # 
-  #data_plot$yhat.beta_td_de = NULL # 
-  data_plot$yhat.beta_td_ela_de = NULL # 
-  data_plot$yhat.beta_td_ela_sr = NULL  
-  
-  #data_plot$yhat.elastic_tc = NULL  
-  data_plot$yhat.beta_tc_de = NULL  
-  data_plot$yhat.beta_tc_ela_de = NULL  
-  data_plot$yhat.beta_tc_ela_sr = NULL  
-  #data_plot$yhat.beta_tc_tree_de = NULL  
-  data_plot$yhat.beta_tc_tree_ela_sr = NULL
-   
-   data_plot = melt(data_plot, id.vars = "iso_Other")
-   
-   
-  return(data_plot)
-}
-
-
-region_data_bw = function(df){
-  data_plot = df[,c(3,34:ncol(df))]
-  data_plot$year_trend = NULL  
-  
-  data_plot$yhat.elastic_td = NULL # 
-  #data_plot$yhat.beta_td_de = NULL # 
-  data_plot$yhat.beta_td_ela_de = NULL # 
-  data_plot$yhat.beta_td_ela_sr = NULL  
-  
-  #data_plot$yhat.elastic_tc = NULL  
-  data_plot$yhat.beta_tc_de = NULL  
-  data_plot$yhat.beta_tc_ela_de = NULL  
-  data_plot$yhat.beta_tc_ela_sr = NULL  
-  #data_plot$yhat.beta_tc_tree_de = NULL  
-  data_plot$yhat.beta_tc_tree_ela_sr = NULL
-  
-  data_plot = melt(data_plot,id.vars = "region_Other")
-  
-  return(data_plot)
-}
-
-year_data_bw = function(datos){
-  
-  data_plot_y = datos[,c(4,34:ncol(datos))]
-  data_plot_y$year_Other = as.numeric(levels(data_plot_y$year_Other))[data_plot_y$year_Other]
-  period <- seq(min(data_plot_y$year_Other), max(data_plot_y$year_Other), by = 5)
-  data_plot_y$period <- findInterval(data_plot_y$year_Other,  period)
-  
-  data_plot_y$year_Other = NULL
-  data_plot_y$year_trend = NULL
-  
-  data_plot_y$yhat.elastic_td = NULL # 
-  #data_plot_y$yhat.beta_td_de = NULL # 
-  data_plot_y$yhat.beta_td_ela_de = NULL # 
-  data_plot_y$yhat.beta_td_ela_sr = NULL  
-  
-  data_plot_y$yhat.elastic_tc = NULL  
-  data_plot_y$yhat.beta_tc_de = NULL  
-  data_plot_y$yhat.beta_tc_ela_de = NULL  
-  data_plot_y$yhat.beta_tc_ela_sr = NULL  
-  #data_plot_y$yhat.beta_tc_tree_de = NULL  
-  data_plot_y$yhat.beta_tc_tree_ela_sr = NULL
-  
-  data_plot_y = melt(data_plot_y, id.vars = "period")
-  
-  return(data_plot_y)
-}
-
 
 
 ##################################################################
@@ -456,14 +411,14 @@ df = datas[[2]]
 folds = graph_data(df, predichos_0)
 
 # Densidades y vs yhat  
-data_plot_bw = all_data_bw(folds)
- 
+data_plot_bw = plot_data(folds, "none")
+
 ggplot(data_plot_bw, aes(x=value, color = variable)) + 
   geom_density(lwd = 1, linetype = 1) 
-
+ 
 # Densidades por region  
  
-data_plot_bwr = region_data_bw(folds)
+data_plot_bwr = plot_data(folds,"region")
 
 ggplot(data_plot_bwr, aes(x=value, color = variable)) + 
   geom_density(lwd = 1, linetype = 1) +
@@ -471,29 +426,13 @@ ggplot(data_plot_bwr, aes(x=value, color = variable)) +
 
 # Densidades por periodos de tiempo, de 5 en 5
  
-data_plot_bwy = year_data_bw(folds)
+data_plot_bwy = plot_data(folds, "period")
 
 ggplot(data_plot_bwy, aes(x=value, color = variable)) + 
   geom_density(lwd = 1, linetype = 1) +
   facet_wrap(~period, scales = "free") 
 
-
-
-# Densidades por region y por periodo
-# data_plot_yr = region_year_data(fold_1)
-# 
-# 
-# ggplot(data_plot_yr, aes(x=value, color = variable)) + 
-#   geom_density(lwd = 1, linetype = 1) +
-#   facet_wrap( period ~  region_Other , scales  = "free") 
-#   
-#   
-
  
-
-
-
-
 
 
 
