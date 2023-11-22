@@ -22,13 +22,7 @@ df = datas[[2]]; target = "mpi_Other"
  
 main_function_tcyd = function(df, target, d, link_phi, link_mu, distancia){
   
-  # if(missing(link_phi)) {
-  #   link_phi = "log"
-  # }  
-  # 
-  # if(missing(link_mu)) {
-  #   link_mu = "logit"
-  # }  
+  #  
   # 
   results = data.frame()
   nfolds <- 5
@@ -229,8 +223,40 @@ main_function_tcyd = function(df, target, d, link_phi, link_mu, distancia){
  
   #########################################################################
  
- #  
- #  # lo de rodri
+  # Beta boost
+  # tiempo discreto
+  # Xtrain_td ; Xtest_td
+  # data_ela_td = data.frame(Xtrain_td,Ttrain, Rtrain)
+  
+  # Fit
+  formu_boost_td = as.formula(paste("ytrain", paste(names(data_ela_td )[-1], collapse=" + "), sep=" ~ ")) 
+  betaboost.fit_td <- mboost::glmboost(formu_boost_td, data = data_ela_td, family = betaboost::BetaReg())
+  
+  # con otros parametros
+  #betaboost.fit_td <- mboost::glmboost(formu_boost_td, data = data_ela_td, family = betaboost::BetaReg(), control = mboost::boost_control(mstop = 120, nu = 0.01))
+  
+  # Predict over Xtest
+  # newdata_ela_td <- data.frame(Xtest_td,Ttest,Rtest)
+  ytest_pred.betaboost_td = predict(betaboost.fit_td, newdata = newdata_ela_td, type = "response")
+  dist_betaboost_td  = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.betaboost_td)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
+  
+  #tiempo continuo 
+  
+  # fit
+  #data_ela_tc = data.frame(Xtrain, Rtrain)
+  formu_boost_tc = as.formula(paste("ytrain", paste(names(data_ela_tc)[-1], collapse=" + "), sep=" ~ ")) 
+  betaboost.fit_tc <- mboost::glmboost(formu_boost_tc, data = data_ela_tc, family = betaboost::BetaReg())
+  # con otros parametros
+  #betaboost.fit_tc <- mboost::glmboost(formu_boost_tc, data = data_ela_tc, family = betaboost::BetaReg(), control = mboost::boost_control(mstop = 120, nu = 0.01))
+  
+  # Predict over Xtest
+  #newdata_ela_tc <- data.frame(Xtest, Rtest)
+  ytest_pred.betaboost_tc = predict(betaboost.fit_tc, newdata = newdata_ela_tc, type = "response")
+  dist_betaboost_tc  = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.betaboost_tc)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
+  
+  
+  ########################################################################3
+  #  # lo de rodri
  #  ycat<-ifelse(y>=0.2,1,0)
  # 
  #  fitclass<-cv.glmnet(as.matrix(X), ycat, family = "binomial", type.measure = "class")
@@ -267,6 +293,9 @@ main_function_tcyd = function(df, target, d, link_phi, link_mu, distancia){
     "MSE beta_tc_tree_de" = mean((ytest-ytest_pred.beta_tc_tree_de)^2),
     "MSE beta_tc_tree_ela_sr" = mean((ytest-ytest_pred.beta_tc_tree_sr)^2),
     
+    "MSE betaboost_td" = mean((ytest-ytest_pred.betaboost_td)^2),
+    "MSE betaboost_tc" = mean((ytest-ytest_pred.betaboost_tc)^2),
+    
     # distancias
     "dist elastic_tc" = dist_elastic_tc,
     "dist elastic_td" = dist_elastic_td,
@@ -283,6 +312,10 @@ main_function_tcyd = function(df, target, d, link_phi, link_mu, distancia){
     "dist beta_tc_tree_de" = dist_beta_tc_tree_de,
     "dist beta_tc_tree_ela_sr" = dist_beta_tc_tree_ela_sr,
     
+    "dist betaboost_td" = dist_betaboost_td,
+    "dist betaboost_tc" = dist_betaboost_tc,
+    
+    
     "n" = nrow(df),  
     "p"= length(colnames(df)[!((colnames(df) %in% c(colnames(df)[1:33])))]),
     "Total de paises" = length(unique(df$iso))
@@ -296,7 +329,7 @@ main_function_tcyd = function(df, target, d, link_phi, link_mu, distancia){
 
 main_function_tcyd(df,"mpi_Other", d=1, link_phi = "log",link_mu = "logit", distancia = "hellinger")
 
-parts_10 = repetitions2(df,"mpi_Other",d=2,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=10)
+parts_10 = repetitions(df,"mpi_Other",d=2,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=10)
 
 parts_10_d4 = repetitions2(df,"mpi_Other",d=4,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=10)
 

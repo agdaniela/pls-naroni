@@ -201,6 +201,38 @@ main_function_pred = function(Xtrain, Xtest , target, d, link_phi, link_mu, dist
   # distance
   dist_beta_tc_tree_ela_sr = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.beta_tc_tree_sr)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
   
+  ##################################################################################
+  # Beta boost
+  # tiempo discreto
+  # Xtrain_td ; Xtest_td
+  # data_ela_td = data.frame(Xtrain_td,Ttrain, Rtrain)
+  
+  # Fit
+  formu_boost_td = as.formula(paste("ytrain", paste(names(data_ela_td )[-1], collapse=" + "), sep=" ~ ")) 
+  betaboost.fit_td <- mboost::glmboost(formu_boost_td, data = data_ela_td, family = betaboost::BetaReg())
+  
+  # con otros parametros
+  #betaboost.fit_td <- mboost::glmboost(formu_boost_td, data = data_ela_td, family = betaboost::BetaReg(), control = mboost::boost_control(mstop = 120, nu = 0.01))
+  
+  # Predict over Xtest
+  # newdata_ela_td <- data.frame(Xtest_td,Ttest,Rtest)
+  ytest_pred.betaboost_td = predict(betaboost.fit_td, newdata = newdata_ela_td, type = "response")
+  dist_betaboost_td  = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.betaboost_td)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
+  
+  #tiempo continuo 
+  
+  # fit
+  #data_ela_tc = data.frame(Xtrain, Rtrain)
+  formu_boost_tc = as.formula(paste("ytrain", paste(names(data_ela_tc)[-1], collapse=" + "), sep=" ~ ")) 
+  betaboost.fit_tc <- mboost::glmboost(formu_boost_tc, data = data_ela_tc, family = betaboost::BetaReg())
+  # con otros parametros
+  #betaboost.fit_tc <- mboost::glmboost(formu_boost_tc, data = data_ela_tc, family = betaboost::BetaReg(), control = mboost::boost_control(mstop = 120, nu = 0.01))
+  
+  # Predict over Xtest
+  #newdata_ela_tc <- data.frame(Xtest, Rtest)
+  ytest_pred.betaboost_tc = predict(betaboost.fit_tc, newdata = newdata_ela_tc, type = "response")
+  dist_betaboost_tc  = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.betaboost_tc)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
+  
   
   
   # Saving results
@@ -221,6 +253,8 @@ main_function_pred = function(Xtrain, Xtest , target, d, link_phi, link_mu, dist
     "MSE beta_tc_tree_de" = mean((ytest-ytest_pred.beta_tc_tree_de)^2),
     "MSE beta_tc_tree_ela_sr" = mean((ytest-ytest_pred.beta_tc_tree_sr)^2),
     
+    "MSE betaboost_td" = mean((ytest-ytest_pred.betaboost_td)^2),
+    "MSE betaboost_tc" = mean((ytest-ytest_pred.betaboost_tc)^2),
     
     # distancias
     "dist elastic_tc" = dist_elastic_tc,
@@ -237,6 +271,10 @@ main_function_pred = function(Xtrain, Xtest , target, d, link_phi, link_mu, dist
     
     "dist beta_tc_tree_de" = dist_beta_tc_tree_de,
     "dist beta_tc_tree_ela_sr" = dist_beta_tc_tree_ela_sr,
+    
+    "dist betaboost_td" = dist_betaboost_td,
+    "dist betaboost_tc" = dist_betaboost_tc,
+    
     
     "n" = nrow(df_fold),  
     "p"= length(colnames(df_fold)[!((colnames(df_fold) %in% c(colnames(df_fold)[1:33])))]),
@@ -263,7 +301,10 @@ main_function_pred = function(Xtrain, Xtest , target, d, link_phi, link_mu, dist
     "yhat beta_tc_ela_sr" = ytest_pred.beta_tc_ela_sr  ,
     
     "yhat beta_tc_tree_de" = ytest_pred.beta_tc_tree_de  ,
-    "yhat beta_tc_tree_ela_sr" = ytest_pred.beta_tc_tree_sr 
+    "yhat beta_tc_tree_ela_sr" = ytest_pred.beta_tc_tree_sr, 
+    
+    "yhat betaboost_td" =  ytest_pred.betaboost_td ,
+    "yhat betaboost_tc" =  ytest-ytest_pred.betaboost_tc 
     
   )
   
@@ -292,6 +333,7 @@ for(i in 1:5){
 #saveRDS(predichos,"graphs_predichos_0.Rdata") #4cols + tc
 # saveRDS(predichos,"graphs_predichos_1.Rdata")#tc
 # saveRDS(predichos,"graphs_predichos_2.Rdata") #tc y td
+# saveRDS(predichos,"graphs_predichos_3.Rdata") #boost
 
 # View(predichos_0[["yhats_1"]]$predicted)
 # View(predichos_0[["yhats_2"]]$predicted)
@@ -327,8 +369,8 @@ best_methods = function(lista){
   average = average[-c(21:23)]
   best_mse = names(average[which.min(average[c(1:10)])])
   worst_mse = names(average[which.max(average[c(1:10)])])
-  best_dist = names(sa[c(11:20)])[which.min(sa[c(11:20)])]
-  worst_dist = names(sa[c(11:20)])[which.max(sa[c(11:20)])]
+  best_dist = names(average[c(11:20)])[which.min(average[c(11:20)])]
+  worst_dist = names(average[c(11:20)])[which.max(average[c(11:20)])]
   print(paste("best mse = ",best_mse))
   print(paste("worst mse = ",worst_mse))
   print(paste("best dist = ",best_dist))
@@ -336,6 +378,7 @@ best_methods = function(lista){
   return(average)
 }
 
+best_methods(predichos)
 
 graph_data = function(df, lista){
   predicted = data.frame()
@@ -363,16 +406,20 @@ plot_data = function(df, division){
   
   # choose methods by comment
   data_plot$yhat.elastic_td = NULL # 
-  #data_plot$yhat.beta_td_de = NULL # 
+  data_plot$yhat.beta_td_de = NULL # 
   data_plot$yhat.beta_td_ela_de = NULL # 
   data_plot$yhat.beta_td_ela_sr = NULL  
   
+  #data_plot$yhat.betaboost_td = NULL # 
+  
   #data_plot$yhat.elastic_tc = NULL  
-  data_plot$yhat.beta_tc_de = NULL  
+  #data_plot$yhat.beta_tc_de = NULL  
   data_plot$yhat.beta_tc_ela_de = NULL  
   data_plot$yhat.beta_tc_ela_sr = NULL  
-  #data_plot$yhat.beta_tc_tree_de = NULL  
+  data_plot$yhat.beta_tc_tree_de = NULL  
   data_plot$yhat.beta_tc_tree_ela_sr = NULL
+  data_plot$yhat.betaboost_tc = NULL  
+  
   
   if (division == "region"){
     data_plot = data_plot[,c(3,34:ncol(data_plot))]
@@ -408,27 +455,27 @@ plot_data = function(df, division){
 
 # Preparamos los datos
 df = datas[[2]]
-folds = graph_data(df, predichos_0)
+folds = graph_data(df, predichos)
 
 # Densidades y vs yhat  
-data_plot_bw = plot_data(folds, "none")
+data_plot_all = plot_data(folds, "none")
 
-ggplot(data_plot_bw, aes(x=value, color = variable)) + 
+ggplot(data_plot_all, aes(x=value, color = variable)) + 
   geom_density(lwd = 1, linetype = 1) 
  
 # Densidades por region  
  
-data_plot_bwr = plot_data(folds,"region")
+data_plot_reg = plot_data(folds,"region")
 
-ggplot(data_plot_bwr, aes(x=value, color = variable)) + 
+ggplot(data_plot_reg, aes(x=value, color = variable)) + 
   geom_density(lwd = 1, linetype = 1) +
   facet_wrap(~region_Other, scales = "free")
 
 # Densidades por periodos de tiempo, de 5 en 5
  
-data_plot_bwy = plot_data(folds, "period")
+data_plot_per = plot_data(folds, "period")
 
-ggplot(data_plot_bwy, aes(x=value, color = variable)) + 
+ggplot(data_plot_per, aes(x=value, color = variable)) + 
   geom_density(lwd = 1, linetype = 1) +
   facet_wrap(~period, scales = "free") 
 
