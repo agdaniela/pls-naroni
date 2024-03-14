@@ -31,18 +31,18 @@ kfoldCV.selection2 <- function(Xtrain, ytrain, nfolds, max.d) {
   
   #lasso.fit <- glmnet::cv.glmnet(Xtrain, ytrain, type.measure = "mse", nfolds = nfolds)
   #search the alpha
-  alpha <- seq(0.01, 0.99, 0.04)
-  best <- list(a=NULL, mse=NULL)
-  
-  for (i in 1:length(alpha)) 
-  {
-    cvg <- glmnet::cv.glmnet(x = Xtrain, y=ytrain, family = "gaussian", alpha = alpha[i])
-    best$a <- c(best$a, alpha[i])
-    best$mse <- c(best$mse, min(cvg$cvm))
-  }
-  
-  index <- which(best$mse==min(best$mse))
-  best.alpha <- best$a[index]
+  # alpha <- seq(0.01, 0.99, 0.04)
+  # best <- list(a=NULL, mse=NULL)
+  # 
+  # for (i in 1:length(alpha)) 
+  # {
+  #   cvg <- glmnet::cv.glmnet(x = Xtrain, y=ytrain, family = "gaussian", alpha = alpha[i])
+  #   best$a <- c(best$a, alpha[i])
+  #   best$mse <- c(best$mse, min(cvg$cvm))
+  # }
+  # 
+  # index <- which(best$mse==min(best$mse))
+  # best.alpha <- best$a[index]
   #best_mse <- best$mse[index]
   #cat("alpha:", best_alpha, " mse:", best_mse)
   
@@ -114,7 +114,7 @@ kfoldCV.xgboost <- function(Xtrain, ytrain, nfolds) {
                           subsample = 1,
                           min_child_weight = 1,
                           colsample_bytree = 0.6)
-  xgb.fit = train(ytrain~., data = cbind(ytrain,Xtrain), method = "xgbTree", trControl = train_control, tuneGrid = gbmGrid)
+  xgb.fit = train(ytrain~., data = cbind(ytrain,Xtrain), method = "xgbTree", trControl = train_control, tuneGrid = gbmGrid, verbosity = 0)
   
   
   return(list( xgb.model = xgb.fit))

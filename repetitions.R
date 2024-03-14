@@ -39,16 +39,18 @@ repetitions = function(df, target, d,link_phi,link_mu, distancia, nreps){
       results$MSE.elastic_td[rep] = main$MSE.elastic_td
       results$MSE.elastic_tc[rep] = main$MSE.elastic_tc
       
-      results$MSE.beta_td_de[rep] = main$MSE.beta_td_de
-      results$MSE.beta_tc_de[rep] = main$MSE.beta_tc_de
+      results$MSE.xgb_td[rep] = main$MSE.xgb_td
+      results$MSE.xgb_tc[rep] = main$MSE.xgb_tc
+      
+      results$MSE.beta_td_cr[rep] = main$MSE.beta_td_cr
+      results$MSE.beta_tc_cr[rep] = main$MSE.beta_tc_cr
   
-      results$MSE.beta_td_ela_de[rep] = main$MSE.beta_td_ela_de
       results$MSE.beta_td_ela_sr[rep] = main$MSE.beta_td_ela_sr
       
-      results$MSE.beta_tc_ela_de[rep] = main$MSE.beta_tc_ela_de
+    #  results$MSE.beta_tc_ela_cr[rep] = main$MSE.beta_tc_ela_cr
       results$MSE.beta_tc_ela_sr[rep] = main$MSE.beta_tc_ela_sr
       
-      results$MSE.beta_tc_tree_de[rep] = main$MSE.beta_tc_tree_de
+      results$MSE.beta_tc_tree_cr[rep] = main$MSE.beta_tc_tree_cr
       results$MSE.beta_tc_tree_ela_sr[rep] = main$MSE.beta_tc_tree_ela_sr
       
       results$MSE.betaboost_td[rep] = main$MSE.betaboost_td
@@ -58,16 +60,19 @@ repetitions = function(df, target, d,link_phi,link_mu, distancia, nreps){
       results$dist.elastic_td[rep] = main$dist.elastic_td
       results$dist.elastic_tc[rep] = main$dist.elastic_tc
       
-      results$dist.beta_td_de[rep] = main$dist.beta_td_de
-      results$dist.beta_tc_de[rep] = main$dist.beta_tc_de
+      results$dist.xgb_td[rep] = main$dist.xgb_td
+      results$dist.xgb_tc[rep] = main$dist.xgb_tc
       
-      results$dist.beta_td_ela_de[rep] = main$dist.beta_td_ela_de
+      results$dist.beta_td_cr[rep] = main$dist.beta_td_cr
+      results$dist.beta_tc_cr[rep] = main$dist.beta_tc_cr
+      
+     # results$dist.beta_td_ela_cr[rep] = main$dist.beta_td_ela_cr
       results$dist.beta_td_ela_sr[rep] = main$dist.beta_td_ela_sr
       
-      results$dist.beta_tc_ela_de[rep] = main$dist.beta_tc_ela_de
+      #results$dist.beta_tc_ela_cr[rep] = main$dist.beta_tc_ela_cr
       results$dist.beta_tc_ela_sr[rep] = main$dist.beta_tc_ela_sr
       
-      results$dist.beta_tc_tree_de[rep] = main$dist.beta_tc_tree_de
+      results$dist.beta_tc_tree_cr[rep] = main$dist.beta_tc_tree_cr
       results$dist.beta_tc_tree_ela_sr[rep] = main$dist.beta_tc_tree_ela_sr
       
       results$dist.betaboost_td[rep] = main$dist.betaboost_td
@@ -83,31 +88,31 @@ repetitions = function(df, target, d,link_phi,link_mu, distancia, nreps){
       results$MSE.elastic_td[rep] = NA
       results$MSE.elastic_tc[rep] = NA
 
-      results$MSE.beta_td_de[rep] = NA
-      results$MSE.beta_tc_de[rep] = NA
+      results$MSE.beta_td_cr[rep] = NA
+      results$MSE.beta_tc_cr[rep] = NA
 
-      results$MSE.beta_td_ela_de[rep] = NA
+      #results$MSE.beta_td_ela_cr[rep] = NA
       results$MSE.beta_td_ela_sr[rep] = NA
 
-      results$MSE.beta_tc_ela_de[rep] = NA
+      #results$MSE.beta_tc_ela_cr[rep] = NA
       results$MSE.beta_tc_ela_sr[rep] = NA
 
-      results$MSE.beta_tc_tree_de[rep] = NA
+      results$MSE.beta_tc_tree_cr[rep] = NA
       results$MSE.beta_tc_tree_ela_sr[rep] = NA
 
       results$dist.elastic_td[rep] = NA
       results$dist.elastic_tc[rep] = NA
 
-      results$dist.beta_td_de[rep] = NA
-      results$dist.beta_tc_de[rep] = NA
+      results$dist.beta_td_cr[rep] = NA
+      results$dist.beta_tc_cr[rep] = NA
 
-      results$dist.beta_td_ela_de[rep] = NA
+      #results$dist.beta_td_ela_cr[rep] = NA
       results$dist.beta_td_ela_sr[rep] = NA
 
-      results$dist.beta_tc_ela_de[rep] = NA
+      #results$dist.beta_tc_ela_cr[rep] = NA
       results$dist.beta_tc_ela_sr[rep] = NA
 
-      results$dist.beta_tc_tree_de[rep] = NA
+      results$dist.beta_tc_tree_cr[rep] = NA
       results$dist.beta_tc_tree_ela_sr[rep] = NA
 
 
