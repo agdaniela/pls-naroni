@@ -45,4 +45,51 @@
 # "dist beta_td_ela_cr" = dist_beta_td_ela_cr,
 #  "dist beta_tc_ela_cr" = dist_beta_tc_ela_cr,
 
-
+# results$MSE.pls_td[rep] = NA
+# results$MSE.pls_np_td[rep] = NA
+# results$MSE.beta_td_cr[rep] = NA
+# results$MSE.beta_td_tree_cr[rep] = NA
+# 
+# results$MSE.elastic_td[rep] = NA
+# results$MSE.beta_td_ela[rep] = NA
+# results$MSE.xgb_td[rep] = NA
+# results$MSE.betaboost_td[rep] = NA
+# results$MSE.beta_td_tree_ela[rep] = NA
+# 
+# results$MSE.pls_tc[rep] = NA
+# results$MSE.pls_np_tc[rep] = NA
+# results$MSE.beta_tc_cr[rep] = NA
+# results$MSE.beta_tc_tree_cr[rep] = NA
+# 
+# results$MSE.elastic_tc[rep] = NA
+# results$MSE.beta_tc_ela[rep] = NA
+# results$MSE.xgb_tc[rep] = NA
+# results$MSE.betaboost_tc[rep] = NA
+# results$MSE.beta_tc_tree_ela[rep] = NA
+# 
+# #distancias
+# results$dist.pls_td[rep] = NA
+# results$dist.pls_np_td[rep] = NA
+# results$dist.beta_td_cr[rep] = NA
+# results$dist.beta_td_tree_cr[rep] = NA
+# 
+# results$dist.elastic_td[rep] = NA
+# results$dist.beta_td_ela[rep] = NA
+# results$dist.xgb_td[rep] = NA
+# results$dist.betaboost_td[rep] = NA
+# results$dist.beta_td_tree_ela[rep] = NA
+# 
+# results$dist.pls_tc[rep] = NA
+# results$dist.pls_np_tc[rep] = NA
+# results$dist.beta_tc_cr[rep] = NA
+# results$dist.beta_tc_tree_cr[rep] = NA
+# 
+# results$dist.elastic_tc[rep] = NA
+# results$dist.beta_tc_ela[rep] = NA
+# results$dist.xgb_tc[rep] = NA
+# results$dist.betaboost_tc[rep] = NA
+# results$dist.beta_tc_tree_ela[rep] = NA
+# 
+# results$n[rep] = NA
+# results$p[rep] = NA
+# results$Total.de.paises[rep] = NA

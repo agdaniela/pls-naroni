@@ -22,7 +22,7 @@ df = datas[[2]]; target = "mpi_Other"
 # 1.1 PLS lineal
 # 1.2 PLS NP
 # 1.3 PLS beta regression
-# 
+# 1.4 Betatree 
 # 2. Predicción con variable / feature and model selection 
 # 2.1 Elastic Net
 # 2.2 Beta combinado con elastic net
@@ -102,9 +102,9 @@ main_function_tcyd = function(df, target, d , link_phi, link_mu, distancia){
   bw_td_d1 <- np::npregbw(formu_td_d1, data=data_td_d1) 
   np_PLS_td_d1 <- np::npreg(bw_td_d1)
   # Predict over Xtest
-  ytest_pred.np_td_d1 = predict(np_PLS_td_d1, newdata=newdata_td_d1, type="response")
+  ytest_pred.np_td_d1 = tryCatch(predict(np_PLS_td_d1, newdata=newdata_td_d1, type="response"), error= function(e) {return(NA)}  )
   # Distance
-  dist_pls_td = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.np_td_d1)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
+  dist_pls_np_td = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.np_td_d1)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
   
   # 1.3 PLS beta regression
   
@@ -120,12 +120,12 @@ main_function_tcyd = function(df, target, d , link_phi, link_mu, distancia){
   dummy_corte_train = ifelse(ytrain<=0.2, 1, 0)
   dummy_corte_test = as.vector(ifelse(ytest<=0.2, 1, 0))
   # Fit
-  data_beta_td_tree_cr = data.frame(data_td_cr_dum, Rtrain, dummy_corte_train)
-  beta.fit_td_tree_cr <- tryCatch(betareg::betatree(formu_td_cr, ~ dummy_corte_train, data = data_beta_td_tree_cr ,  link.phi = link_phi, link = link_mu ), error= function(e) {return(NA)}  )
+  data_beta_td_tree_cr = data.frame(data_td_cr_dum, dummy_corte_train)
+  beta.fit_td_tree_cr <- tryCatch(betareg::betatree(formu_td_cr, ~ dummy_corte_train, data = data_beta_td_tree_cr ,  link.phi = link_phi, link = link_mu ))
   #predict
-  newdata_beta_td_tree_cr = data.frame(newdata_td_cr, Rtest, dummy_corte_test)
+  newdata_beta_td_tree_cr = data.frame(newdata_td_cr_dum, dummy_corte_test)
   names(newdata_beta_td_tree_cr)[length(names(newdata_beta_td_tree_cr))]  = "dummy_corte_train"
-  ytest_pred.beta_td_tree_cr =  predict(beta.fit_td_tree_cr, newdata_beta_td_tree_cr)
+  ytest_pred.beta_td_tree_cr =  tryCatch(predict(beta.fit_td_tree_cr, newdata_beta_td_tree_cr), error= function(e) {return(NA)}  )
   # distance
   dist_beta_td_tree_cr = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.beta_td_tree_cr)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ) , error= function(e) {return(NA)}  )
   
@@ -135,6 +135,13 @@ main_function_tcyd = function(df, target, d , link_phi, link_mu, distancia){
   # Data without dimension reduction
   data_td_sr = data.frame(Xtrain_td,Ttrain, Rtrain)
   newdata_td_sr <- data.frame(Xtest_td,Ttest,Rtest)
+  
+  # 1.5 PLSRBeta
+  # ver plsRbeta.fit
+  #plsRbeta.fit <- plsRbeta(ytrain~.,data=data_td_sr, dataPredictY = newdata_td_sr, nt=6,modele="pls-beta", verbose=FALSE)
+  
+  #ytest_pred.plsrbeta_td =  predict(plsRbeta.fit, newdata_beta_td_tree_cr)
+  
   
   # 2.1 Elastic Net
   
@@ -176,7 +183,7 @@ main_function_tcyd = function(df, target, d , link_phi, link_mu, distancia){
   
   # Fit
   formu_boost_td = as.formula(paste("ytrain", paste(names(data_td_sr )[-1], collapse=" + "), sep=" ~ ")) 
-  betaboost.fit_td <- mboost::glmboost(formu_boost_td, data = data_td_sr, family = betaboost::BetaReg())
+  betaboost.fit_td <- tryCatch(mboost::glmboost(formu_boost_td, data = data_td_sr, family = betaboost::BetaReg()), error= function(e) {return(NA)}  )
   # Predict over Xtest
   ytest_pred.betaboost_td = predict(betaboost.fit_td, newdata = newdata_td_sr, type = "response")
   dist_betaboost_td  = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.betaboost_td)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
@@ -186,17 +193,15 @@ main_function_tcyd = function(df, target, d , link_phi, link_mu, distancia){
   # Fit
   data_beta_td_tree_ela = data.frame(data_beta_td_ela, dummy_corte_train)
   formu_td_tree_ela = as.formula(paste("ytrain", paste(names(data_beta_td_tree_ela)[-1], collapse=" + "), sep=" ~ ")) 
-  beta.fit_td_tree_ela <- tryCatch(betareg::betatree(formu_td_tree_ela, ~ dummy_corte_train, data = data_beta_tc_tree_ela,  link.phi = link_phi, link = link_mu   ), error= function(e) {return(NA)}  )
+  beta.fit_td_tree_ela <- tryCatch(betareg::betatree(formu_td_tree_ela, ~ dummy_corte_train, data = data_beta_td_tree_ela,  link.phi = link_phi, link = link_mu   ), error= function(e) {return(NA)}  )
   # predict 
   newdata_beta_td_tree_ela = data.frame(newdata_beta_td_ela, dummy_corte_test )
   names(newdata_beta_td_tree_ela)[length(names(newdata_beta_td_tree_ela))]  = "dummy_corte_train"
-  ytest_pred.beta_td_tree_ela =  predict(beta.fit_td_tree_ela, newdata_beta_td_tree_ela)
+  ytest_pred.beta_td_tree_ela =  tryCatch(predict(beta.fit_td_tree_ela, newdata_beta_td_tree_ela), error= function(e) {return(NA)}  )
   # distance
-  dist_beta_td_tree_ela = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.beta_tc_tree_ela)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
+  dist_beta_td_tree_ela = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.beta_td_tree_ela)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
   
-  
- 
-  
+   
   
   
   ############################################### ----
@@ -204,7 +209,7 @@ main_function_tcyd = function(df, target, d , link_phi, link_mu, distancia){
   
   
   #  Data with dimension reduction
-  pls.projections_tc_cr <- chemometrics::pls1_nipals(Xtrain, ytrain, a = d, scale = FALSE)
+  pls.projections_tc_cr <- chemometrics::pls1_nipals(Xtrain, ytrain, a = d_opt, scale = FALSE)
   data_tc_cr <- as.data.frame(cbind(ytrain, as.matrix(Xtrain) %*% pls.projections_tc_cr$W))
   newdata_tc_cr <- data.frame(as.matrix(Xtest) %*% pls.projections_tc_cr$W)
   colnames(newdata_tc_cr) <- colnames(data_tc_cr)[-1]
@@ -218,7 +223,7 @@ main_function_tcyd = function(df, target, d , link_phi, link_mu, distancia){
   # 1.1 Linear PLS
   
   # Fit
-  pls.fit <- lm(ytrain ~ . , data_tc_cr_dum)
+  pls.fit <- tryCatch(lm(ytrain ~ . , data_tc_cr_dum), error= function(e) {return(NA)}  )
   # Predict over Xtest
   ytest_pred.pls_tc  <- tryCatch(predict(pls.fit, newdata_tc_cr_dum), error= function(e) {return(NA)}  )
   # Distance
@@ -233,11 +238,11 @@ main_function_tcyd = function(df, target, d , link_phi, link_mu, distancia){
   # Fit
   formu_tc_d1 = as.formula(paste("ytrain", paste(names(data_tc_d1)[-1], collapse=" + "), sep=" ~ ")) 
   bw_tc_d1 <- np::npregbw(formu_tc_d1, data=data_tc_d1) 
-  np_PLS_tc_d1 <- np::npreg(bw_tc_d1)
+  np_PLS_tc_d1 <- tryCatch(np::npreg(bw_tc_d1), error= function(e) {return(NA)}  )
   # Predict over Xtest
-  ytest_pred.np_tc_d1 = predict(np_PLS_tc_d1, newdata=newdata_tc_d1, type="response")
+  ytest_pred.np_tc_d1 = tryCatch(predict(np_PLS_tc_d1, newdata=newdata_tc_d1, type="response"), error= function(e) {return(NA)}  )
   # Distance
-  dist_pls_tc = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.np_tc_d1)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
+  dist_pls_np_tc = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.np_tc_d1)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
   
   # 1.3 PLS beta regression
   
@@ -250,12 +255,12 @@ main_function_tcyd = function(df, target, d , link_phi, link_mu, distancia){
   # 1.4 Betatree
   
   # Fit
-  data_beta_tc_tree_cr = data.frame(data_tc_cr_dum, Rtrain, dummy_corte_train)
+  data_beta_tc_tree_cr = data.frame(data_tc_cr_dum,dummy_corte_train)
   beta.fit_tc_tree_cr <- tryCatch(betareg::betatree(formu_tc_cr, ~ dummy_corte_train, data = data_beta_tc_tree_cr ,  link.phi = link_phi, link = link_mu ), error= function(e) {return(NA)}  )
   #predict
-  newdata_beta_tc_tree_cr = data.frame(newdata_tc_cr, Rtest, dummy_corte_test)
+  newdata_beta_tc_tree_cr = data.frame(newdata_tc_cr_dum, dummy_corte_test)
   names(newdata_beta_tc_tree_cr)[length(names(newdata_beta_tc_tree_cr))]  = "dummy_corte_train"
-  ytest_pred.beta_tc_tree_cr =  predict(beta.fit_tc_tree_cr, newdata_beta_tc_tree_cr)
+  ytest_pred.beta_tc_tree_cr =  tryCatch(predict(beta.fit_tc_tree_cr, newdata_beta_tc_tree_cr), error= function(e) {return(NA)}  )
   # distance
   dist_beta_tc_tree_cr = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.beta_tc_tree_cr)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ) , error= function(e) {return(NA)}  )
   
@@ -299,7 +304,7 @@ main_function_tcyd = function(df, target, d , link_phi, link_mu, distancia){
   # Fit
   hyperparam_xgb_tc = kfoldCV.xgboost(data_tc_sr, ytrain, nfolds)
   # Predict over Xtest
-  ytest_pred.xgb_tc <- predict(hyperparam_xgb_tc$xgb.model, newdata_tc_sr)
+  ytest_pred.xgb_tc <- tryCatch(predict(hyperparam_xgb_tc$xgb.model, newdata_tc_sr), error= function(e) {return(NA)}  )
   # distance
   dist_xgb_tc = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.xgb_tc)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
   
@@ -307,9 +312,9 @@ main_function_tcyd = function(df, target, d , link_phi, link_mu, distancia){
   
   # Fit
   formu_boost_tc = as.formula(paste("ytrain", paste(names(data_tc_sr)[-1], collapse=" + "), sep=" ~ ")) 
-  betaboost.fit_tc <- mboost::glmboost(formu_boost_tc, data = data_tc_sr, family = betaboost::BetaReg())
+  betaboost.fit_tc <- tryCatch(mboost::glmboost(formu_boost_tc, data = data_tc_sr, family = betaboost::BetaReg()), error= function(e) {return(NA)}  )
   # Predict over Xtest
-  ytest_pred.betaboost_tc = predict(betaboost.fit_tc, newdata = newdata_tc_sr, type = "response")
+  ytest_pred.betaboost_tc = tryCatch(predict(betaboost.fit_tc, newdata = newdata_tc_sr, type = "response"), error= function(e) {return(NA)}  )
   dist_betaboost_tc  = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.betaboost_tc)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
   
   # 2.5 Betatree
@@ -321,7 +326,7 @@ main_function_tcyd = function(df, target, d , link_phi, link_mu, distancia){
   # predict 
   newdata_beta_tc_tree_ela = data.frame(newdata_beta_tc_ela, dummy_corte_test )
   names(newdata_beta_tc_tree_ela)[length(names(newdata_beta_tc_tree_ela))]  = "dummy_corte_train"
-  ytest_pred.beta_tc_tree_ela =  predict(beta.fit_tc_tree_ela, newdata_beta_tc_tree_ela)
+  ytest_pred.beta_tc_tree_ela =  tryCatch(predict(beta.fit_tc_tree_ela, newdata_beta_tc_tree_ela))
   # distance
   dist_beta_tc_tree_ela = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.beta_tc_tree_ela)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
   
@@ -331,18 +336,7 @@ main_function_tcyd = function(df, target, d , link_phi, link_mu, distancia){
  
   # Saving results
   results = data.frame( 
-    # 1. Predicción con reducción de dimensiones
-    # 1.1 PLS lineal
-    # 1.2 PLS NP
-    # 1.3 PLS beta regression
-    # 1.4 Betatree
-    
-    # 2. Predicción con variable / feature and model selection 
-    # 2.1 Elastic Net
-    # 2.2 Beta combinado con elastic net
-    # 2.3 XGBoost lineal
-    # 2.4 BetaBoost
-    # 2.5 Betatree
+     
     
     "MSE pls_td" = mean((ytest-ytest_pred.pls_td)^2),
     "MSE pls_np_td" = mean((ytest-ytest_pred.np_td_d1)^2),
@@ -368,26 +362,28 @@ main_function_tcyd = function(df, target, d , link_phi, link_mu, distancia){
     
     
     
-    # distancias
-    "dist elastic_tc" = dist_elastic_tc,
-    "dist elastic_td" = dist_elastic_td,
-    
-    "dist xgb_tc" = dist_xgb_tc,
-    "dist xgb_td" = dist_xgb_td,
-    
-
+    "dist pls_td" = dist_pls_td,
+    "dist pls_np_td" = dist_pls_np_td,
     "dist beta_td_cr" = dist_beta_td_cr,
-    "dist beta_tc_cr" = dist_beta_tc_cr,
+    "dist beta_td_tree_cr" = dist_beta_td_tree_cr,
     
+    "dist elastic_td" = dist_elastic_td,
     "dist beta_td_ela" = dist_beta_td_ela,
+    "dist xgb_td" = dist_xgb_td,
+    "dist betaboost_td" = dist_betaboost_td,
+    "dist beta_td_tree_ela" = dist_beta_td_tree_ela,
     
-    "dist beta_tc_ela" = dist_beta_tc_ela,
-    
+    "dist pls_tc" = dist_pls_tc,
+    "dist pls_np_tc" = dist_pls_np_tc,
+    "dist beta_tc_cr" = dist_beta_tc_cr,
     "dist beta_tc_tree_cr" = dist_beta_tc_tree_cr,
+    
+    "dist elastic_tc" = dist_elastic_tc,
+    "dist beta_tc_ela" = dist_beta_tc_ela,
+    "dist xgb_tc" = dist_xgb_tc,
+    "dist betaboost_tc" = dist_betaboost_tc,
     "dist beta_tc_tree_ela" = dist_beta_tc_tree_ela,
     
-    "dist betaboost_td" = dist_betaboost_td,
-    "dist betaboost_tc" = dist_betaboost_tc,
     
     
     "n" = nrow(df),  
@@ -401,9 +397,9 @@ main_function_tcyd = function(df, target, d , link_phi, link_mu, distancia){
   
 }
 
-main_function_tcyd(df,"mpi_Other", d=1, link_phi = "log",link_mu = "logit", distancia = "hellinger")
+main_function_tcyd(df,"mpi_Other",  link_phi = "log",link_mu = "logit", distancia = "hellinger")
 
-parts_10 = repetitions(df,"mpi_Other",d=1,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=10)
+parts_10 = repetitions(df,"mpi_Other", link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=10)
 
 #parts_10_d4 = repetitions2(df,"mpi_Other",d=4,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=10)
 
