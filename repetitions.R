@@ -57,6 +57,7 @@ repetitions = function(df, target, d,link_phi,link_mu, distancia, nreps){
       results$MSE.betaboost_td[rep] = main$MSE.betaboost_td
       results$MSE.beta_td_tree_ela[rep] = main$MSE.beta_td_tree_ela
       
+      results$MSE.betalasso_td[rep] = main$MSE.betalasso_td
       
       results$MSE.pls_tc[rep] = main$MSE.pls_tc
       results$MSE.pls_np_tc[rep] = main$MSE.pls_np_tc
@@ -68,6 +69,7 @@ repetitions = function(df, target, d,link_phi,link_mu, distancia, nreps){
       results$MSE.xgb_tc[rep] = main$MSE.xgb_tc
       results$MSE.betaboost_tc[rep] = main$MSE.betaboost_tc
       results$MSE.beta_tc_tree_ela[rep] = main$MSE.beta_tc_tree_ela
+      results$MSE.betalasso_tc[rep] = main$MSE.betalasso_tc
       
       #distancias
       results$dist.pls_td[rep] = main$dist.pls_td
@@ -81,6 +83,7 @@ repetitions = function(df, target, d,link_phi,link_mu, distancia, nreps){
       results$dist.xgb_td[rep] = main$dist.xgb_td
       results$dist.betaboost_td[rep] = main$dist.betaboost_td
       results$dist.beta_td_tree_ela[rep] = main$dist.beta_td_tree_ela
+      results$dist.betalasso_td[rep] = main$dist.betalasso_td
       
       results$dist.pls_tc[rep] = main$dist.pls_tc
       results$dist.pls_np_tc[rep] = main$dist.pls_np_tc
@@ -92,6 +95,7 @@ repetitions = function(df, target, d,link_phi,link_mu, distancia, nreps){
       results$dist.xgb_tc[rep] = main$dist.xgb_tc
       results$dist.betaboost_tc[rep] = main$dist.betaboost_tc
       results$dist.beta_tc_tree_ela[rep] = main$dist.beta_tc_tree_ela
+      results$dist.betalasso_tc[rep] = main$dist.betalasso_tc
       
  
       

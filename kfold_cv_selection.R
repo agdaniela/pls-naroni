@@ -1,6 +1,6 @@
 ## k-fold CV for selecting LASSO and PLS hyperparameter
 source("pls.R")
-
+source("cv.betalasso.R")
 kfoldCV.selection <- function(Xtrain, ytrain, nfolds, max.d) {
   
   Xtrain <- as.matrix(Xtrain)

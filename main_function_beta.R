@@ -23,6 +23,7 @@ df = datas[[2]]; target = "mpi_Other"
 # 1.2 PLS NP
 # 1.3 PLS beta regression
 # 1.4 Betatree 
+
 # 2. Predicción con variable / feature and model selection 
 # 2.1 Elastic Net
 # 2.2 Beta combinado con elastic net
@@ -201,7 +202,15 @@ main_function_tcyd = function(df, target, d , link_phi, link_mu, distancia){
   # distance
   dist_beta_td_tree_ela = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.beta_td_tree_ela)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
   
-   
+  # 2.6 Betalasso
+  #Fit
+  hyperparam <- kfoldCV.betalasso(data_td_sr, ytrain, nfolds)
+  betalasso.fit_td <- penalizedbeta::betareg_lasso(X = data_td_sr, y = ytrain, lambda = hyperparam$s.min)
+  # Predict over Xtest
+  ytest_pred.betalasso_td <- penalizedbeta::predict.penalizedbeta(betalasso.fit_td, as.matrix(newdata_td_sr))
+  # distance
+  dist_betalasso_td = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.betalasso_td)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
+  
   
   
   ############################################### ----
@@ -330,6 +339,14 @@ main_function_tcyd = function(df, target, d , link_phi, link_mu, distancia){
   # distance
   dist_beta_tc_tree_ela = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.beta_tc_tree_ela)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
   
+  # 2.6 Betalasso
+  #Fit
+  hyperparam <- kfoldCV.betalasso(data_tc_sr, ytrain, nfolds)
+  betalasso.fit_tc <- penalizedbeta::betareg_lasso(X = data_tc_sr, y = ytrain, lambda = hyperparam$s.min)
+  # Predict over Xtest
+  ytest_pred.betalasso_tc <- penalizedbeta::predict.penalizedbeta(betalasso.fit_tc, as.matrix(newdata_tc_sr))
+  # distance
+  dist_betalasso_tc = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.betalasso_tc)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
   
   
   #########################################################################
@@ -349,6 +366,8 @@ main_function_tcyd = function(df, target, d , link_phi, link_mu, distancia){
     "MSE betaboost_td" = mean((ytest-ytest_pred.betaboost_td)^2),
     "MSE beta_td_tree_ela" = mean((ytest-ytest_pred.beta_td_tree_ela)^2),
     
+    "MSE betalasso_td" = mean((ytest-ytest_pred.betalasso_td)^2),
+    
     "MSE pls_tc" = mean((ytest-ytest_pred.pls_tc)^2),
     "MSE pls_np_tc" = mean((ytest-ytest_pred.np_tc_d1)^2),
     "MSE beta_tc_cr" = mean((ytest-ytest_pred.beta_tc_cr)^2),
@@ -359,6 +378,9 @@ main_function_tcyd = function(df, target, d , link_phi, link_mu, distancia){
     "MSE xgb_tc" = mean((ytest-ytest_pred.xgb_tc)^2),
     "MSE betaboost_tc" = mean((ytest-ytest_pred.betaboost_tc)^2),
     "MSE beta_tc_tree_ela" = mean((ytest-ytest_pred.beta_tc_tree_ela)^2),
+    
+    "MSE betalasso_tc" = mean((ytest-ytest_pred.betalasso_tc)^2),
+    
     
     
     
@@ -372,6 +394,7 @@ main_function_tcyd = function(df, target, d , link_phi, link_mu, distancia){
     "dist xgb_td" = dist_xgb_td,
     "dist betaboost_td" = dist_betaboost_td,
     "dist beta_td_tree_ela" = dist_beta_td_tree_ela,
+    "dist betalasso_td" = dist_betalasso_td,
     
     "dist pls_tc" = dist_pls_tc,
     "dist pls_np_tc" = dist_pls_np_tc,
@@ -384,6 +407,7 @@ main_function_tcyd = function(df, target, d , link_phi, link_mu, distancia){
     "dist betaboost_tc" = dist_betaboost_tc,
     "dist beta_tc_tree_ela" = dist_beta_tc_tree_ela,
     
+    "dist betalasso_tc" = dist_betalasso_tc,
     
     
     "n" = nrow(df),  

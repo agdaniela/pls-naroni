@@ -8,7 +8,7 @@ cv.betalasso <- function(X, y, nfolds, nlambda = 100, ...) {
   id <- sample(1:K, n, replace=TRUE, prob=rep(1/K,K))
   
   results <- array(NA, dim=c(nlambda,K))
-  for (s in 1:S){
+  for (s in S){
     for(i in 1:K){
       ytrain <- y[id!=i]
       ytest <- y[id==i]
@@ -16,7 +16,7 @@ cv.betalasso <- function(X, y, nfolds, nlambda = 100, ...) {
       Xtest <- X[id==i,]
       
       # fit
-      fit <- betareg_lasso(Xtrain,ytrain,lambda = s)
+      fit <- penalizedbeta::betareg_lasso(Xtrain,ytrain,lambda = s)
       
       # predict
       #y_pred_train <- predict(fit, newdata = Xtrain)
