@@ -101,6 +101,15 @@ kfoldCV.pls <- function(Xtrain, ytrain, nfolds, max.d) {
   return(list( d.min = pls.fit$d.min))
 }
 
+kfoldCV.betalasso <- function(Xtrain, ytrain, nfolds, max.d) {
+  
+  Xtrain <- as.matrix(Xtrain)
+  
+  betalasso.fit <- cv.betalasso(Xtrain, ytrain, nfolds)
+  
+  return(list( s.min = betalasso.fit$s.min))
+}
+
 kfoldCV.xgboost <- function(Xtrain, ytrain, nfolds) {
   
   Xtrain <- as.matrix(Xtrain)
