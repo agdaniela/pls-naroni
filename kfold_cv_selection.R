@@ -96,7 +96,7 @@ kfoldCV.pls <- function(Xtrain, ytrain, nfolds, max.d) {
   
   Xtrain <- as.matrix(Xtrain)
   
-  pls.fit <- cv.pls(Xtrain, ytrain, nfolds, max.d)
+  pls.fit <- cv.pls2(Xtrain, ytrain, nfolds, max.d)
   
   return(list( d.min = pls.fit$d.min))
 }
