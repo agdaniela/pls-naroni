@@ -31,9 +31,10 @@ cv.betalasso <- function(X, y, nfolds, nlambda = 100, ...) {
       #  y_pred_test <- predict.lm(lm.fit, newdata = data)
       #  MSE_test <- mean(c(ytest-y_pred_test)^2, na.rm=TRUE)
       
-      results[s, i] <- MSE_test
+      results[which(S==s), i] <- MSE_test
     }
   }
   min.MSE <- which.min(apply(results, MARGIN = 1, FUN = mean))
-  return(list(s.min = min.MSE))
+  s.min <- S[min.MSE]
+  return(list(s.min = s.min))
 }

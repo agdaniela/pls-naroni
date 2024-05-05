@@ -5,7 +5,8 @@ source("pls.R")
 library(xgboost)
 library(caret)
 source("repetitions.R")
- #devtools::install_github("https://github.com/girelaignacio/penalizedbeta.git")
+source("cv.betalasso.R")
+ # devtools::install_github("https://github.com/girelaignacio/penalizedbeta.git")
 #########################################################
 #dataframes (correr la primera vez sin comentar)
 # datas = list()
@@ -200,7 +201,7 @@ main_function_tcyd = function(df, target, d_pls, d_plsbeta , link_phi, link_mu, 
   hyperparam <- kfoldCV.betalasso(data_td_sr, ytrain, nfolds)
   betalasso.fit_td <- penalizedbeta::betareg_lasso(X = data_td_sr, y = ytrain, lambda = hyperparam$s.min)
   # Predict over Xtest
-  ytest_pred.betalasso_td <-penalizedbeta::predict.penalizedbeta(betalasso.fit_td, as.matrix(newdata_td_sr))
+  ytest_pred.betalasso_td <- predict(betalasso.fit_td, as.matrix(newdata_td_sr))
   # distance
   dist_betalasso_td = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.betalasso_td)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
   
@@ -336,7 +337,7 @@ main_function_tcyd = function(df, target, d_pls, d_plsbeta , link_phi, link_mu, 
   hyperparam <- kfoldCV.betalasso(data_tc_sr, ytrain, nfolds)
   betalasso.fit_tc <- tryCatch(penalizedbeta::betareg_lasso(X = data_tc_sr, y = ytrain, lambda = hyperparam$s.min), error= function(e) {return(NA)}  )
   # Predict over Xtest
-  ytest_pred.betalasso_tc <- tryCatch(penalizedbeta::predict.penalizedbeta(betalasso.fit_tc, as.matrix(newdata_tc_sr)), error= function(e) {return(NA)}  )
+  ytest_pred.betalasso_tc <- tryCatch(predict(betalasso.fit_tc, as.matrix(newdata_tc_sr)), error= function(e) {return(NA)}  )
   # distance
   dist_betalasso_tc = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.betalasso_tc)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
   
