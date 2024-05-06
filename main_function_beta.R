@@ -460,7 +460,7 @@ parts_10 = repetitions(df,"mpi_Other", link_phi = "log", link_mu = "logit",dista
 
 lapply(parts_10, function(x) mean(na.omit(x)))
 
-
+saveRDS(parts_10,"parts10_.Rdta")
 #plot(ytest[ytest<0.2], ytest_pred.beta_tc_tree_sr[ytest<0.2] ); abline(0,1)
 #plot(ytest[ytest<0.2], ytest_pred.elastic_tc[ytest<0.2] ); abline(0,1)
 
