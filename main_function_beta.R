@@ -6,7 +6,7 @@ library(xgboost)
 library(caret)
 source("repetitions.R")
 source("cv.betalasso.R")
- # devtools::install_github("https://github.com/girelaignacio/penalizedbeta.git")
+#devtools::install_github("https://github.com/girelaignacio/penalizedbeta.git")
 #########################################################
 #dataframes (correr la primera vez sin comentar)
 # datas = list()
@@ -165,6 +165,7 @@ main_function_tcyd = function(df, target, d_pls, d_plsbeta , link_phi, link_mu, 
   elastic.fit_td <- glmnet::glmnet(x = data_td_sr, y = ytrain, family = "gaussian", alpha = hyperparam$best.alpha, lambda = hyperparam$best.lambda)
   # Predict over Xtest
   ytest_pred.elastic_td <- glmnet::predict.glmnet(elastic.fit_td, as.matrix(newdata_td_sr))
+  
   # distance
   dist_elastic_td = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.elastic_td)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
   
@@ -211,7 +212,7 @@ main_function_tcyd = function(df, target, d_pls, d_plsbeta , link_phi, link_mu, 
   #Fit
   hyperparam_xgb_td = kfoldCV.xgboost(data_td_sr, ytrain, nfolds)
   # Predict over Xtest
-  ytest_pred.xgb_td <- predict(hyperparam_xgb_td$xgb.model, newdata_td_sr)
+  ytest_pred.xgb_td <- tryCatch(predict(hyperparam_xgb_td$xgb.model, newdata_td_sr), error= function(e) {return(NA)}  )
   # distance
   dist_xgb_td = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.xgb_td)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
   
