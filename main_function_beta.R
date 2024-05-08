@@ -75,7 +75,7 @@ main_function_tcyd = function(df, target, d_pls, d_plsbeta , link_phi, link_mu, 
   
   # 1.  Using dimension reduction
   
-  if (missing(d_pls) & missing(d_plsbeta) ) {
+  #if (missing(d_pls) & missing(d_plsbeta) ) {
     # if no argument for d is provided, then take optimal d
     pls.directions = 30 
     hyperparam <- kfoldCV.pls(Xtrain_td, ytrain, nfolds, pls.directions)
@@ -83,11 +83,11 @@ main_function_tcyd = function(df, target, d_pls, d_plsbeta , link_phi, link_mu, 
     
     d_pls = hyperparam$d.min
     d_plsbeta = hyperparam_beta$d.min
-  } else{
+#  } else{
     # If d is provided, take it for all DR
-    d_pls = d_pls
-    d_plsbeta = d_plsbeta
-  }
+ #   d_pls = d_pls
+#    d_plsbeta = d_plsbeta
+ # }
   
   # 1.1 PLS with optimal $d$ using linear predictor. 
   
@@ -230,6 +230,12 @@ main_function_tcyd = function(df, target, d_pls, d_plsbeta , link_phi, link_mu, 
   
   # 1.  Using dimension reduction
   
+  hyperparam <- kfoldCV.pls(Xtrain, ytrain, nfolds, pls.directions)
+  hyperparam_beta <- kfoldCV.plsbeta(Xtrain, ytrain, nfolds, pls.directions)
+  d_pls = hyperparam$d.min
+  d_plsbeta = hyperparam_beta$d.min
+  #  
+  
   # 1.1 PLS with optimal $d$ using linear predictor. 
   #  Data with dimension reduction
   pls.projections_tc_cr <- chemometrics::pls1_nipals(Xtrain, ytrain, a = d_pls, scale = FALSE)
@@ -273,7 +279,7 @@ main_function_tcyd = function(df, target, d_pls, d_plsbeta , link_phi, link_mu, 
   formu_tc_dbeta = as.formula(paste("ytrain", paste(names(data_tc_dbeta)[-1], collapse=" + "), sep=" ~ ")) 
   beta.fit_tc_cr <- tryCatch(betareg::betareg(formu_tc_dbeta, data = data_tc_dbeta, link.phi = link_phi, link = link_mu), error= function(e) {return(NA)}  )
   # Predict over Xtest
-  ytest_pred.beta_tc_cr = tryCatch(predict(beta.fit_tc_cr, newdata_tc_cr_dum), error= function(e) {return(NA)}  )
+  ytest_pred.beta_tc_cr = tryCatch(betareg::predict(beta.fit_tc_cr, newdata_tc_dbeta), error= function(e) {return(NA)}  )
   # distance
   dist_beta_tc_cr = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.beta_tc_cr)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
   
