@@ -288,15 +288,15 @@ main_function_pred = function(Xtrain, Xtest , target, d, link_phi, link_mu, dist
   
   # 2.3 Beta tree using selected covariates with elastic net.
   # Fit
-  data_beta_td_tree_ela = data.frame(data_beta_td_ela, dummy_corte_train)
-  formu_td_tree_ela = as.formula(paste("ytrain", paste(names(data_beta_td_tree_ela)[-1], collapse=" + "), sep=" ~ "))
-  beta.fit_td_tree_ela <- tryCatch(betareg::betatree(formu_td_tree_ela, ~ dummy_corte_train, data = data_beta_td_tree_ela,  link.phi = link_phi, link = link_mu   ), error= function(e) {return(NA)}  )
+  data_beta_tc_tree_ela = data.frame(data_beta_tc_ela, dummy_corte_train)
+  formu_tc_tree_ela = as.formula(paste("ytrain", paste(names(data_beta_tc_tree_ela)[-1], collapse=" + "), sep=" ~ "))
+  beta.fit_tc_tree_ela <- tryCatch(betareg::betatree(formu_tc_tree_ela, ~ dummy_corte_train, data = data_beta_tc_tree_ela,  link.phi = link_phi, link = link_mu   ), error= function(e) {return(NA)}  )
   # predict
-  newdata_beta_td_tree_ela = data.frame(newdata_beta_td_ela, dummy_corte_test )
-  names(newdata_beta_td_tree_ela)[length(names(newdata_beta_td_tree_ela))]  = "dummy_corte_train"
-  ytest_pred.beta_td_tree_ela =  tryCatch(predict(beta.fit_td_tree_ela, newdata_beta_td_tree_ela), error= function(e) {return(NA)}  )
+  newdata_beta_tc_tree_ela = data.frame(newdata_beta_tc_ela, dummy_corte_test )
+  names(newdata_beta_tc_tree_ela)[length(names(newdata_beta_tc_tree_ela))]  = "dummy_corte_train"
+  ytest_pred.beta_tc_tree_ela =  tryCatch(predict(beta.fit_tc_tree_ela, newdata_beta_tc_tree_ela))
   # distance
-  dist_beta_td_tree_ela = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.beta_td_tree_ela)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
+  dist_beta_tc_tree_ela = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.beta_tc_tree_ela)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
   
   # 2.3 Beta lasso  
   #Fit
@@ -398,32 +398,32 @@ main_function_pred = function(Xtrain, Xtest , target, d, link_phi, link_mu, dist
     
     "y_test" = ytest,
     
-    "yhat pls_td" =  ytest-ytest_pred.pls_td,
-    "yhat pls_np_td" = ytest-ytest_pred.np_td_d1,
-    "yhat beta_td_cr" = ytest-ytest_pred.beta_td_cr,
-    "yhat beta_td_tree_cr" = ytest-ytest_pred.beta_td_tree_cr,
+    "yhat pls_td" =  ytest_pred.pls_td,
+    "yhat pls_np_td" = ytest_pred.np_td_d1,
+    "yhat beta_td_cr" = ytest_pred.beta_td_cr,
+    "yhat beta_td_tree_cr" = ytest_pred.beta_td_tree_cr,
     
-    "yhat elastic_td" = ytest-ytest_pred.elastic_td,
-    "yhat beta_td_ela" = ytest-ytest_pred.beta_td_ela,
-    "yhat beta_td_tree_ela" = ytest-ytest_pred.beta_td_tree_ela,
-    "yhat betalasso_td" = ytest-ytest_pred.betalasso_td,
+    "yhat elastic_td" = ytest_pred.elastic_td,
+    "yhat beta_td_ela" = ytest_pred.beta_td_ela,
+    "yhat beta_td_tree_ela" = ytest_pred.beta_td_tree_ela,
+    "yhat betalasso_td" = ytest_pred.betalasso_td,
     
-    "yhat xgb_td" = ytest-ytest_pred.xgb_td,
-    "yhat betaboost_td" = ytest-ytest_pred.betaboost_td,
+    "yhat xgb_td" = ytest_pred.xgb_td,
+    "yhat betaboost_td" = ytest_pred.betaboost_td,
     
     
-    "yhat pls_tc" = ytest-ytest_pred.pls_tc,
-    "yhat pls_np_tc" = ytest-ytest_pred.np_tc_d1,
-    "yhat beta_tc_cr" = ytest-ytest_pred.beta_tc_cr,
-    "yhat beta_tc_tree_cr" = ytest-ytest_pred.beta_tc_tree_cr,
+    "yhat pls_tc" = ytest_pred.pls_tc,
+    "yhat pls_np_tc" = ytest_pred.np_tc_d1,
+    "yhat beta_tc_cr" = ytest_pred.beta_tc_cr,
+    "yhat beta_tc_tree_cr" = ytest_pred.beta_tc_tree_cr,
     
-    "yhat elastic_tc" = ytest-ytest_pred.elastic_tc,
-    "yhat beta_tc_ela" = ytest-ytest_pred.beta_tc_ela,
-    "yhat beta_tc_tree_ela" = ytest-ytest_pred.beta_tc_tree_ela,
-    "yhat betalasso_tc" = ytest-ytest_pred.betalasso_tc,
+    "yhat elastic_tc" = ytest_pred.elastic_tc,
+    "yhat beta_tc_ela" = ytest_pred.beta_tc_ela,
+    "yhat beta_tc_tree_ela" = ytest_pred.beta_tc_tree_ela,
+    "yhat betalasso_tc" = ytest_pred.betalasso_tc,
     
-    "yhat xgb_tc" = ytest-ytest_pred.xgb_tc,
-    "yhat betaboost_tc" = ytest-ytest_pred.betaboost_tc
+    "yhat xgb_tc" = ytest_pred.xgb_tc,
+    "yhat betaboost_tc" = ytest_pred.betaboost_tc
     
     
      
