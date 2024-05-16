@@ -288,15 +288,15 @@ main_function_pred = function(Xtrain, Xtest , target, d, link_phi, link_mu, dist
   
   # 2.3 Beta tree using selected covariates with elastic net.
   # Fit
-  data_beta_tc_tree_ela = data.frame(data_beta_tc_ela, dummy_corte_train)
-  formu_tc_tree_ela = as.formula(paste("ytrain", paste(names(data_beta_tc_tree_ela)[-1], collapse=" + "), sep=" ~ "))
-  beta.fit_tc_tree_ela <- tryCatch(betareg::betatree(formu_tc_tree_ela, ~ dummy_corte_train, data = data_beta_tc_tree_ela,  link.phi = link_phi, link = link_mu   ), error= function(e) {return(NA)}  )
+  data_beta_td_tree_ela = data.frame(data_beta_td_ela, dummy_corte_train)
+  formu_td_tree_ela = as.formula(paste("ytrain", paste(names(data_beta_td_tree_ela)[-1], collapse=" + "), sep=" ~ "))
+  beta.fit_td_tree_ela <- tryCatch(betareg::betatree(formu_td_tree_ela, ~ dummy_corte_train, data = data_beta_td_tree_ela,  link.phi = link_phi, link = link_mu   ), error= function(e) {return(NA)}  )
   # predict
-  newdata_beta_tc_tree_ela = data.frame(newdata_beta_tc_ela, dummy_corte_test )
-  names(newdata_beta_tc_tree_ela)[length(names(newdata_beta_tc_tree_ela))]  = "dummy_corte_train"
-  ytest_pred.beta_tc_tree_ela =  tryCatch(betareg::predict(beta.fit_tc_tree_ela, newdata_beta_tc_tree_ela, type = "link"))
+  newdata_beta_td_tree_ela = data.frame(newdata_beta_td_ela, dummy_corte_test )
+  names(newdata_beta_td_tree_ela)[length(names(newdata_beta_td_tree_ela))]  = "dummy_corte_train"
+  ytest_pred.beta_td_tree_ela =  tryCatch(predict(beta.fit_td_tree_ela, newdata_beta_td_tree_ela), error= function(e) {return(NA)}  )
   # distance
-  dist_beta_tc_tree_ela = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.beta_tc_tree_ela)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
+  dist_beta_td_tree_ela = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.beta_td_tree_ela)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
   
   # 2.3 Beta lasso  
   #Fit
@@ -435,12 +435,13 @@ main_function_pred = function(Xtrain, Xtest , target, d, link_phi, link_mu, dist
 }
 
 # prueba
+df = datas[[2]]
 data <- random.split(df, 0.8)
 ytrain <- data$data_train[, "mpi_Other"] 
 Xtrain <- data$data_train
 Xtest = data$data_test
 
-prueba2 = main_function_pred(Xtrain,Xtest,"mpi_Other",  link_phi = "log", link_mu = "logit", distancia = "hellinger")
+prueba2 = main_function_pred(Xtrain,Xtest,target = "mpi_Other",d=1,  link_phi = "log", link_mu = "logit", distancia = "hellinger")
 
 prueba3 = readRDS("graphs_predichos_0.Rdata")
 prueba = prueba3[["yhats_1"]]$predicted
