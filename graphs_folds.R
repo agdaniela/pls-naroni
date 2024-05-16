@@ -7,21 +7,24 @@ main_function_pred = function(Xtrain, Xtest , target, d, link_phi, link_mu, dist
   results = data.frame()
   nfolds <- 5
   
-  df$year_trend <- as.numeric(as.character(df$year_Other))
-  df$year_trend <- df$year_trend - min(df$year_trend)
+  Xtrain$year_trend <- as.numeric(as.character(Xtrain$year_Other))
+  Xtrain$year_trend <- Xtrain$year_trend - min(Xtrain$year_trend)
+  
+  Xtest$year_trend <- as.numeric(as.character(Xtest$year_Other))
+  Xtest$year_trend <- Xtest$year_trend - min(Xtest$year_trend)
   
   # Train and test datasets
-  data <- random.split(df, 0.8)
-  ytrain <- data$data_train[, target] 
-  Xtrain <- data$data_train[,-c(1:33)]
-  Ttrain = data$data_train[, c(13:33)] #dummies de tiempo
-  Rtrain = data$data_train[, c(8:12)] #regiones
+  ytrain <- Xtrain[, target] 
+  Xtrain <- Xtrain[,-c(1:33)]
+  Ttrain = Xtrain[, c(13:33)]
+  Rtrain = Xtrain[, c(8:12)]
   
-  ytest <- data$data_test[, target]
-  Xtest <- data$data_test[,-c(1:33)]
-  Ttest = data$data_test[, c(13:33)]
-  Rtest = data$data_test[, c(8:12)]
+  ytest <- Xtest[, target]
+  Xtest <- Xtest[,-c(1:33)]
+  Ttest = Xtest[, c(13:33)]
+  Rtest = Xtest[, c(8:12)]
   
+  data <- as.data.frame(cbind(ytrain, Xtrain))
   # data <- as.data.frame(cbind(ytrain, Xtrain))
   
   ########################################## ----
@@ -90,7 +93,7 @@ main_function_pred = function(Xtrain, Xtest , target, d, link_phi, link_mu, dist
   formu_td_dbeta = as.formula(paste("ytrain", paste(names(data_td_dbeta)[-1], collapse=" + "), sep=" ~ ")) 
   beta.fit_td <- tryCatch(betareg::betareg(formu_td_dbeta , data = data_td_dbeta, link.phi = link_phi, link = link_mu), error= function(e) {return(NA)}  )
   # Predict over Xtest
-  ytest_pred.beta_td_cr = tryCatch(predict(beta.fit_td, newdata_td_dbeta, type = "response"), error= function(e) {return(NA)}  )
+  ytest_pred.beta_td_cr = tryCatch(betareg::predict(beta.fit_td, newdata_td_dbeta, type = "response"), error= function(e) {return(NA)}  )
   # Distance
   dist_beta_td_cr = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.beta_td_cr)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
   
@@ -104,7 +107,7 @@ main_function_pred = function(Xtrain, Xtest , target, d, link_phi, link_mu, dist
   #predict
   newdata_beta_td_tree_cr = data.frame(newdata_td_dbeta, dummy_corte_test)
   names(newdata_beta_td_tree_cr)[length(names(newdata_beta_td_tree_cr))]  = "dummy_corte_train"
-  ytest_pred.beta_td_tree_cr =  tryCatch(predict(beta.fit_td_tree_cr, newdata_beta_td_tree_cr, type = "response"), error= function(e) {return(NA)}  )
+  ytest_pred.beta_td_tree_cr =  tryCatch(betareg::predict(beta.fit_td_tree_cr, newdata_beta_td_tree_cr, type = "response"), error= function(e) {return(NA)}  )
   # distance
   dist_beta_td_tree_cr = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.beta_td_tree_cr)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ) , error= function(e) {return(NA)}  )
   
@@ -136,7 +139,7 @@ main_function_pred = function(Xtrain, Xtest , target, d, link_phi, link_mu, dist
   beta.fit_td_ela <- tryCatch(betareg::betareg(formu_td_ela, data = data_beta_td_ela, link.phi = link_phi, link = link_mu), error= function(e) {return(NA)}  )
   # Predict over Xtest
   newdata_beta_td_ela = data.frame(Xtest_td_ela,Ttest,Rtest)
-  ytest_pred.beta_td_ela = tryCatch(predict(beta.fit_td_ela, newdata_beta_td_ela, type = "response"), error= function(e) {return(NA)}  )
+  ytest_pred.beta_td_ela = tryCatch(betareg::predict(beta.fit_td_ela, newdata_beta_td_ela, type = "response"), error= function(e) {return(NA)}  )
   # distance
   dist_beta_td_ela = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.beta_td_ela)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
   
@@ -148,7 +151,7 @@ main_function_pred = function(Xtrain, Xtest , target, d, link_phi, link_mu, dist
   # predict
   newdata_beta_td_tree_ela = data.frame(newdata_beta_td_ela, dummy_corte_test )
   names(newdata_beta_td_tree_ela)[length(names(newdata_beta_td_tree_ela))]  = "dummy_corte_train"
-  ytest_pred.beta_td_tree_ela =  tryCatch(predict(beta.fit_td_tree_ela, newdata_beta_td_tree_ela, type = "response"), error= function(e) {return(NA)}  )
+  ytest_pred.beta_td_tree_ela =  tryCatch(betareg::predict(beta.fit_td_tree_ela, newdata_beta_td_tree_ela, type = "link"), error= function(e) {return(NA)}  )
   # distance
   dist_beta_td_tree_ela = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.beta_td_tree_ela)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
   
@@ -248,7 +251,7 @@ main_function_pred = function(Xtrain, Xtest , target, d, link_phi, link_mu, dist
   #predict
   newdata_beta_tc_tree_cr = data.frame(newdata_tc_dbeta, dummy_corte_test)
   names(newdata_beta_tc_tree_cr)[length(names(newdata_beta_tc_tree_cr))]  = "dummy_corte_train"
-  ytest_pred.beta_tc_tree_cr =  tryCatch(predict(beta.fit_tc_tree_cr, newdata_beta_tc_tree_cr, type = "response"), error= function(e) {return(NA)}  )
+  ytest_pred.beta_tc_tree_cr =  tryCatch(predict(beta.fit_tc_tree_cr, newdata_beta_tc_tree_cr, type = "link"), error= function(e) {return(NA)}  )
   # distance
   dist_beta_tc_tree_cr = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.beta_tc_tree_cr)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ) , error= function(e) {return(NA)}  )
   
@@ -279,7 +282,7 @@ main_function_pred = function(Xtrain, Xtest , target, d, link_phi, link_mu, dist
   beta.fit_tc_ela <- tryCatch(betareg::betareg(formu_tc_ela , data = data_beta_tc_ela, link.phi = link_phi, link = link_mu), error= function(e) {return(NA)}  )
   # Predict over Xtest
   newdata_beta_tc_ela = data.frame(Xtest_tc_ela, Rtest)
-  ytest_pred.beta_tc_ela = tryCatch(predict(beta.fit_tc_ela, newdata_beta_tc_ela, type = "response"), error= function(e) {return(NA)}  )
+  ytest_pred.beta_tc_ela = tryCatch(betareg::predict(beta.fit_tc_ela, newdata_beta_tc_ela, type = "response"), error= function(e) {return(NA)}  )
   # distance
   dist_beta_tc_ela = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.beta_tc_ela)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
   
@@ -291,7 +294,7 @@ main_function_pred = function(Xtrain, Xtest , target, d, link_phi, link_mu, dist
   # predict
   newdata_beta_tc_tree_ela = data.frame(newdata_beta_tc_ela, dummy_corte_test )
   names(newdata_beta_tc_tree_ela)[length(names(newdata_beta_tc_tree_ela))]  = "dummy_corte_train"
-  ytest_pred.beta_tc_tree_ela =  tryCatch(predict(beta.fit_tc_tree_ela, newdata_beta_tc_tree_ela, type = "response"))
+  ytest_pred.beta_tc_tree_ela =  tryCatch(betareg::predict(beta.fit_tc_tree_ela, newdata_beta_tc_tree_ela, type = "link"))
   # distance
   dist_beta_tc_tree_ela = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.beta_tc_tree_ela)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
   
@@ -431,16 +434,29 @@ main_function_pred = function(Xtrain, Xtest , target, d, link_phi, link_mu, dist
   
 }
 
+# prueba
+data <- random.split(df, 0.8)
+ytrain <- data$data_train[, "mpi_Other"] 
+Xtrain <- data$data_train
+Xtest = data$data_test
+
+prueba2 = main_function_pred(Xtrain,Xtest,"mpi_Other",  link_phi = "log", link_mu = "logit", distancia = "hellinger")
+
+prueba3 = readRDS("graphs_predichos_0.Rdata")
+prueba = prueba3[["yhats_1"]]$predicted
+prueba$dani = (prueba$yhat.beta_td_tree_cr)/(1+(prueba$yhat.beta_td_tree_cr))
+
 
 #Randomly shuffle the data
-df_fold  = df 
+df_fold  = datas[[2]] 
+
 df_fold  <- df_fold[sample(nrow(df_fold)),]
 
 #Perform 5 fold cross validation
-folds_index <- cut(seq(1,nrow(df_fold)),breaks=5,labels=FALSE) #indices
+folds_index <- cut(seq(1,nrow(df_fold)),breaks=2,labels=FALSE) #indices
 
 predichos = list()
-for(i in 1:5){
+for(i in 1:2){
   testIndexes <- which(folds_index == i,arr.ind=TRUE)
   testData <- df_fold[testIndexes, ]
   trainData <- df_fold[-testIndexes, ]
@@ -454,6 +470,8 @@ View(predichos[["yhats_2"]]$predicted) #ok
 View(predichos[["yhats_3"]]$predicted) #ok
 View(predichos[["yhats_4"]]$predicted) #ok
 View(predichos[["yhats_5"]]$predicted) #ok
+
+
 
 saveRDS(predichos,"graphs_predichos_0.Rdata") #4cols + tc
 # saveRDS(predichos,"graphs_predichos_1.Rdata")#tc
