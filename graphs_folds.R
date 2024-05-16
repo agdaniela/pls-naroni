@@ -251,7 +251,7 @@ main_function_pred = function(Xtrain, Xtest , target, d, link_phi, link_mu, dist
   #predict
   newdata_beta_tc_tree_cr = data.frame(newdata_tc_dbeta, dummy_corte_test)
   names(newdata_beta_tc_tree_cr)[length(names(newdata_beta_tc_tree_cr))]  = "dummy_corte_train"
-  ytest_pred.beta_tc_tree_cr =  tryCatch(predict(beta.fit_tc_tree_cr, newdata_beta_tc_tree_cr, type = "link"), error= function(e) {return(NA)}  )
+  ytest_pred.beta_tc_tree_cr =  tryCatch(predict(beta.fit_tc_tree_cr, newdata_beta_tc_tree_cr, type = "response"), error= function(e) {return(NA)}  )
   # distance
   dist_beta_tc_tree_cr = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.beta_tc_tree_cr)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ) , error= function(e) {return(NA)}  )
   
@@ -287,16 +287,16 @@ main_function_pred = function(Xtrain, Xtest , target, d, link_phi, link_mu, dist
   dist_beta_tc_ela = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.beta_tc_ela)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
   
   # 2.3 Beta tree using selected covariates with elastic net.
-  # Fit
-  data_beta_tc_tree_ela = data.frame(data_beta_tc_ela, dummy_corte_train)
-  formu_tc_tree_ela = as.formula(paste("ytrain", paste(names(data_beta_tc_tree_ela)[-1], collapse=" + "), sep=" ~ "))
-  beta.fit_tc_tree_ela <- tryCatch(betareg::betatree(formu_tc_tree_ela, ~ dummy_corte_train, data = data_beta_tc_tree_ela,  link.phi = link_phi, link = link_mu   ), error= function(e) {return(NA)}  )
-  # predict
-  newdata_beta_tc_tree_ela = data.frame(newdata_beta_tc_ela, dummy_corte_test )
-  names(newdata_beta_tc_tree_ela)[length(names(newdata_beta_tc_tree_ela))]  = "dummy_corte_train"
-  ytest_pred.beta_tc_tree_ela =  tryCatch(predict(beta.fit_tc_tree_ela, newdata_beta_tc_tree_ela))
-  # distance
-  dist_beta_tc_tree_ela = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.beta_tc_tree_ela)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
+  # # Fit
+  # data_beta_tc_tree_ela = data.frame(data_beta_tc_ela, dummy_corte_train)
+  # formu_tc_tree_ela = as.formula(paste("ytrain", paste(names(data_beta_tc_tree_ela)[-1], collapse=" + "), sep=" ~ "))
+  # beta.fit_tc_tree_ela <- tryCatch(betareg::betatree(formu_tc_tree_ela, ~ dummy_corte_train, data = data_beta_tc_tree_ela,  link.phi = link_phi, link = link_mu   ), error= function(e) {return(NA)}  )
+  # # predict
+  # newdata_beta_tc_tree_ela = data.frame(newdata_beta_tc_ela, dummy_corte_test )
+  # names(newdata_beta_tc_tree_ela)[length(names(newdata_beta_tc_tree_ela))]  = "dummy_corte_train"
+  # ytest_pred.beta_tc_tree_ela =  tryCatch(predict(beta.fit_tc_tree_ela, newdata_beta_tc_tree_ela))
+  # # distance
+  # dist_beta_tc_tree_ela = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.beta_tc_tree_ela)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
   
   # 2.3 Beta lasso  
   #Fit
@@ -354,7 +354,7 @@ main_function_pred = function(Xtrain, Xtest , target, d, link_phi, link_mu, dist
     
     "MSE elastic_tc" = mean((ytest-ytest_pred.elastic_tc)^2),
     "MSE beta_tc_ela" = mean((ytest-ytest_pred.beta_tc_ela)^2),
-    "MSE beta_tc_tree_ela" = mean((ytest-ytest_pred.beta_tc_tree_ela)^2),
+   # "MSE beta_tc_tree_ela" = mean((ytest-ytest_pred.beta_tc_tree_ela)^2),
     "MSE betalasso_tc" = mean((ytest-ytest_pred.betalasso_tc)^2),
     
     "MSE xgb_tc" = mean((ytest-ytest_pred.xgb_tc)^2),
@@ -381,7 +381,7 @@ main_function_pred = function(Xtrain, Xtest , target, d, link_phi, link_mu, dist
     
     "dist elastic_tc" = dist_elastic_tc,
     "dist beta_tc_ela" = dist_beta_tc_ela,
-    "dist beta_tc_tree_ela" = dist_beta_tc_tree_ela,
+   # "dist beta_tc_tree_ela" = dist_beta_tc_tree_ela,
     "dist betalasso_tc" = dist_betalasso_tc,
     
     "dist xgb_tc" = dist_xgb_tc,
@@ -419,7 +419,7 @@ main_function_pred = function(Xtrain, Xtest , target, d, link_phi, link_mu, dist
     
     "yhat elastic_tc" = ytest_pred.elastic_tc,
     "yhat beta_tc_ela" = ytest_pred.beta_tc_ela,
-    "yhat beta_tc_tree_ela" = ytest_pred.beta_tc_tree_ela,
+   # "yhat beta_tc_tree_ela" = ytest_pred.beta_tc_tree_ela,
     "yhat betalasso_tc" = ytest_pred.betalasso_tc,
     
     "yhat xgb_tc" = ytest_pred.xgb_tc,
@@ -437,17 +437,13 @@ main_function_pred = function(Xtrain, Xtest , target, d, link_phi, link_mu, dist
 # prueba
 df = datas[[2]]
 data <- random.split(df, 0.8)
-ytrain <- data$data_train[, "mpi_Other"] 
 Xtrain <- data$data_train
 Xtest = data$data_test
 
 prueba2 = main_function_pred(Xtrain,Xtest,target = "mpi_Other",d=1,  link_phi = "log", link_mu = "logit", distancia = "hellinger")
+View(prueba2[["predicted"]] )
 
-prueba3 = readRDS("graphs_predichos_0.Rdata")
-prueba = prueba3[["yhats_1"]]$predicted
-prueba$dani = (prueba$yhat.beta_td_tree_cr)/(1+(prueba$yhat.beta_td_tree_cr))
-
-
+ 
 #Randomly shuffle the data
 df_fold  = datas[[2]] 
 
@@ -528,7 +524,7 @@ best_methods(predichos)
 
 graph_data = function(df, lista){
   predicted = data.frame()
-  for (i in 1:5) {
+  for (i in 1:2) {
     preds = lista[[i]]$predicted
     predicted = rbind(predicted, preds)
   }
@@ -625,10 +621,10 @@ data_plot_all_2$yhat.betaboost_td = c(data_plot_all[(data_plot_all$variable == "
 data_plot_all = plot_data(folds, "none")
 
 ggplot(data_plot_all, aes(x=value, color = variable))  +
-  xlim(-.001, 1) +
+  #xlim(-.001, 1) +
   geom_density(lwd = 1, linetype = 1) 
 
-ggplot(data_plot_all_2, aes(x=value, color = variable))  +
+ggplot(data_plot_all, aes(x=value, color = variable))  +
   xlim(-.001, 1) +
   geom_histogram(aes( alpha = 0.5, position = "identity") )
 
