@@ -470,5 +470,5 @@ saveRDS(parts_10,"parts10_.Rdta")
 #plot(ytest[ytest<0.2], ytest_pred.beta_tc_tree_sr[ytest<0.2] ); abline(0,1)
 #plot(ytest[ytest<0.2], ytest_pred.elastic_tc[ytest<0.2] ); abline(0,1)
 
-
+# beta y betatree con elastic discreto
 
