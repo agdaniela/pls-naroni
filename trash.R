@@ -407,4 +407,12 @@ main_function_pred = function(Xtrain, Xtest , target, d, link_phi, link_mu, dist
   return(list("results"=results,"predicted" = predicted))
   
 }
+# prueba
+df = datas[[2]]
+data <- random.split(df, 0.8)
+Xtrain <- data$data_train
+Xtest = data$data_test
+
+prueba2 = main_function_pred(Xtrain,Xtest,target = "mpi_Other",d=1,  link_phi = "log", link_mu = "logit", distancia = "hellinger")
+View(prueba2[["predicted"]] )
 

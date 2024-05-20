@@ -1,6 +1,7 @@
 # Crear 5 folds disjuntos - predecir en uno
 
-
+Xtrain =trainData
+Xtest = testData
 main_function_pred = function(Xtrain, Xtest , target, d, link_phi, link_mu, distancia){
   
   predicted = data.frame()
@@ -15,16 +16,17 @@ main_function_pred = function(Xtrain, Xtest , target, d, link_phi, link_mu, dist
   
   # Train and test datasets
   ytrain <- Xtrain[, target] 
-  Xtrain <- Xtrain[,-c(1:33)]
+  
   Ttrain = Xtrain[, c(13:33)]
   Rtrain = Xtrain[, c(8:12)]
+  Xtrain <- Xtrain[,-c(1:33)]
   
   ytest <- Xtest[, target]
-  Xtest <- Xtest[,-c(1:33)]
   Ttest = Xtest[, c(13:33)]
   Rtest = Xtest[, c(8:12)]
+  Xtest <- Xtest[,-c(1:33)]
   
-  data <- as.data.frame(cbind(ytrain, Xtrain))
+  #data <- as.data.frame(cbind(ytrain, Xtrain))
   # data <- as.data.frame(cbind(ytrain, Xtrain))
   
   ########################################## ----
@@ -134,7 +136,7 @@ main_function_pred = function(Xtrain, Xtest , target, d, link_phi, link_mu, dist
   Xtrain_td_ela = Xtrain_td[,colnames(Xtrain_td) %in% var_selected_td]
   Xtest_td_ela <- Xtest_td[,colnames(Xtest_td) %in% var_selected_td]
   # Fit
-  data_beta_td_ela = data.frame(Xtrain_td_ela, Ttrain, Rtrain)
+  data_beta_td_ela = data.frame(Xtrain_td_ela, Rtrain)
   formu_td_ela = as.formula(paste("ytrain", paste(names(data_beta_td_ela)[-1], collapse=" + "), sep=" ~ ")) 
   beta.fit_td_ela <- tryCatch(betareg::betareg(formu_td_ela, data = data_beta_td_ela, link.phi = link_phi, link = link_mu), error= function(e) {return(NA)}  )
   # Predict over Xtest
@@ -151,7 +153,7 @@ main_function_pred = function(Xtrain, Xtest , target, d, link_phi, link_mu, dist
   # predict
   newdata_beta_td_tree_ela = data.frame(newdata_beta_td_ela, dummy_corte_test )
   names(newdata_beta_td_tree_ela)[length(names(newdata_beta_td_tree_ela))]  = "dummy_corte_train"
-  ytest_pred.beta_td_tree_ela =  tryCatch(betareg::predict(beta.fit_td_tree_ela, newdata_beta_td_tree_ela, type = "link"), error= function(e) {return(NA)}  )
+  ytest_pred.beta_td_tree_ela =  tryCatch(betareg::predict(beta.fit_td_tree_ela, newdata_beta_td_tree_ela, type = "response"), error= function(e) {return(NA)}  )
   # distance
   dist_beta_td_tree_ela = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.beta_td_tree_ela)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
   
@@ -287,17 +289,17 @@ main_function_pred = function(Xtrain, Xtest , target, d, link_phi, link_mu, dist
   dist_beta_tc_ela = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.beta_tc_ela)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
   
   # 2.3 Beta tree using selected covariates with elastic net.
-  # # Fit
-  # data_beta_tc_tree_ela = data.frame(data_beta_tc_ela, dummy_corte_train)
-  # formu_tc_tree_ela = as.formula(paste("ytrain", paste(names(data_beta_tc_tree_ela)[-1], collapse=" + "), sep=" ~ "))
-  # beta.fit_tc_tree_ela <- tryCatch(betareg::betatree(formu_tc_tree_ela, ~ dummy_corte_train, data = data_beta_tc_tree_ela,  link.phi = link_phi, link = link_mu   ), error= function(e) {return(NA)}  )
-  # # predict
-  # newdata_beta_tc_tree_ela = data.frame(newdata_beta_tc_ela, dummy_corte_test )
-  # names(newdata_beta_tc_tree_ela)[length(names(newdata_beta_tc_tree_ela))]  = "dummy_corte_train"
-  # ytest_pred.beta_tc_tree_ela =  tryCatch(predict(beta.fit_tc_tree_ela, newdata_beta_tc_tree_ela))
-  # # distance
-  # dist_beta_tc_tree_ela = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.beta_tc_tree_ela)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
-  
+  # Fit
+  data_beta_tc_tree_ela = data.frame(data_beta_tc_ela, dummy_corte_train)
+  formu_tc_tree_ela = as.formula(paste("ytrain", paste(names(data_beta_tc_tree_ela)[-1], collapse=" + "), sep=" ~ "))
+  beta.fit_tc_tree_ela <- tryCatch(betareg::betatree(formu_tc_tree_ela, ~ dummy_corte_train, data = data_beta_tc_tree_ela,  link.phi = link_phi, link = link_mu   ), error= function(e) {return(NA)}  )
+  # predict
+  newdata_beta_tc_tree_ela = data.frame(newdata_beta_tc_ela, dummy_corte_test )
+  names(newdata_beta_tc_tree_ela)[length(names(newdata_beta_tc_tree_ela))]  = "dummy_corte_train"
+  ytest_pred.beta_tc_tree_ela =  tryCatch(predict(beta.fit_tc_tree_ela, newdata_beta_tc_tree_ela))
+  # distance
+  dist_beta_tc_tree_ela = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.beta_tc_tree_ela)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
+
   # 2.3 Beta lasso  
   #Fit
   hyperparam <- kfoldCV.betalasso(data_tc_sr, ytrain, nfolds)
@@ -354,7 +356,7 @@ main_function_pred = function(Xtrain, Xtest , target, d, link_phi, link_mu, dist
     
     "MSE elastic_tc" = mean((ytest-ytest_pred.elastic_tc)^2),
     "MSE beta_tc_ela" = mean((ytest-ytest_pred.beta_tc_ela)^2),
-   # "MSE beta_tc_tree_ela" = mean((ytest-ytest_pred.beta_tc_tree_ela)^2),
+    "MSE beta_tc_tree_ela" = mean((ytest-ytest_pred.beta_tc_tree_ela)^2),
     "MSE betalasso_tc" = mean((ytest-ytest_pred.betalasso_tc)^2),
     
     "MSE xgb_tc" = mean((ytest-ytest_pred.xgb_tc)^2),
@@ -381,11 +383,14 @@ main_function_pred = function(Xtrain, Xtest , target, d, link_phi, link_mu, dist
     
     "dist elastic_tc" = dist_elastic_tc,
     "dist beta_tc_ela" = dist_beta_tc_ela,
-   # "dist beta_tc_tree_ela" = dist_beta_tc_tree_ela,
+    "dist beta_tc_tree_ela" = dist_beta_tc_tree_ela,
     "dist betalasso_tc" = dist_betalasso_tc,
     
     "dist xgb_tc" = dist_xgb_tc,
     "dist betaboost_tc" = dist_betaboost_tc,
+    
+   
+    
     
     "n" = nrow(df),  
     "p"= length(colnames(df)[!((colnames(df) %in% c(colnames(df)[1:33])))]),
@@ -419,31 +424,51 @@ main_function_pred = function(Xtrain, Xtest , target, d, link_phi, link_mu, dist
     
     "yhat elastic_tc" = ytest_pred.elastic_tc,
     "yhat beta_tc_ela" = ytest_pred.beta_tc_ela,
-   # "yhat beta_tc_tree_ela" = ytest_pred.beta_tc_tree_ela,
+    "yhat beta_tc_tree_ela" = ytest_pred.beta_tc_tree_ela,
     "yhat betalasso_tc" = ytest_pred.betalasso_tc,
     
     "yhat xgb_tc" = ytest_pred.xgb_tc,
     "yhat betaboost_tc" = ytest_pred.betaboost_tc
     
-    
+  )
+     errores = data.frame(
+       
+       "error pls_td" = ((test-ytest_pred.pls_td)^1),
+       "error pls_np_td" = ((ytest-ytest_pred.np_td_d1)^1),
+       "error beta_td_cr" = (ytest-ytest_pred.beta_td_cr)^1),
+       "error beta_td_tree_cr" = (ytest-ytest_pred.beta_td_tree_cr)^1),
+       
+       "error elastic_td" = (ytest-ytest_pred.elastic_td)^1),
+       "error beta_td_ela" = (ytest-ytest_pred.beta_td_ela)^1),
+       "error beta_td_tree_ela" = (ytest-ytest_pred.beta_td_tree_ela)^1),
+       "error betalasso_td" = (ytest-ytest_pred.betalasso_td)^1),
+       
+       "error xgb_td" = (ytest-ytest_pred.xgb_td)^1),
+       "error betaboost_td" = (ytest-ytest_pred.betaboost_td)^1),
+       
+       
+       "error pls_tc" = (ytest-ytest_pred.pls_tc)^1),
+       "error pls_np_tc" = (ytest-ytest_pred.np_tc_d1)^1),
+       "error beta_tc_cr" = (ytest-ytest_pred.beta_tc_cr)^1),
+       "error beta_tc_tree_cr" = (ytest-ytest_pred.beta_tc_tree_cr)^1),
+       
+       "error elastic_tc" = (ytest-ytest_pred.elastic_tc)^1),
+       "error beta_tc_ela" = (ytest-ytest_pred.beta_tc_ela)^1),
+       "error beta_tc_tree_ela" = (ytest-ytest_pred.beta_tc_tree_ela)^1),
+       "error betalasso_tc" = ((ytest-ytest_pred.betalasso_tc)^1),
+       
+       "error xgb_tc" =  ((ytest-ytest_pred.xgb_tc)^1),
+       "error betaboost_tc" =  ((ytest-ytest_pred.betaboost_tc)^1),
      
     
   )
   
-  return(list("results"=results,"predicted" = predicted))
+  return(list("results"=results,"predicted" = predicted,"errors" =errores))
   
 }
 
-# prueba
-df = datas[[2]]
-data <- random.split(df, 0.8)
-Xtrain <- data$data_train
-Xtest = data$data_test
 
-prueba2 = main_function_pred(Xtrain,Xtest,target = "mpi_Other",d=1,  link_phi = "log", link_mu = "logit", distancia = "hellinger")
-View(prueba2[["predicted"]] )
 
- 
 #Randomly shuffle the data
 df_fold  = datas[[2]] 
 
@@ -468,7 +493,8 @@ View(predichos[["yhats_3"]]$predicted) #ok
 View(predichos[["yhats_4"]]$predicted) #ok
 View(predichos[["yhats_5"]]$predicted) #ok
 
-
+View(predichos[["yhats_1"]]$errores)
+View(predichos[["yhats_2"]]$errores)
 
 saveRDS(predichos,"graphs_predichos_0.Rdata") #4cols + tc
 # saveRDS(predichos,"graphs_predichos_1.Rdata")#tc
@@ -487,7 +513,8 @@ saveRDS(predichos,"graphs_predichos_0.Rdata") #4cols + tc
 # df = datas[[2]]
 #predichos_0 = readRDS("graphs_predichos_0.Rdata")
 # predichos_0[["yhats_5"]]$results
- 
+
+# cambiar los indices en los fors!!!!!! 
 library(dplyr)
 library(ggplot2)
  
@@ -503,7 +530,7 @@ theme_set(
 
 best_methods = function(lista){
   results = data.frame()
-  for (i in 1:5) {
+  for (i in 1:2) {
     res = lista[[i]]$results
     results = rbind(results, res)
   }
@@ -540,6 +567,23 @@ graph_data = function(df, lista){
   return(data_graph)
 }
 
+graph_data_errors = function(df, lista){
+  errors = data.frame()
+  for (i in 1:2) {
+    preds = lista[[i]]$errores
+    errores = rbind(errores, preds)
+  }
+  index = rownames(errores)
+  #df$year_trend <- as.numeric(as.character(df$year_Other))
+  #df$year_trend <- df$year_trend - min(df$year_trend)
+  #data = df[,c(1:33,ncol(df))] #choose columns
+  #data = data[index,] #filter by rows
+  #data_graph = cbind(data,predicted) 
+  names(errores)[names(errores) == 's0'] <- 'error.elastic_td'
+  names(errores)[names(errores) == 's0.1'] <- 'error.elastic_tc'
+  
+  return(data_graph)
+}
 
 
 plot_data = function(df, division){
@@ -621,15 +665,13 @@ data_plot_all_2$yhat.betaboost_td = c(data_plot_all[(data_plot_all$variable == "
 data_plot_all = plot_data(folds, "none")
 
 ggplot(data_plot_all, aes(x=value, color = variable))  +
-  #xlim(-.001, 1) +
+  xlim(-.001, 1) +
   geom_density(lwd = 1, linetype = 1) 
 
-ggplot(data_plot_all, aes(x=value, color = variable))  +
-  xlim(-.001, 1) +
-  geom_histogram(aes( alpha = 0.5, position = "identity") )
-
-
-
+ 
+#boxplot
+par(mfrow = c(1, 6))
+invisible(lapply(1:6, function(i) boxplot(trees[, i])))
 
 
 # Densidades por region  
