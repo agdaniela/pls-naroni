@@ -433,32 +433,32 @@ main_function_pred = function(Xtrain, Xtest , target, d, link_phi, link_mu, dist
   )
      errores = data.frame(
        
-       "error pls_td" = ((test-ytest_pred.pls_td)^1),
+       "error pls_td" = ((ytest-ytest_pred.pls_td)^1),
        "error pls_np_td" = ((ytest-ytest_pred.np_td_d1)^1),
-       "error beta_td_cr" = (ytest-ytest_pred.beta_td_cr)^1),
-       "error beta_td_tree_cr" = (ytest-ytest_pred.beta_td_tree_cr)^1),
+       "error beta_td_cr" = ((ytest-ytest_pred.beta_td_cr)^1),
+       "error beta_td_tree_cr" = ((ytest-ytest_pred.beta_td_tree_cr)^1),
        
-       "error elastic_td" = (ytest-ytest_pred.elastic_td)^1),
-       "error beta_td_ela" = (ytest-ytest_pred.beta_td_ela)^1),
-       "error beta_td_tree_ela" = (ytest-ytest_pred.beta_td_tree_ela)^1),
-       "error betalasso_td" = (ytest-ytest_pred.betalasso_td)^1),
+       "error elastic_td" = ((ytest-ytest_pred.elastic_td)^1),
+       "error beta_td_ela" = ((ytest-ytest_pred.beta_td_ela)^1),
+       "error beta_td_tree_ela" = ((ytest-ytest_pred.beta_td_tree_ela)^1),
+       "error betalasso_td" = ((ytest-ytest_pred.betalasso_td)^1),
        
-       "error xgb_td" = (ytest-ytest_pred.xgb_td)^1),
-       "error betaboost_td" = (ytest-ytest_pred.betaboost_td)^1),
+       "error xgb_td" = ((ytest-ytest_pred.xgb_td)^1),
+       "error betaboost_td" = ((ytest-ytest_pred.betaboost_td)^1),
        
        
-       "error pls_tc" = (ytest-ytest_pred.pls_tc)^1),
-       "error pls_np_tc" = (ytest-ytest_pred.np_tc_d1)^1),
-       "error beta_tc_cr" = (ytest-ytest_pred.beta_tc_cr)^1),
-       "error beta_tc_tree_cr" = (ytest-ytest_pred.beta_tc_tree_cr)^1),
+       "error pls_tc" = ((ytest-ytest_pred.pls_tc)^1),
+       "error pls_np_tc" = ((ytest-ytest_pred.np_tc_d1)^1),
+       "error beta_tc_cr" = ((ytest-ytest_pred.beta_tc_cr)^1),
+       "error beta_tc_tree_cr" = ((ytest-ytest_pred.beta_tc_tree_cr)^1),
        
-       "error elastic_tc" = (ytest-ytest_pred.elastic_tc)^1),
-       "error beta_tc_ela" = (ytest-ytest_pred.beta_tc_ela)^1),
-       "error beta_tc_tree_ela" = (ytest-ytest_pred.beta_tc_tree_ela)^1),
+       "error elastic_tc" = ((ytest-ytest_pred.elastic_tc)^1),
+       "error beta_tc_ela" = ((ytest-ytest_pred.beta_tc_ela)^1),
+       "error beta_tc_tree_ela" = ((ytest-ytest_pred.beta_tc_tree_ela)^1),
        "error betalasso_tc" = ((ytest-ytest_pred.betalasso_tc)^1),
        
        "error xgb_tc" =  ((ytest-ytest_pred.xgb_tc)^1),
-       "error betaboost_tc" =  ((ytest-ytest_pred.betaboost_tc)^1),
+       "error betaboost_tc" =  ((ytest-ytest_pred.betaboost_tc)^1)
      
     
   )
@@ -493,8 +493,8 @@ View(predichos[["yhats_3"]]$predicted) #ok
 View(predichos[["yhats_4"]]$predicted) #ok
 View(predichos[["yhats_5"]]$predicted) #ok
 
-View(predichos[["yhats_1"]]$errores)
-View(predichos[["yhats_2"]]$errores)
+View(predichos$yhats_1$errors)
+View(predichos$yhats_2$errors)
 
 saveRDS(predichos,"graphs_predichos_0.Rdata") #4cols + tc
 # saveRDS(predichos,"graphs_predichos_1.Rdata")#tc
@@ -567,10 +567,10 @@ graph_data = function(df, lista){
   return(data_graph)
 }
 
-graph_data_errors = function(df, lista){
-  errors = data.frame()
+graph_data_errors = function(lista){
+  errores = data.frame()
   for (i in 1:2) {
-    preds = lista[[i]]$errores
+    preds = lista[[i]]$errors
     errores = rbind(errores, preds)
   }
   index = rownames(errores)
@@ -582,7 +582,7 @@ graph_data_errors = function(df, lista){
   names(errores)[names(errores) == 's0'] <- 'error.elastic_td'
   names(errores)[names(errores) == 's0.1'] <- 'error.elastic_tc'
   
-  return(data_graph)
+  return(errores)
 }
 
 
@@ -594,29 +594,29 @@ plot_data = function(df, division){
   data_plot$yhat.pls_td= NULL
   data_plot$yhat.pls_np_td= NULL
   data_plot$yhat.beta_td_cr= NULL
-  #data_plot$yhat.beta_td_tree_cr= NULL
+  data_plot$yhat.beta_td_tree_cr= NULL
   
-  #data_plot$yhat.elastic_td= NULL
+  data_plot$yhat.elastic_td= NULL
   data_plot$yhat.beta_td_ela= NULL
-  #data_plot$yhat.beta_td_tree_ela= NULL
+  data_plot$yhat.beta_td_tree_ela= NULL
   data_plot$yhat.betalasso_td= NULL
   
-  #data_plot$yhat.xgb_td = NULL
-  #data_plot$yhat.betaboost_td= NULL
+  data_plot$yhat.xgb_td = NULL
+  data_plot$yhat.betaboost_td= NULL
   
   
   data_plot$yhat.pls_tc = NULL
   data_plot$yhat.pls_np_tc= NULL
   data_plot$yhat.beta_tc_cr = NULL
-  data_plot$yhat.beta_tc_tree_cr = NULL
+  #data_plot$yhat.beta_tc_tree_cr = NULL
   
-  data_plot$yhat.elastic_tc = NULL
+  #data_plot$yhat.elastic_tc = NULL
   data_plot$yhat.beta_tc_ela = NULL
-  data_plot$yhat.beta_tc_tree_ela= NULL
+  #data_plot$yhat.beta_tc_tree_ela= NULL
   data_plot$yhat.betalasso_tc = NULL
   
-  data_plot$yhat.xgb_tc = NULL
-  data_plot$yhat.betaboost_tc = NULL
+  #data_plot$yhat.xgb_tc = NULL
+  #data_plot$yhat.betaboost_tc = NULL
    
   
   
@@ -656,24 +656,46 @@ plot_data = function(df, division){
 df = datas[[2]]
 folds = graph_data(df, predichos)
 
-data_plot_all_2 = data.frame("ytest" = c(data_plot_all[(data_plot_all$variable == "y_test"),]$value ))
-
-data_plot_all_2$yhat.betaboost_td = c(data_plot_all[(data_plot_all$variable == "yhat.betaboost_td"),]$value )
-
-
 # Densidades y vs yhat  
 data_plot_all = plot_data(folds, "none")
 
 ggplot(data_plot_all, aes(x=value, color = variable))  +
   xlim(-.001, 1) +
   geom_density(lwd = 1, linetype = 1) 
-
  
+#histograms
+#FA
+ggplot(data_plot_all, aes(x=value, fill = (variable)))+
+  geom_histogram( color='#e9ecef', alpha=0.6, position='identity')
+
+#FR
+ggplot(data_plot_all, aes(value, fill = variable)) +
+  geom_histogram(aes(y = after_stat(density * width)),
+                 position = "identity", alpha = 0.5)
+
+ggplot(data_plot_all, aes(value, fill = variable)) +
+  geom_histogram(aes(y = after_stat(density * width)), position = "identity", alpha = 0.5) +
+  facet_wrap(~ variable)
+#> `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+
 #boxplot
-par(mfrow = c(1, 6))
-invisible(lapply(1:6, function(i) boxplot(trees[, i])))
+errors = graph_data_errors(predichos)
+#names and numbers of columns
+colnames(errors)
+errors_graph = reshape2::melt(errors[,c(14,15,17,19,20)])
+names(errors_graph) = c("Methods","Error")
+
+ggplot(data = errors_graph, aes(x=Methods, y=Error)) + geom_boxplot(aes(fill=Methods))
+
+# negative values on predictions
+sapply(1:ncol(folds), function(x) nrow(folds[folds[,x]<0,]))
+colnames(folds)[c(36,40,46,50)]
+
+sapply(sign(folds[,36:ncol(folds)]), function(x) table(factor(x, levels=c(-1,0,1))))
 
 
+#################################################
 # Densidades por region  
  
 data_plot_reg = plot_data(folds,"region")
