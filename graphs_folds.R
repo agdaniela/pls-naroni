@@ -547,7 +547,7 @@ densities_plot = ggplot(data_plot_all, aes(x=value, color = variable))  +
 densities_plot + 
   labs(x = "MPI", y = "Density", color = "Method") +
   xlim(-.001, 1) +
-  scale_color_discrete(labels = c("MPI","PLS","PLS-beta"))
+  scale_color_discrete(labels = c("ytest","PLS","PLS-beta"))
    
   
 
