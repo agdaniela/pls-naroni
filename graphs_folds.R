@@ -518,18 +518,6 @@ plot_data = function(df, division){
     data_plot$year_trend = NULL  
     data_plot = reshape2::melt(data_plot,id.vars = "region_Other")
     
-  }
-  
-  else if (division == "period"){
-    data_plot = data_plot[,c(4,34:ncol(data_plot))]
-    data_plot$year_Other = as.numeric(levels(data_plot$year_Other))[data_plot$year_Other]
-    period <- seq(min(data_plot$year_Other), max(data_plot$year_Other), by = 5)
-    data_plot$period <- findInterval(data_plot$year_Other,  period)
-    
-    data_plot$year_Other = NULL
-    data_plot$year_trend = NULL
-    
-    data_plot = reshape2::melt(data_plot, id.vars = "period")
     
   } else {
     data_plot = data_plot[,c(1,35:ncol(data_plot))]
@@ -552,10 +540,24 @@ folds = graph_data(df, predichos)
 # Densidades y vs yhat  
 data_plot_all = plot_data(folds, "none")
 
-ggplot(data_plot_all, aes(x=value, color = variable))  +
-  xlim(-.001, 1) +
+densities_plot = ggplot(data_plot_all, aes(x=value, color = variable))  +
   geom_density(lwd = 1, linetype = 1) 
  
+
+densities_plot + 
+  labs(x = "MPI", y = "Density", color = "Method") +
+  xlim(-.001, 1) +
+  scale_color_discrete(labels = c("MPI","PLS","PLS-beta"))
+   
+  
+
+
+print(densities_plot)
+
+
+
+
+
 #histograms
 #FA
 ggplot(data_plot_all, aes(x=value, fill = (variable)))+
