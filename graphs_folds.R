@@ -262,7 +262,7 @@ View(predichos10[["yhats_9"]]$predicted)
 View(predichos10[["yhats_10"]]$predicted) 
 
 saveRDS(df_fold, "df_fold.Rdata")
-saveRDS(predichos10, "predichos10_ok.Rdata")
+saveRDS(predichos10, "predichos_mpi.Rdata")
 
 # Folds for A and H
 # cortes: mpi=0.2, h=0.2,a=0.5
