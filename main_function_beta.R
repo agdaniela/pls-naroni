@@ -25,9 +25,8 @@ df_13 = datas[[7]] #94 observations 477 WBI
 # 1.  Using dimension reduction
 
 # 1.1 PLS with optimal $d$ using linear predictor. 
-# 1.2 PLS with fixed $d=1$ using non-parametric regression.
-# 1.3 PLS with optimal $d$ using beta regression (For hyperparameter, training with the prediction model)
-# 1.4 PLS with optimal $d$ using beta tree model for prediction.
+# 1.2 PLS with optimal $d$ using beta regression (For hyperparameter, training with the prediction model)
+# 1.. PLS with optimal $d$ using beta tree model for prediction.
 
 
 # 2. Based on Regularized Regresion/Variable Selection
@@ -35,7 +34,6 @@ df_13 = datas[[7]] #94 observations 477 WBI
 # 2.1 Elastic Net.
 # 2.2 Beta regression using selected covariates with elastic net.
 # 2.3 Beta tree using selected covariates with elastic net.
-# 2.3 Beta lasso (Falta probar. NACHO)
 
 # 3 Based on Model Selection
 
@@ -44,7 +42,7 @@ df_13 = datas[[7]] #94 observations 477 WBI
 
  
  
-main_function_tcyd = function(df, target, d_pls, d_plsbeta , link_phi, link_mu, distancia){
+main_function_tcyd = function(df, target, corte , link_phi, link_mu, distancia){
   
   #  
   # 
@@ -119,8 +117,8 @@ main_function_tcyd = function(df, target, d_pls, d_plsbeta , link_phi, link_mu, 
   # 1.4 PLS with optimal $d$ using beta tree model for prediction.
   
   # Fit
-  dummy_corte_train = ifelse(ytrain<=0.2, 1, 0)
-  dummy_corte_test = as.vector(ifelse(ytest<=0.2, 1, 0))
+  dummy_corte_train = ifelse(ytrain<=corte, 1, 0)
+  dummy_corte_test = as.vector(ifelse(ytest<=corte, 1, 0))
   
   data_beta_tc_tree_cr = data.frame(data_tc_dbeta,dummy_corte_train)
   formu_tc_dbeta_tree = as.formula(paste("ytrain", paste(names(data_beta_tc_tree_cr)[-1], collapse=" + "), sep=" ~ ")) 
@@ -173,7 +171,7 @@ main_function_tcyd = function(df, target, d_pls, d_plsbeta , link_phi, link_mu, 
   # predict
   newdata_beta_tc_tree_ela = data.frame(newdata_beta_tc_ela, dummy_corte_test )
   names(newdata_beta_tc_tree_ela)[length(names(newdata_beta_tc_tree_ela))]  = "dummy_corte_train"
-  ytest_pred.beta_tc_tree_ela =  tryCatch(predict(beta.fit_tc_tree_ela, newdata_beta_tc_tree_ela))
+  ytest_pred.beta_tc_tree_ela =  tryCatch(predict(beta.fit_tc_tree_ela, newdata_beta_tc_tree_ela), error= function(e) {return(NA)}  )
   # distance
   dist_beta_tc_tree_ela = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.beta_tc_tree_ela)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
   
@@ -246,15 +244,15 @@ main_function_tcyd = function(df, target, d_pls, d_plsbeta , link_phi, link_mu, 
   
 }
 
-main_function_tcyd(df,"mpi_Other",  link_phi = "log",link_mu = "logit", distancia = "hellinger")
+main_function_tcyd(df,"mpi_Other", corte = 0.2, link_phi = "log",link_mu = "logit", distancia = "hellinger")
 
-parts_10 = repetitions(df,"mpi_Other", link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=10)
+rep_mpi_1 = repetitions(df,"mpi_Other", corte=0.2,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=10)
 
 #parts_10_d4 = repetitions2(df,"mpi_Other",d=4,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=10)
 
-lapply(parts_10, function(x) mean(na.omit(x)))
+lapply(rep_mpi_1, function(x) mean(na.omit(x)))
 
-saveRDS(parts_10,"parts10_.Rdta")
+saveRDS(rep_mpi_1,"rep_mpi_1.Rdta")
 #plot(ytest[ytest<0.2], ytest_pred.beta_tc_tree_sr[ytest<0.2] ); abline(0,1)
 #plot(ytest[ytest<0.2], ytest_pred.elastic_tc[ytest<0.2] ); abline(0,1)
 
