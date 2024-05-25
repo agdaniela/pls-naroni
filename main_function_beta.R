@@ -252,7 +252,7 @@ rep_mpi_1 = repetitions(df,"mpi_Other", corte=0.2,link_phi = "log", link_mu = "l
 
 lapply(rep_mpi_1, function(x) mean(na.omit(x)))
 
-saveRDS(rep_mpi_1,"rep_mpi_1.Rdta")
+saveRDS(rep_mpi_1,"rep_mpi_1.Rdata")
 #plot(ytest[ytest<0.2], ytest_pred.beta_tc_tree_sr[ytest<0.2] ); abline(0,1)
 #plot(ytest[ytest<0.2], ytest_pred.elastic_tc[ytest<0.2] ); abline(0,1)
 
