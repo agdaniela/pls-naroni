@@ -17,7 +17,10 @@ source("cv.betalasso.R")
 # 
 
 #########################################################
-df = datas[[2]]; target = "mpi_Other" #218 observations 167 WBI
+df = datas[[2]]; target = "h_Other" #218 observations 167 WBI
+
+df$h_Other = df$h_Other/100
+df$a_Other = df$a_Other/100
 
 df_1 = datas[[1]] #249 observations 110 WBI
 df_13 = datas[[7]] #94 observations 477 WBI
@@ -258,6 +261,22 @@ saveRDS(rep_mpi_df2,"rep_mpi_df2.Rdata")
 rep_mpi_df2 = mapply(c, rep_mpi_df2_1, rep_mpi_df2_2,rep_mpi_df2_3, SIMPLIFY=FALSE)
 
 readRDS("rep_mpi_df2.Rdata")
+
+###########
+# cortes: mpi=0.2, h=0.2,a=0.5
+
+rep_h_df2_2 = repetitions(df,target = "h_Other", corte=0.2,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=40)
+
+saveRDS(rep_h_df2_2,"rep_h_df2_2.Rdata")
+readRDS("rep_h_df2_2.Rdata")
+
+#########
+rep_a_df2_1 = repetitions(df,target = "a_Other", corte=0.5,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=25)
+
+saveRDS(rep_a_df2_1,"rep_a_df2_1.Rdata")
+readRDS("rep_a_df2_1.Rdata")
+
+
 
 
 
