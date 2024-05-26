@@ -267,15 +267,17 @@ readRDS("rep_mpi_df2.Rdata")
 
 rep_h_df2_2 = repetitions(df,target = "h_Other", corte=0.2,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=40)
 
-saveRDS(rep_h_df2_2,"rep_h_df2_2.Rdata")
-readRDS("rep_h_df2_2.Rdata")
+saveRDS(rep_h_df2,"rep_h_df2.Rdata")
+readRDS("rep_h_df2.Rdata")
 
+rep_h_df2 = mapply(c,rep_h_df2_1,rep_h_df2_2, SIMPLIFY = FALSE)
 #########
 rep_a_df2_2 = repetitions(df,target = "a_Other", corte=0.5,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=40)
 
-saveRDS(rep_a_df2_2,"rep_a_df2_2.Rdata")
-readRDS("rep_a_df2_2.Rdata")
+saveRDS(rep_a_df2,"rep_a_df2.Rdata")
+readRDS("rep_a_df2.Rdata")
 
+rep_a_df2 = mapply(c,rep_a_df2_1,rep_a_df2_2, SIMPLIFY = FALSE)
 
 
 
