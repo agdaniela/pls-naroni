@@ -246,18 +246,18 @@ main_function_tcyd = function(df, target, corte , link_phi, link_mu, distancia){
 
 main_function_tcyd(df,"mpi_Other", corte = 0.2, link_phi = "log",link_mu = "logit", distancia = "hellinger")
 
-rep_mpi_df2_2 = repetitions(df,"mpi_Other", corte=0.2,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=10)
+rep_mpi_df2_3 = repetitions(df,"mpi_Other", corte=0.2,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=30)
 
-lapply(rep_mpi_df2_1, function(x) mean(na.omit(x)))
+lapply(rep_mpi_df2_3, function(x) mean(na.omit(x)))
 
-saveRDS(rep_mpi_df2_1,"rep_mpi_df2_1.Rdata")
+saveRDS(rep_mpi_df2,"rep_mpi_df2.Rdata")
 #plot(ytest[ytest<0.2], ytest_pred.beta_tc_tree_sr[ytest<0.2] ); abline(0,1)
 #plot(ytest[ytest<0.2], ytest_pred.elastic_tc[ytest<0.2] ); abline(0,1)
 
 # beta y betatree con elastic discreto
-mapply(c, rep_mpi_df2_1, rep_mpi_df2_2, SIMPLIFY=FALSE)
+rep_mpi_df2 = mapply(c, rep_mpi_df2_1, rep_mpi_df2_2,rep_mpi_df2_3, SIMPLIFY=FALSE)
 
-
+readRDS("rep_mpi_df2.Rdata")
 
 
 
