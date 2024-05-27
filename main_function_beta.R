@@ -8,22 +8,20 @@ source("repetitions.R")
 source("cv.betalasso.R")
 #devtools::install_github("https://github.com/girelaignacio/penalizedbeta.git")
 #########################################################
-#dataframes (correr la primera vez sin comentar)
-# datas = list()
-# for (i in c(1,2,5,8,9,10,13,15)){
-# nombre <- paste("plsdata", i, sep="_")
-# datas[[nombre]] = selectdfs(plsdata,i)
-# }
-# 
+#dataframes (correr en caso de no tener la lista "datas")
+datas = list()
+for (i in c(1,2,5,8,9,10,13,15)){
+nombre <- paste("plsdata", i, sep="_")
+datas[[nombre]] = selectdfs(plsdata,i)
+}
+
 
 #########################################################
-df = datas[[2]]; target = "h_Other" #218 observations 167 WBI
+# df = datas[[2]]; target = "h_Other" #218 observations 167 WBI
+# 
+# df$h_Other = df$h_Other/100
+# df$a_Other = df$a_Other/100
 
-df$h_Other = df$h_Other/100
-df$a_Other = df$a_Other/100
-
-df_1 = datas[[1]] #249 observations 110 WBI
-df_13 = datas[[7]] #94 observations 477 WBI
 
 # 1.  Using dimension reduction
 
@@ -247,37 +245,93 @@ main_function_tcyd = function(df, target, corte , link_phi, link_mu, distancia){
   
 }
 
-main_function_tcyd(df,"mpi_Other", corte = 0.2, link_phi = "log",link_mu = "logit", distancia = "hellinger")
+# main_function_tcyd(df,"mpi_Other", corte = 0.2, link_phi = "log",link_mu = "logit", distancia = "hellinger")
+# 
+# rep_mpi_df2_3 = repetitions(df,"mpi_Other", corte=0.2,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=30)
+# 
+# lapply(rep_mpi_df2_3, function(x) mean(na.omit(x)))
+# 
+# saveRDS(rep_mpi_df2,"rep_mpi_df2.Rdata")
+# #plot(ytest[ytest<0.2], ytest_pred.beta_tc_tree_sr[ytest<0.2] ); abline(0,1)
+# #plot(ytest[ytest<0.2], ytest_pred.elastic_tc[ytest<0.2] ); abline(0,1)
+# 
+#  
+# rep_mpi_df2 = mapply(c, rep_mpi_df2_1, rep_mpi_df2_2,rep_mpi_df2_3, SIMPLIFY=FALSE)
+# 
+# readRDS("rep_mpi_df2.Rdata")
+# 
+# ###########
+# # cortes: mpi=0.2, h=0.2,a=0.5
+# 
+# rep_h_df2_2 = repetitions(df,target = "h_Other", corte=0.2,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=40)
+# 
+# saveRDS(rep_h_df2,"rep_h_df2.Rdata")
+# readRDS("rep_h_df2.Rdata")
+# 
+# rep_h_df2 = mapply(c,rep_h_df2_1,rep_h_df2_2, SIMPLIFY = FALSE)
+# #########
+# rep_a_df2_2 = repetitions(df,target = "a_Other", corte=0.5,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=40)
+# 
+# saveRDS(rep_a_df2,"rep_a_df2.Rdata")
+# readRDS("rep_a_df2.Rdata")
+# 
+# rep_a_df2 = mapply(c,rep_a_df2_1,rep_a_df2_2, SIMPLIFY = FALSE)
+# 
 
-rep_mpi_df2_3 = repetitions(df,"mpi_Other", corte=0.2,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=30)
+###################################################
+# RODRI
+df_1 = datas[[1]] #249 observations 110 WBI
+df_1$h_Other = df_1$h_Other /100
+df_1$a_Other = df_1$a_Other /100
 
-lapply(rep_mpi_df2_3, function(x) mean(na.omit(x)))
+#MPI
+rep_mpi_df1 = repetitions(df_1,"mpi_Other", corte=0.2,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=50)
+saveRDS(rep_mpi_df1,"rep_mpi_df1.Rdata")
+#control
+readRDS("rep_mpi_df1.Rdata")
 
-saveRDS(rep_mpi_df2,"rep_mpi_df2.Rdata")
-#plot(ytest[ytest<0.2], ytest_pred.beta_tc_tree_sr[ytest<0.2] ); abline(0,1)
-#plot(ytest[ytest<0.2], ytest_pred.elastic_tc[ytest<0.2] ); abline(0,1)
+#H
+rep_h_df1 = repetitions(df_1,target = "h_Other", corte=0.2,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=50)
+saveRDS(rep_h_df1,"rep_h_df1.Rdata")
+#control
+readRDS("rep_h_df1.Rdata")
 
-# beta y betatree con elastic discreto
-rep_mpi_df2 = mapply(c, rep_mpi_df2_1, rep_mpi_df2_2,rep_mpi_df2_3, SIMPLIFY=FALSE)
+#A
+rep_a_df1 = repetitions(df_1,target = "a_Other", corte=0.5,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=50)
+saveRDS(rep_a_df1,"rep_a_df1.Rdata")
+#control
+readRDS("rep_a_df1.Rdata")
 
-readRDS("rep_mpi_df2.Rdata")
 
-###########
-# cortes: mpi=0.2, h=0.2,a=0.5
+###################################################
+#NACHO
+df_13 = datas[[7]] #94 observations 477 WBI
+df_13$h_Other = df_13$h_Other/100
+df_13$a_Other = df_13$a_Other/100
 
-rep_h_df2_2 = repetitions(df,target = "h_Other", corte=0.2,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=40)
+#MPI
+rep_mpi_df13 = repetitions(df_13,"mpi_Other", corte=0.2,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=50)
+saveRDS(rep_mpi_df13,"rep_mpi_df13.Rdata")
+#control
+readRDS("rep_mpi_df13.Rdata")
 
-saveRDS(rep_h_df2,"rep_h_df2.Rdata")
-readRDS("rep_h_df2.Rdata")
+#H
+rep_h_df13 = repetitions(df_13,target = "h_Other", corte=0.2,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=50)
+saveRDS(rep_h_df13,"rep_h_df13.Rdata")
+#control
+readRDS("rep_h_df13.Rdata")
 
-rep_h_df2 = mapply(c,rep_h_df2_1,rep_h_df2_2, SIMPLIFY = FALSE)
-#########
-rep_a_df2_2 = repetitions(df,target = "a_Other", corte=0.5,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=40)
+#A
+rep_a_df13 = repetitions(df_13,target = "a_Other", corte=0.5,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=50)
+saveRDS(rep_a_df13,"rep_a_df13.Rdata")
+#control
+readRDS("rep_a_df13.Rdata")
 
-saveRDS(rep_a_df2,"rep_a_df2.Rdata")
-readRDS("rep_a_df2.Rdata")
 
-rep_a_df2 = mapply(c,rep_a_df2_1,rep_a_df2_2, SIMPLIFY = FALSE)
+
+
+
+
 
 
 
