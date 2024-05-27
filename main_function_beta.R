@@ -254,6 +254,8 @@ df_1 = datas[[1]] #249 observations 110 WBI
 df_1$h_Other = df_1$h_Other /100
 df_1$a_Other = df_1$a_Other /100
 
+df_1$mpi_Other[25] = 0.0000000001
+
 #MPI
 rep_mpi_df1 = repetitions(df_1,"mpi_Other", corte=0.2,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=50)
 saveRDS(rep_mpi_df1,"rep_mpi_df1.Rdata")
@@ -299,7 +301,7 @@ readRDS("rep_a_df13.Rdata")
 
 ######################################################
 #DANI
-# main_function_tcyd(df,"mpi_Other", corte = 0.2, link_phi = "log",link_mu = "logit", distancia = "hellinger")
+main_function_tcyd(df_13,"mpi_Other", corte = 0.2, link_phi = "log",link_mu = "logit", distancia = "hellinger")
 # 
 # rep_mpi_df2_3 = repetitions(df,"mpi_Other", corte=0.2,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=30)
 # 
