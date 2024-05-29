@@ -254,16 +254,17 @@ df_1 = datas[[1]] #249 observations 110 WBI
 df_1$h_Other = df_1$h_Other /100
 df_1$a_Other = df_1$a_Other /100
 
-df_1$mpi_Other[25] = 0.0000000001
-
-#MPI
-rep_mpi_df1 = repetitions(df_1,"mpi_Other", corte=0.2,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=50)
-saveRDS(rep_mpi_df1,"rep_mpi_df1.Rdata")
-#control
-readRDS("rep_mpi_df1.Rdata")
+df_1$mpi_Other = df_1$mpi_Other + 0.0000000001
+df_1$h_Other = df_1$h_Other + 0.0000000001
+df_1$a_Other = df_1$a_Other + 0.0000000001
+# #MPI
+# rep_mpi_df1 = repetitions(df_1,"mpi_Other", corte=0.2,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=50)
+# saveRDS(rep_mpi_df1,"rep_mpi_df1.Rdata")
+# #control
+ readRDS("rep_mpi_df1_dani.Rdata")
 
 #H
-rep_h_df1 = repetitions(df_1,target = "h_Other", corte=0.2,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=50)
+rep_h_df1_1 = repetitions(df_1,target = "h_Other", corte=0.2,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=10)
 saveRDS(rep_h_df1,"rep_h_df1.Rdata")
 #control
 readRDS("rep_h_df1.Rdata")
@@ -289,19 +290,19 @@ readRDS("rep_mpi_df13.Rdata")
 
 #H
 rep_h_df13 = repetitions(df_13,target = "h_Other", corte=0.2,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=50)
-saveRDS(rep_h_df13,"rep_h_df13.Rdata")
+saveRDS(rep_h_df13_1,"rep_h_df13.Rdata")
 #control
 readRDS("rep_h_df13.Rdata")
 
 #A
-rep_a_df13 = repetitions(df_13,target = "a_Other", corte=0.5,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=50)
+rep_a_df13 = repetitions(df_13,target = "a_Other", corte=0.43,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=50)
 saveRDS(rep_a_df13,"rep_a_df13.Rdata")
 #control
 readRDS("rep_a_df13.Rdata")
 
 ######################################################
 #DANI
-main_function_tcyd(df_13,"mpi_Other", corte = 0.2, link_phi = "log",link_mu = "logit", distancia = "hellinger")
+#main_function_tcyd(df_13,"a_Other", corte = 0.5, link_phi = "log",link_mu = "logit", distancia = "hellinger")
 # 
 # rep_mpi_df2_3 = repetitions(df,"mpi_Other", corte=0.2,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=30)
 # 
@@ -314,7 +315,7 @@ main_function_tcyd(df_13,"mpi_Other", corte = 0.2, link_phi = "log",link_mu = "l
 #  
 # rep_mpi_df2 = mapply(c, rep_mpi_df2_1, rep_mpi_df2_2,rep_mpi_df2_3, SIMPLIFY=FALSE)
 # 
-# readRDS("rep_mpi_df2.Rdata")
+readRDS("rep_mpi_df1.Rdata")
 # 
 # ###########
 # # cortes: mpi=0.2, h=0.2,a=0.5
