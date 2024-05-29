@@ -264,7 +264,7 @@ df_1$a_Other = df_1$a_Other + 0.0000000001
  readRDS("rep_mpi_df1_dani.Rdata")
 
 #H
-rep_h_df1_1 = repetitions(df_1,target = "h_Other", corte=0.2,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=10)
+rep_h_df1_1 = repetitions(df_1,target = "h_Other", corte=0.2,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=50)
 saveRDS(rep_h_df1,"rep_h_df1.Rdata")
 #control
 readRDS("rep_h_df1.Rdata")
@@ -282,11 +282,11 @@ df_13 = datas[[7]] #94 observations 477 WBI
 df_13$h_Other = df_13$h_Other/100
 df_13$a_Other = df_13$a_Other/100
 
-#MPI
-rep_mpi_df13 = repetitions(df_13,"mpi_Other", corte=0.2,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=50)
-saveRDS(rep_mpi_df13,"rep_mpi_df13.Rdata")
-#control
-readRDS("rep_mpi_df13.Rdata")
+# #MPI
+# rep_mpi_df13 = repetitions(df_13,"mpi_Other", corte=0.2,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=50)
+# saveRDS(rep_mpi_df13,"rep_mpi_df13.Rdata")
+# #control
+# readRDS("rep_mpi_df13.Rdata")
 
 #H
 rep_h_df13 = repetitions(df_13,target = "h_Other", corte=0.2,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=50)
