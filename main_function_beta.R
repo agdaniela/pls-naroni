@@ -295,7 +295,7 @@ saveRDS(rep_h_df13_1,"rep_h_df13.Rdata")
 readRDS("rep_h_df13.Rdata")
 
 #A
-rep_a_df13 = repetitions(df_13,target = "a_Other", corte=0.43,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=50)
+rep_a_df13 = repetitions(df_13,target = "a_Other", corte=0.5,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=50)
 saveRDS(rep_a_df13,"rep_a_df13.Rdata")
 #control
 readRDS("rep_a_df13.Rdata")
