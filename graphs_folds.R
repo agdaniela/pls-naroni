@@ -374,37 +374,26 @@ plot_data = function(df, division){
   data_plot$yhat.beta_tc_cr = NULL
    data_plot$yhat.beta_tc_tree_cr = NULL
 
- # data_plot$yhat.elastic_tc = NULL
- # data_plot$yhat.beta_tc_ela = NULL
- # data_plot$yhat.beta_tc_tree_ela= NULL
+  data_plot$yhat.elastic_tc = NULL
+  data_plot$yhat.beta_tc_ela = NULL
+  data_plot$yhat.beta_tc_tree_ela= NULL
  
 
-  data_plot$yhat.xgb_tc = NULL
-  data_plot$yhat.betaboost_tc = NULL
+  #data_plot$yhat.xgb_tc = NULL
+  #data_plot$yhat.betaboost_tc = NULL
 
   ######################################
-  data_plot$yhat.pls_tc_hxa = NULL
-  data_plot$yhat.beta_tc_cr_hxa = NULL
-  data_plot$yhat.beta_tc_tree_cr_hxa = NULL
-  
-  # data_plot$yhat.elastic_tc_hxa = NULL
-  # data_plot$yhat.beta_tc_ela_hxa = NULL
-  # data_plot$yhat.beta_tc_tree_ela_hxa= NULL
-  
-  
-  data_plot$yhat.xgb_tc_hxa = NULL
-  data_plot$yhat.betaboost_tc_hxa = NULL
   
   if (division == "region"){
     data_plot = data_plot[,c(3,34:ncol(data_plot))]
     data_plot$year_trend = NULL  
     data_plot = reshape2::melt(data_plot,id.vars = "region_Other")
     
-    
+
   } else {
-    data_plot = data_plot[,c(1,35:ncol(data_plot))]
-    data_plot = reshape2::melt(data_plot, id.vars = "iso_Other")
-    
+  data_plot = data_plot[,c(1,35:ncol(data_plot))]
+   data_plot = reshape2::melt(data_plot, id.vars = "iso_Other")
+
   }
   
   
@@ -535,6 +524,41 @@ ggplot(data_plot_reg, aes(x=value, color = variable)) +
 
 
 ################################################
+#ELASTIC
+################################################
+#A
+folds_a = graph_data(df,predichos_a)
+data_plot_a = plot_data(folds_a,"none")
+
+densities_plot_A = ggplot(data_plot_a, aes(x=value, color = variable,linetype = variable))  +
+  geom_density(lwd = 1) 
+
+densities_plot_A + 
+  labs(x = "A", y = "Density", color = "") +
+  xlim(0.32, 1) +
+  scale_color_discrete(labels = c("A-true","Elastic Net","Beta (elastic)","Beta-Tree (elastic)"))+
+  guides(linetype = "none")
+
+# cant menores a 0.33
+sapply(1:ncol(folds_a), function(x) nrow(folds_a[folds_a[,x]<0.33,]))
+ 
+#H
+folds_h = graph_data(df,predichos_h)
+data_plot_h = plot_data(folds_h,"none")
+
+densities_plot_H = ggplot(data_plot_h, aes(x=value, color = variable,linetype = variable))  +
+  geom_density(lwd = 1) 
+
+densities_plot_H + 
+  labs(x = "H", y = "Density", color = "") +
+ # xlim(0.32, 1) +
+  scale_color_discrete(labels = c("H-true","Elastic Net","Beta (elastic)","Beta-Tree (elastic)"))+
+  guides(linetype = "none")
+
+
+#MPI  HXA
+
+
 # Y-hat A*H
 View(graph_data(df,predichos_a))
 View(graph_data(df,predichos10))
@@ -545,30 +569,217 @@ H_hat = graph_data(df,predichos_h)
 H_hat = H_hat[,35:43]
 MPI_hat = graph_data(df,predichos10)
 MPI_hat_hxa = A_hat * H_hat
-MPI_hat_hxa$y_test = MPI_hat$y_test
-colnames(MPI_hat_hxa)[1]  = "y_test"               
-colnames(MPI_hat_hxa)[2] =  "yhat.pls_tc_hxa"          
-colnames(MPI_hat_hxa)[3] ="yhat.beta_tc_cr_hxa"      
-colnames(MPI_hat_hxa)[4] ="yhat.beta_tc_tree_cr_hxa" 
-colnames(MPI_hat_hxa)[5] ="yhat.elastic_tc_hxa"      
-colnames(MPI_hat_hxa)[6] ="yhat.beta_tc_ela_hxa"     
-colnames(MPI_hat_hxa)[7] ="yhat.beta_tc_tree_ela_hxa"
-colnames(MPI_hat_hxa)[8] ="yhat.xgb_tc_hxa"          
-colnames(MPI_hat_hxa)[9] = "yhat.betaboost_tc_hxa"
-MPI_hat_hxa$y_test = NULL
+#MPI_hat_hxa$y_test = MPI_hat$y_test
+# colnames(MPI_hat_hxa)[1]  = "y_test"               
+# colnames(MPI_hat_hxa)[2] =  "yhat.pls_tc_hxa"          
+# colnames(MPI_hat_hxa)[3] ="yhat.beta_tc_cr_hxa"      
+# colnames(MPI_hat_hxa)[4] ="yhat.beta_tc_tree_cr_hxa" 
+# colnames(MPI_hat_hxa)[5] ="yhat.elastic_tc_hxa"      
+# colnames(MPI_hat_hxa)[6] ="yhat.beta_tc_ela_hxa"     
+# colnames(MPI_hat_hxa)[7] ="yhat.beta_tc_tree_ela_hxa"
+# colnames(MPI_hat_hxa)[8] ="yhat.xgb_tc_hxa"          
+# colnames(MPI_hat_hxa)[9] = "yhat.betaboost_tc_hxa"
+# MPI_hat_hxa$y_test = NULL
 View(MPI_hat_hxa)
 View(MPI_hat)
 
-data_plot_hxa = plot_data(cbind(folds,MPI_hat_hxa), "none")
+data_plot_hxa = reshape2::melt(MPI_hat_hxa[,c(1,5,6,7)])
 
 densities_plot = ggplot(data_plot_hxa, aes(x=value, color = variable,linetype = variable))  +
   geom_density(lwd = 1) 
 
 densities_plot + 
+  labs(x = "MPI (HxA)", y = "Density", color = "") +
+  xlim(-.001, 1) +
+  scale_color_discrete(labels = c("HxA-true","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","a","b","c"))+
+  guides(linetype = "none")
+
+
+################################################
+# Lineal
+################################################
+#A
+folds_a = graph_data(df,predichos_a)
+data_plot_a = plot_data(folds_a,"none")
+View(data_plot_a)
+
+densities_plot_A = ggplot(data_plot_a, aes(x=value, color = variable,linetype = variable))  +
+  geom_density(lwd = 1) 
+
+densities_plot_A + 
+  labs(x = "A", y = "Density", color = "") +
+  xlim(0.32, 1) +
+  scale_color_discrete(labels = c("A-true","Linear-PLS","Beta-PLS","Beta-Tree-PLS"))+
+  guides(linetype = "none")
+
+# cant menores a 0.33
+sapply(1:ncol(folds_a), function(x) nrow(folds_a[folds_a[,x]<0.33,]))
+
+#H
+folds_h = graph_data(df,predichos_h)
+data_plot_h = plot_data(folds_h,"none")
+View(data_plot_h)
+
+densities_plot_H = ggplot(data_plot_h, aes(x=value, color = variable,linetype = variable))  +
+  geom_density(lwd = 1) 
+
+densities_plot_H + 
+  labs(x = "H", y = "Density", color = "") +
+  # xlim(0.32, 1) +
+  scale_color_discrete(labels = c("H-true","Linear-PLS","Beta-PLS","Beta-Tree-PLS"))+
+  guides(linetype = "none")
+
+
+#MPI  HXA
+
+
+# Y-hat A*H
+View(graph_data(df,predichos_a))
+View(graph_data(df,predichos10))
+
+A_hat = graph_data(df,predichos_a)
+A_hat = A_hat[,35:43]
+H_hat = graph_data(df,predichos_h)
+H_hat = H_hat[,35:43]
+MPI_hat = graph_data(df,predichos10)
+MPI_hat_hxa = A_hat * H_hat
+#MPI_hat_hxa$y_test = MPI_hat$y_test
+# colnames(MPI_hat_hxa)[1]  = "y_test"               
+# colnames(MPI_hat_hxa)[2] =  "yhat.pls_tc_hxa"          
+# colnames(MPI_hat_hxa)[3] ="yhat.beta_tc_cr_hxa"      
+# colnames(MPI_hat_hxa)[4] ="yhat.beta_tc_tree_cr_hxa" 
+# colnames(MPI_hat_hxa)[5] ="yhat.elastic_tc_hxa"      
+# colnames(MPI_hat_hxa)[6] ="yhat.beta_tc_ela_hxa"     
+# colnames(MPI_hat_hxa)[7] ="yhat.beta_tc_tree_ela_hxa"
+# colnames(MPI_hat_hxa)[8] ="yhat.xgb_tc_hxa"          
+# colnames(MPI_hat_hxa)[9] = "yhat.betaboost_tc_hxa"
+# MPI_hat_hxa$y_test = NULL
+View(MPI_hat_hxa)
+View(MPI_hat)
+
+data_plot_hxa = reshape2::melt(MPI_hat_hxa[,c(1,2,3,4)])
+View(data_plot_hxa)
+
+densities_plot = ggplot(data_plot_hxa, aes(x=value, color = variable,linetype = variable))  +
+  geom_density(lwd = 1) 
+
+densities_plot + 
+  labs(x = "MPI (HxA)", y = "Density", color = "") +
+  xlim(-.001, 1) +
+  scale_color_discrete(labels = c("HxA-true","Linear-PLS","Beta-PLS","Beta-Tree-PLS"))+
+  guides(linetype = "none")
+
+# MPI
+
+folds = graph_data(df, predichos10)
+data_plot_all = plot_data(folds, "none")
+View(data_plot_all)
+unique(data_plot_all$variable)
+
+densities_plot = ggplot(data_plot_all, aes(x=value, color = variable,linetype = variable))  +
+  geom_density(lwd = 1) 
+
+densities_plot + 
   labs(x = "MPI", y = "Density", color = "") +
   xlim(-.001, 1) +
-  scale_color_discrete(labels = c("Ytrue","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","a","b","c"))+
+  scale_color_discrete(labels = c("Ytrue","Linear-PLS","Beta-PLS","Beta-Tree-PLS"))+
   guides(linetype = "none")
+
+
+
+################################################
+# Boost
+################################################
+#A
+folds_a = graph_data(df,predichos_a)
+data_plot_a = plot_data(folds_a,"none")
+unique(data_plot_a$variable)
+
+densities_plot_A = ggplot(data_plot_a, aes(x=value, color = variable,linetype = variable))  +
+  geom_density(lwd = 1) 
+
+densities_plot_A + 
+  labs(x = "A", y = "Density", color = "") +
+  xlim(0.32, 1) +
+  scale_color_discrete(labels = c("A-true","XGBoost","Betaboost"))+
+  guides(linetype = "none")
+
+# cant menores a 0.33
+sapply(1:ncol(folds_a), function(x) nrow(folds_a[folds_a[,x]<0.33,]))
+
+#H
+folds_h = graph_data(df,predichos_h)
+data_plot_h = plot_data(folds_h,"none")
+unique(data_plot_h$variable)
+
+densities_plot_H = ggplot(data_plot_h, aes(x=value, color = variable,linetype = variable))  +
+  geom_density(lwd = 1) 
+
+densities_plot_H + 
+  labs(x = "H", y = "Density", color = "") +
+  # xlim(0.32, 1) +
+  scale_color_discrete(labels = c("H-true","XGBoost","Betaboost"))+
+  guides(linetype = "none")
+
+
+#MPI  HXA
+
+
+# Y-hat A*H
+View(graph_data(df,predichos_a))
+View(graph_data(df,predichos10))
+
+A_hat = graph_data(df,predichos_a)
+A_hat = A_hat[,35:43]
+H_hat = graph_data(df,predichos_h)
+H_hat = H_hat[,35:43]
+MPI_hat = graph_data(df,predichos10)
+MPI_hat_hxa = A_hat * H_hat
+#MPI_hat_hxa$y_test = MPI_hat$y_test
+# colnames(MPI_hat_hxa)[1]  = "y_test"               
+# colnames(MPI_hat_hxa)[2] =  "yhat.pls_tc_hxa"          
+# colnames(MPI_hat_hxa)[3] ="yhat.beta_tc_cr_hxa"      
+# colnames(MPI_hat_hxa)[4] ="yhat.beta_tc_tree_cr_hxa" 
+# colnames(MPI_hat_hxa)[5] ="yhat.elastic_tc_hxa"      
+# colnames(MPI_hat_hxa)[6] ="yhat.beta_tc_ela_hxa"     
+# colnames(MPI_hat_hxa)[7] ="yhat.beta_tc_tree_ela_hxa"
+# colnames(MPI_hat_hxa)[8] ="yhat.xgb_tc_hxa"          
+# colnames(MPI_hat_hxa)[9] = "yhat.betaboost_tc_hxa"
+# MPI_hat_hxa$y_test = NULL
+View(MPI_hat_hxa)
+View(MPI_hat)
+
+data_plot_hxa = reshape2::melt(MPI_hat_hxa[,c(1,8,9)])
+unique(data_plot_hxa$variable)
+
+densities_plot = ggplot(data_plot_hxa, aes(x=value, color = variable,linetype = variable))  +
+  geom_density(lwd = 1) 
+
+densities_plot + 
+  labs(x = "MPI (HxA)", y = "Density", color = "") +
+  xlim(-.001, 1) +
+  scale_color_discrete(labels = c("HxA-true","XGBoost","Betaboost"))+
+  guides(linetype = "none")
+
+# MPI
+
+folds = graph_data(df, predichos10)
+data_plot_all = plot_data(folds, "none")
+View(data_plot_all)
+unique(data_plot_all$variable)
+
+densities_plot = ggplot(data_plot_all, aes(x=value, color = variable,linetype = variable))  +
+  geom_density(lwd = 1) 
+
+densities_plot + 
+  labs(x = "MPI", y = "Density", color = "") +
+  xlim(-.001, 1) +
+  scale_color_discrete(labels = c("Ytrue","XGBoost","Betaboost"))+
+  guides(linetype = "none")
+
+
+
+
 
 
 
