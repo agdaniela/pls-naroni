@@ -270,11 +270,10 @@ saveRDS(rep_h_df1,"rep_h_df1.Rdata")
 readRDS("rep_h_df1.Rdata")
 
 #A
-rep_a_df1 = repetitions(df_1,target = "a_Other", corte=0.5,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=50)
+rep_a_df1 = repetitions(df_1,target = "a_Other", corte=0.5,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=25)
 saveRDS(rep_a_df1,"rep_a_df1.Rdata")
 #control
 readRDS("rep_a_df1.Rdata")
-
 
 ###################################################
 #NACHO
