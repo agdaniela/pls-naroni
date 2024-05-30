@@ -370,19 +370,30 @@ plot_data = function(df, division){
   
   # choose methods by comment
   
- # data_plot$yhat.pls_tc = NULL
- # data_plot$yhat.beta_tc_cr = NULL
+  data_plot$yhat.pls_tc = NULL
+  data_plot$yhat.beta_tc_cr = NULL
    data_plot$yhat.beta_tc_tree_cr = NULL
 
-  data_plot$yhat.elastic_tc = NULL
-  data_plot$yhat.beta_tc_ela = NULL
-  data_plot$yhat.beta_tc_tree_ela= NULL
+ # data_plot$yhat.elastic_tc = NULL
+ # data_plot$yhat.beta_tc_ela = NULL
+ # data_plot$yhat.beta_tc_tree_ela= NULL
  
 
   data_plot$yhat.xgb_tc = NULL
   data_plot$yhat.betaboost_tc = NULL
 
+  ######################################
+  data_plot$yhat.pls_tc_hxa = NULL
+  data_plot$yhat.beta_tc_cr_hxa = NULL
+  data_plot$yhat.beta_tc_tree_cr_hxa = NULL
   
+  # data_plot$yhat.elastic_tc_hxa = NULL
+  # data_plot$yhat.beta_tc_ela_hxa = NULL
+  # data_plot$yhat.beta_tc_tree_ela_hxa= NULL
+  
+  
+  data_plot$yhat.xgb_tc_hxa = NULL
+  data_plot$yhat.betaboost_tc_hxa = NULL
   
   if (division == "region"){
     data_plot = data_plot[,c(3,34:ncol(data_plot))]
@@ -442,7 +453,7 @@ densities_plot = ggplot(data_plot_all, aes(x=value, color = variable,linetype = 
 densities_plot + 
   labs(x = "MPI", y = "Density", color = "") +
   xlim(-.001, 1) +
-  scale_color_discrete(labels = c("Ytrue","Linear-PLS","Beta-PLS"))+
+  scale_color_discrete(labels = c("Ytrue","Elastic Net","Beta (elastic)","Beta-Tree (elastic)"))+
   guides(linetype = "none")
   
 
@@ -452,6 +463,14 @@ my_strip_labels <- as_labeller(c(
   "yhat.pls_tc" = "Linear-PLS",
   "yhat.beta_tc_cr" = "Beta-PLS"
 ))
+
+my_strip_labels <- as_labeller(c(
+  "y_test" = "Ytrue",
+  "yhat.elastic_tc" = "elastic",
+  "yhat.beta_tc_ela" = "beta ela",
+  "yhat.beta_tree_tc_cr" = "beta tree ela"
+))
+
 
 ggplot(data_plot_all, aes(value, fill = variable)) +
   geom_histogram(aes(y = after_stat(density * width)), position = "identity", alpha = 0.5, show.legend = F) +
@@ -515,8 +534,41 @@ ggplot(data_plot_reg, aes(x=value, color = variable)) +
 
 
 
+################################################
+# Y-hat A*H
+View(graph_data(df,predichos_a))
+View(graph_data(df,predichos10))
 
+A_hat = graph_data(df,predichos_a)
+A_hat = A_hat[,35:43]
+H_hat = graph_data(df,predichos_h)
+H_hat = H_hat[,35:43]
+MPI_hat = graph_data(df,predichos10)
+MPI_hat_hxa = A_hat * H_hat
+MPI_hat_hxa$y_test = MPI_hat$y_test
+colnames(MPI_hat_hxa)[1]  = "y_test"               
+colnames(MPI_hat_hxa)[2] =  "yhat.pls_tc_hxa"          
+colnames(MPI_hat_hxa)[3] ="yhat.beta_tc_cr_hxa"      
+colnames(MPI_hat_hxa)[4] ="yhat.beta_tc_tree_cr_hxa" 
+colnames(MPI_hat_hxa)[5] ="yhat.elastic_tc_hxa"      
+colnames(MPI_hat_hxa)[6] ="yhat.beta_tc_ela_hxa"     
+colnames(MPI_hat_hxa)[7] ="yhat.beta_tc_tree_ela_hxa"
+colnames(MPI_hat_hxa)[8] ="yhat.xgb_tc_hxa"          
+colnames(MPI_hat_hxa)[9] = "yhat.betaboost_tc_hxa"
+MPI_hat_hxa$y_test = NULL
+View(MPI_hat_hxa)
+View(MPI_hat)
 
+data_plot_hxa = plot_data(cbind(folds,MPI_hat_hxa), "none")
+
+densities_plot = ggplot(data_plot_hxa, aes(x=value, color = variable,linetype = variable))  +
+  geom_density(lwd = 1) 
+
+densities_plot + 
+  labs(x = "MPI", y = "Density", color = "") +
+  xlim(-.001, 1) +
+  scale_color_discrete(labels = c("Ytrue","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","a","b","c"))+
+  guides(linetype = "none")
 
 
 
