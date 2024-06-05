@@ -496,20 +496,15 @@ ggplot(data_plot_all, aes(value, fill = variable)) +
 # #> `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
 
-#boxplot
-errors = graph_data_errors(predichos)
-#names and numbers of columns
-colnames(errors)
-errors_graph = reshape2::melt(errors[,c(14,15,17,19,20)])
-names(errors_graph) = c("Methods","Error")
 
-ggplot(data = errors_graph, aes(x=Methods, y=Error)) + geom_boxplot(aes(fill=Methods))
 
 # negative values on predictions
 sapply(1:ncol(folds), function(x) nrow(folds[folds[,x]<0,]))
 colnames(folds)[c(36,40,46,50)]
 
 sapply(sign(folds[,36:ncol(folds)]), function(x) table(factor(x, levels=c(-1,0,1))))
+
+
 
 
 #################################################
@@ -776,6 +771,88 @@ densities_plot +
   xlim(-.001, 1) +
   scale_color_discrete(labels = c("Ytrue","XGBoost","Betaboost"))+
   guides(linetype = "none")
+
+
+##########################################################
+#boxplots
+
+
+#df1
+
+rep_mpi_df1 = readRDS("rep_mpi_df1.Rdata")
+rep_a_df1 = readRDS("rep_a_df1.Rdata")
+rep_h_df1 = readRDS("rep_h_df1.Rdata")
+
+#df2
+rep_mpi_df2 = readRDS("rep_mpi_df2.Rdata")
+rep_a_df2 = readRDS("rep_a_df2.Rdata")
+rep_h_df2 = readRDS("rep_h_df2.Rdata")
+
+#df13
+rep_mpi_df13 = readRDS("rep_mpi_df13.Rdata")
+rep_a_df13 = readRDS("rep_a_df13.Rdata")
+rep_h_df13 = readRDS("rep_h_df13.Rdata")
+
+
+graph_data_errors = function(lista){
+  errors_df = data.frame(matrix(unlist(lista), nrow=50, byrow=F))
+  colnames(errors_df) = names(lista)
+  return(errors_df)
+}
+
+library(ggplot2)
+
+theme_set(
+  theme_light(base_size = 18) +
+    theme(
+      axis.line.x = element_line(
+        colour = "black",
+        size = 0.5,
+        linetype = "solid"
+      ),
+      axis.line.y = element_line(
+        colour = "black",
+        size = 0.5,
+        linetype = "solid"
+      ),
+      panel.grid.minor = element_blank(),
+      panel.grid.major.y = element_line(colour = "gray", linetype = "dotted", size = 0.5),
+      panel.grid.major.x = element_line(colour = "gray", linetype = "dotted", size = 0.5) ,
+      panel.background = element_blank(),
+      panel.border = element_blank(),
+      axis.text = element_text(size = 12),
+      legend.position = "bottom",
+      legend.text = element_text(size = 18), #
+      
+    )
+)
+#MSE
+
+
+#mpi -df1
+errors = graph_data_errors(rep_mpi_df1)
+errors_graph = reshape2::melt(errors[,c(1:8)])
+names(errors_graph) = c("Methods","MSE")
+
+ggplot(data = errors_graph, aes(x=Methods, y=MSE)) +
+   geom_boxplot(aes(fill=Methods))+ 
+   ylim(-0.0001, 0.03) +
+   scale_x_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )+
+   scale_fill_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )
+   #guides(color=guide_legend("my title")) 
+
+
+ 
+#a - df1
+errors = graph_data_errors(rep_a_df1)
+
+#h - df1
+errors = graph_data_errors(rep_h_df1)
+
+
+
+
+
 
 
 
