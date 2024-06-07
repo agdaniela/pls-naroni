@@ -232,8 +232,10 @@ main_function_pred = function(Xtrain, Xtest , target,corte, link_phi, link_mu, d
 
 
 
-#############
-# Ten fold experiment
+#######################################################################
+# Ten fold experiment df2
+#######################################################################
+
 df_fold  = datas[[2]] 
 
 df_fold  <- df_fold[sample(nrow(df_fold)),]
@@ -316,7 +318,178 @@ View(predichos_h[["hhats_10"]]$predicted)
 
 saveRDS(predichos_h,"predichos_h.Rdata")
 
+#######################################################################
+# Ten fold experiment df1 
+#######################################################################
 
+df_fold_1  = datas[[1]] 
+
+df_fold_1  <- df_fold_1[sample(nrow(df_fold_1)),]
+
+folds_index_1 <- cut(seq(1,nrow(df_fold_1)),breaks=10,labels=FALSE) #indices
+
+predichos_df1 = list()
+for(i in 1:10){
+  testIndexes_1 <- which(folds_index_1 == i,arr.ind=TRUE)
+  testData_1 <- df_fold[testIndexes_1, ]
+  trainData_1 <- df_fold[-testIndexes_1, ]
+  nombre <- paste("yhats", i, sep="_")
+  predichos_df1[[nombre]] = main_function_pred(trainData_1,testData_1,"mpi_Other",corte=0.2, link_phi = "log", link_mu = "logit", distancia = "hellinger")
+}
+
+View(predichos_df1[["yhats_1"]]$predicted)
+View(predichos_df1[["yhats_2"]]$predicted)
+View(predichos_df1[["yhats_3"]]$predicted)
+View(predichos_df1[["yhats_4"]]$predicted)
+View(predichos_df1[["yhats_5"]]$predicted)
+View(predichos_df1[["yhats_6"]]$predicted)
+View(predichos_df1[["yhats_7"]]$predicted) 
+View(predichos_df1[["yhats_8"]]$predicted) 
+View(predichos_df1[["yhats_9"]]$predicted) 
+View(predichos_df1[["yhats_10"]]$predicted) 
+
+saveRDS(df_fold_1, "df_fold_1.Rdata")
+saveRDS(predichos_df1, "predichos_mpi_df1.Rdata")
+readRDS("predichos_mpi_df1.Rdata")
+# Folds for A and H
+# cortes: mpi=0.2, h=0.2,a=0.5
+df_fold$a_Other = df_fold$a_Other / 100
+df_fold$h_Other = df_fold$h_Other / 100
+
+predichos_a = list()
+for(i in 1:10){
+  testIndexes <- which(folds_index == i,arr.ind=TRUE)
+  testData <- df_fold[testIndexes, ]
+  trainData <- df_fold[-testIndexes, ]
+  nombre <- paste("ahats", i, sep="_")
+  predichos_a[[nombre]] = main_function_pred(trainData,testData,"a_Other", corte=0.5, link_phi = "log", link_mu = "logit", distancia = "hellinger")
+}
+
+View(predichos_a[["ahats_1"]]$predicted)
+View(predichos_a[["ahats_2"]]$predicted)
+View(predichos_a[["ahats_3"]]$predicted)
+View(predichos_a[["ahats_4"]]$predicted)
+View(predichos_a[["ahats_5"]]$predicted)
+View(predichos_a[["ahats_6"]]$predicted)
+View(predichos_a[["ahats_7"]]$predicted) 
+View(predichos_a[["ahats_8"]]$predicted) 
+View(predichos_a[["ahats_9"]]$predicted) 
+View(predichos_a[["ahats_10"]]$predicted) 
+
+
+saveRDS(predichos_a,"predichos_a.Rdata")
+
+
+predichos_h = list()
+for(i in 1:10){
+  testIndexes <- which(folds_index == i,arr.ind=TRUE)
+  testData <- df_fold[testIndexes, ]
+  trainData <- df_fold[-testIndexes, ]
+  nombre <- paste("hhats", i, sep="_")
+  predichos_h[[nombre]] = main_function_pred(trainData,testData,"h_Other", corte=0.2, link_phi = "log", link_mu = "logit", distancia = "hellinger")
+}
+
+View(predichos_h[["hhats_1"]]$predicted)
+View(predichos_h[["hhats_2"]]$predicted)
+View(predichos_h[["hhats_3"]]$predicted)
+View(predichos_h[["hhats_4"]]$predicted)
+View(predichos_h[["hhats_5"]]$predicted)
+View(predichos_h[["hhats_6"]]$predicted)
+View(predichos_h[["hhats_7"]]$predicted) 
+View(predichos_h[["hhats_8"]]$predicted) 
+View(predichos_h[["hhats_9"]]$predicted) 
+View(predichos_h[["hhats_10"]]$predicted) 
+
+
+saveRDS(predichos_h,"predichos_h.Rdata")
+
+#######################################################################
+# Ten fold experiment df13 
+#######################################################################
+
+df_fold  = datas[[2]] 
+
+df_fold  <- df_fold[sample(nrow(df_fold)),]
+
+folds_index <- cut(seq(1,nrow(df_fold)),breaks=10,labels=FALSE) #indices
+
+predichos10 = list()
+for(i in 1:10){
+  testIndexes <- which(folds_index == i,arr.ind=TRUE)
+  testData <- df_fold[testIndexes, ]
+  trainData <- df_fold[-testIndexes, ]
+  nombre <- paste("yhats", i, sep="_")
+  predichos10[[nombre]] = main_function_pred(trainData,testData,"mpi_Other", link_phi = "log", link_mu = "logit", distancia = "hellinger")
+}
+View(predichos[["yhats_1"]]$predicted)
+
+View(predichos10[["yhats_1"]]$predicted)
+View(predichos10[["yhats_2"]]$predicted)
+View(predichos10[["yhats_3"]]$predicted)
+View(predichos10[["yhats_4"]]$predicted)
+View(predichos10[["yhats_5"]]$predicted)
+View(predichos10[["yhats_6"]]$predicted)
+View(predichos10[["yhats_7"]]$predicted) 
+View(predichos10[["yhats_8"]]$predicted) 
+View(predichos10[["yhats_9"]]$predicted) 
+View(predichos10[["yhats_10"]]$predicted) 
+
+saveRDS(df_fold, "df_fold.Rdata")
+saveRDS(predichos10, "predichos_mpi.Rdata")
+
+# Folds for A and H
+# cortes: mpi=0.2, h=0.2,a=0.5
+df_fold$a_Other = df_fold$a_Other / 100
+df_fold$h_Other = df_fold$h_Other / 100
+
+predichos_a = list()
+for(i in 1:10){
+  testIndexes <- which(folds_index == i,arr.ind=TRUE)
+  testData <- df_fold[testIndexes, ]
+  trainData <- df_fold[-testIndexes, ]
+  nombre <- paste("ahats", i, sep="_")
+  predichos_a[[nombre]] = main_function_pred(trainData,testData,"a_Other", corte=0.5, link_phi = "log", link_mu = "logit", distancia = "hellinger")
+}
+
+View(predichos_a[["ahats_1"]]$predicted)
+View(predichos_a[["ahats_2"]]$predicted)
+View(predichos_a[["ahats_3"]]$predicted)
+View(predichos_a[["ahats_4"]]$predicted)
+View(predichos_a[["ahats_5"]]$predicted)
+View(predichos_a[["ahats_6"]]$predicted)
+View(predichos_a[["ahats_7"]]$predicted) 
+View(predichos_a[["ahats_8"]]$predicted) 
+View(predichos_a[["ahats_9"]]$predicted) 
+View(predichos_a[["ahats_10"]]$predicted) 
+
+
+saveRDS(predichos_a,"predichos_a.Rdata")
+
+
+predichos_h = list()
+for(i in 1:10){
+  testIndexes <- which(folds_index == i,arr.ind=TRUE)
+  testData <- df_fold[testIndexes, ]
+  trainData <- df_fold[-testIndexes, ]
+  nombre <- paste("hhats", i, sep="_")
+  predichos_h[[nombre]] = main_function_pred(trainData,testData,"h_Other", corte=0.2, link_phi = "log", link_mu = "logit", distancia = "hellinger")
+}
+
+View(predichos_h[["hhats_1"]]$predicted)
+View(predichos_h[["hhats_2"]]$predicted)
+View(predichos_h[["hhats_3"]]$predicted)
+View(predichos_h[["hhats_4"]]$predicted)
+View(predichos_h[["hhats_5"]]$predicted)
+View(predichos_h[["hhats_6"]]$predicted)
+View(predichos_h[["hhats_7"]]$predicted) 
+View(predichos_h[["hhats_8"]]$predicted) 
+View(predichos_h[["hhats_9"]]$predicted) 
+View(predichos_h[["hhats_10"]]$predicted) 
+
+
+saveRDS(predichos_h,"predichos_h.Rdata")
+
+#######################################################################
 
 library(dplyr)
 library(ggplot2)
