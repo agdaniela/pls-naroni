@@ -826,9 +826,9 @@ theme_set(
       
     )
 )
+
+
 #MSE
-
-
 #mpi -df1
 errors = graph_data_errors(rep_mpi_df1)
 errors_graph = reshape2::melt(errors[,c(1:8)])
@@ -838,19 +838,216 @@ ggplot(data = errors_graph, aes(x=Methods, y=MSE)) +
    geom_boxplot(aes(fill=Methods))+ 
    ylim(-0.0001, 0.03) +
    scale_x_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )+
-   scale_fill_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )
-   #guides(color=guide_legend("my title")) 
+   scale_fill_discrete(name = "",labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )+
+   guides(linetype = "none")
 
 
- 
 #a - df1
 errors = graph_data_errors(rep_a_df1)
+errors_graph = reshape2::melt(errors[,c(1:8)])
+names(errors_graph) = c("Methods","MSE")
+
+ggplot(data = errors_graph, aes(x=Methods, y=MSE)) +
+  geom_boxplot(aes(fill=Methods))+ 
+  #ylim(-0.0001, 0.03) +
+  scale_x_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )+
+  scale_fill_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )
 
 #h - df1
 errors = graph_data_errors(rep_h_df1)
+errors_graph = reshape2::melt(errors[,c(1:8)])
+names(errors_graph) = c("Methods","MSE")
+
+ggplot(data = errors_graph, aes(x=Methods, y=MSE)) +
+  geom_boxplot(aes(fill=Methods))+ 
+  ylim(-0.0001, 0.03) +
+  scale_x_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )+
+  scale_fill_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )
+
+
+#MSE
+#mpi -df2
+errors = graph_data_errors(rep_mpi_df2)
+errors_graph = reshape2::melt(errors[,c(1:8)])
+names(errors_graph) = c("Methods","MSE")
+
+ggplot(data = errors_graph, aes(x=Methods, y=MSE)) +
+  geom_boxplot(aes(fill=Methods))+ 
+  ylim(-0.0001, 0.03) +
+  scale_x_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )+
+  scale_fill_discrete(name = "",labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )+
+  guides(linetype = "none")
+
+
+#a - df2
+errors = graph_data_errors(rep_a_df2)
+errors_graph = reshape2::melt(errors[,c(1:8)])
+names(errors_graph) = c("Methods","MSE")
+
+ggplot(data = errors_graph, aes(x=Methods, y=MSE)) +
+  geom_boxplot(aes(fill=Methods))+ 
+  ylim(-0.0001, 0.01) +
+  scale_x_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )+
+  scale_fill_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )
+
+#h - df1
+errors = graph_data_errors(rep_h_df2)
+errors_graph = reshape2::melt(errors[,c(1:8)])
+names(errors_graph) = c("Methods","MSE")
+
+ggplot(data = errors_graph, aes(x=Methods, y=MSE)) +
+  geom_boxplot(aes(fill=Methods))+ 
+  ylim(-0.0001, 0.03) +
+  scale_x_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )+
+  scale_fill_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )
+
+#MSE
+#mpi -df13
+errors = graph_data_errors(rep_mpi_df13)
+errors_graph = reshape2::melt(errors[,c(1:8)])
+names(errors_graph) = c("Methods","MSE")
+
+ggplot(data = errors_graph, aes(x=Methods, y=MSE)) +
+  geom_boxplot(aes(fill=Methods))+ 
+  ylim(-0.0001, 0.03) +
+  scale_x_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )+
+  scale_fill_discrete(name = "",labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )+
+  guides(linetype = "none")
+
+
+#a - df13
+errors = graph_data_errors(rep_a_df13)
+errors_graph = reshape2::melt(errors[,c(1:8)])
+names(errors_graph) = c("Methods","MSE")
+
+ggplot(data = errors_graph, aes(x=Methods, y=MSE)) +
+  geom_boxplot(aes(fill=Methods))+ 
+  ylim(-0.0001, 0.01) +
+  scale_x_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )+
+  scale_fill_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )
+
+#h - df13
+errors = graph_data_errors(rep_h_df13)
+errors_graph = reshape2::melt(errors[,c(1:8)])
+names(errors_graph) = c("Methods","MSE")
+
+ggplot(data = errors_graph, aes(x=Methods, y=MSE)) +
+  geom_boxplot(aes(fill=Methods))+ 
+  ylim(-0.0001, 0.08) +
+  scale_x_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )+
+  scale_fill_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )
 
 
 
+# DISTANCE
+
+#mpi -df1
+errors = graph_data_errors(rep_mpi_df1)
+errors_graph = reshape2::melt(errors[,c(9:16)])
+names(errors_graph) = c("Methods","Distance")
+
+ggplot(data = errors_graph, aes(x=Methods, y=Distance)) +
+  geom_boxplot(aes(fill=Methods))+ 
+  ylim(-0.0001, 1) +
+  scale_x_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )+
+  scale_fill_discrete(name = "",labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )+
+  guides(linetype = "none")
+
+
+#a - df1
+errors = graph_data_errors(rep_a_df1)
+errors_graph = reshape2::melt(errors[,c(9:16)])
+names(errors_graph) = c("Methods","Distance")
+
+ggplot(data = errors_graph, aes(x=Methods, y=Distance)) +
+  geom_boxplot(aes(fill=Methods))+ 
+  #ylim(-0.0001, 0.03) +
+  scale_x_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )+
+  scale_fill_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )
+
+#h - df1
+errors = graph_data_errors(rep_h_df1)
+errors_graph = reshape2::melt(errors[,c(9:16)])
+names(errors_graph) = c("Methods","Distance")
+
+ggplot(data = errors_graph, aes(x=Methods, y=Distance)) +
+  geom_boxplot(aes(fill=Methods))+ 
+  ylim(-0.0001, 0.75) +
+  scale_x_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )+
+  scale_fill_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )
+
+
+#Distance
+#mpi -df2
+errors = graph_data_errors(rep_mpi_df2)
+errors_graph = reshape2::melt(errors[,c(9:16)])
+names(errors_graph) = c("Methods","Distance")
+
+ggplot(data = errors_graph, aes(x=Methods, y=Distance)) +
+  geom_boxplot(aes(fill=Methods))+ 
+  ylim(-0.0001, 1) +
+  scale_x_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )+
+  scale_fill_discrete(name = "",labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )+
+  guides(linetype = "none")
+
+
+#a - df2
+errors = graph_data_errors(rep_a_df2)
+errors_graph = reshape2::melt(errors[,c(9:16)])
+names(errors_graph) = c("Methods","Distance")
+
+ggplot(data = errors_graph, aes(x=Methods, y=Distance)) +
+  geom_boxplot(aes(fill=Methods))+ 
+  #ylim(-0.0001, 0.01) +
+  scale_x_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )+
+  scale_fill_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )
+
+#h - df1
+errors = graph_data_errors(rep_h_df2)
+errors_graph = reshape2::melt(errors[,c(9:16)])
+names(errors_graph) = c("Methods","Distance")
+
+ggplot(data = errors_graph, aes(x=Methods, y=Distance)) +
+  geom_boxplot(aes(fill=Methods))+ 
+  ylim(-0.0001, 0.6) +
+  scale_x_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )+
+  scale_fill_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )
+
+#dist
+#mpi -df13
+errors = graph_data_errors(rep_mpi_df13)
+errors_graph = reshape2::melt(errors[,c(9:16)])
+names(errors_graph) = c("Methods","Distance")
+
+ggplot(data = errors_graph, aes(x=Methods, y=Distance)) +
+  geom_boxplot(aes(fill=Methods))+ 
+  ylim(-0.0001, 1) +
+  scale_x_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )+
+  scale_fill_discrete(name = "",labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )+
+  guides(linetype = "none")
+
+
+#a - df13
+errors = graph_data_errors(rep_a_df13)
+errors_graph = reshape2::melt(errors[,c(9:16)])
+names(errors_graph) = c("Methods","Distance")
+
+ggplot(data = errors_graph, aes(x=Methods, y=Distance)) +
+  geom_boxplot(aes(fill=Methods))+ 
+#  ylim(-0.0001, 0.01) +
+  scale_x_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )+
+  scale_fill_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )
+
+#h - df13
+errors = graph_data_errors(rep_h_df13)
+errors_graph = reshape2::melt(errors[,c(9:16)])
+names(errors_graph) = c("Methods","Distance")
+
+ggplot(data = errors_graph, aes(x=Methods, y=Distance)) +
+  geom_boxplot(aes(fill=Methods))+ 
+  ylim(-0.0001, 0.6) +
+  scale_x_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )+
+  scale_fill_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )
 
 
 
