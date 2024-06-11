@@ -337,7 +337,7 @@ for(i in 1:10){
   predichos_df1[[nombre]] = main_function_pred(trainData_1,testData_1,"mpi_Other",corte=0.2, link_phi = "log", link_mu = "logit", distancia = "hellinger")
 }
 
-View(predichos_df1[["yhats_1"]]$predicted)
+View(predichos_mpi_df1[["yhats_1"]]$predicted)
 View(predichos_df1[["yhats_2"]]$predicted)
 View(predichos_df1[["yhats_3"]]$predicted)
 View(predichos_df1[["yhats_4"]]$predicted)
@@ -350,22 +350,23 @@ View(predichos_df1[["yhats_10"]]$predicted)
 
 saveRDS(df_fold_1, "df_fold_1.Rdata")
 saveRDS(predichos_df1, "predichos_mpi_df1.Rdata")
-readRDS("predichos_mpi_df1.Rdata")
+predichos_mpi_df1 = readRDS("predichos_mpi_df1.Rdata")
+df_fold_1 = readRDS("df_fold_1.Rdata")
 # Folds for A and H
 # cortes: mpi=0.2, h=0.2,a=0.5
-df_fold$a_Other = df_fold$a_Other / 100
-df_fold$h_Other = df_fold$h_Other / 100
+df_fold_1$a_Other = df_fold_1$a_Other / 100
+df_fold_1$h_Other = df_fold_1$h_Other / 100
 
-predichos_a = list()
+predichos_a_df1 = list()
 for(i in 1:10){
-  testIndexes <- which(folds_index == i,arr.ind=TRUE)
-  testData <- df_fold[testIndexes, ]
-  trainData <- df_fold[-testIndexes, ]
+  testIndexes_1 <- which(folds_index_1 == i,arr.ind=TRUE)
+  testData_1 <- df_fold[testIndexes_1, ]
+  trainData_1 <- df_fold[-testIndexes_1, ]
   nombre <- paste("ahats", i, sep="_")
-  predichos_a[[nombre]] = main_function_pred(trainData,testData,"a_Other", corte=0.5, link_phi = "log", link_mu = "logit", distancia = "hellinger")
+  predichos_a_df1[[nombre]] = main_function_pred(trainData_1,testData_1,"a_Other", corte=0.5, link_phi = "log", link_mu = "logit", distancia = "hellinger")
 }
 
-View(predichos_a[["ahats_1"]]$predicted)
+View(predichos_a_df1[["ahats_1"]]$predicted)
 View(predichos_a[["ahats_2"]]$predicted)
 View(predichos_a[["ahats_3"]]$predicted)
 View(predichos_a[["ahats_4"]]$predicted)
@@ -377,16 +378,16 @@ View(predichos_a[["ahats_9"]]$predicted)
 View(predichos_a[["ahats_10"]]$predicted) 
 
 
-saveRDS(predichos_a,"predichos_a.Rdata")
+saveRDS(predichos_a_df1,"predichos_a_df1.Rdata")
 
 
-predichos_h = list()
+predichos_h_df1 = list()
 for(i in 1:10){
-  testIndexes <- which(folds_index == i,arr.ind=TRUE)
-  testData <- df_fold[testIndexes, ]
-  trainData <- df_fold[-testIndexes, ]
+  testIndexes_1 <- which(folds_index_1 == i,arr.ind=TRUE)
+  testData_1 <- df_fold[testIndexes_1, ]
+  trainData_1 <- df_fold[-testIndexes_1, ]
   nombre <- paste("hhats", i, sep="_")
-  predichos_h[[nombre]] = main_function_pred(trainData,testData,"h_Other", corte=0.2, link_phi = "log", link_mu = "logit", distancia = "hellinger")
+  predichos_h_df1[[nombre]] = main_function_pred(trainData_1,testData_1,"h_Other", corte=0.2, link_phi = "log", link_mu = "logit", distancia = "hellinger")
 }
 
 View(predichos_h[["hhats_1"]]$predicted)
@@ -398,28 +399,29 @@ View(predichos_h[["hhats_6"]]$predicted)
 View(predichos_h[["hhats_7"]]$predicted) 
 View(predichos_h[["hhats_8"]]$predicted) 
 View(predichos_h[["hhats_9"]]$predicted) 
-View(predichos_h[["hhats_10"]]$predicted) 
+View(predichos_h_df1[["hhats_10"]]$predicted) 
 
 
-saveRDS(predichos_h,"predichos_h.Rdata")
+saveRDS(predichos_h_df1,"predichos_h_df1.Rdata")
+readRDS("predichos_h_df1.Rdata")
 
 #######################################################################
 # Ten fold experiment df13 
 #######################################################################
 
-df_fold  = datas[[2]] 
+df_fold_13  = datas[[7]] 
 
-df_fold  <- df_fold[sample(nrow(df_fold)),]
+df_fold_13  <- df_fold_13[sample(nrow(df_fold_13)),]
 
-folds_index <- cut(seq(1,nrow(df_fold)),breaks=10,labels=FALSE) #indices
+folds_index_13 <- cut(seq(1,nrow(df_fold_13)),breaks=10,labels=FALSE) #indices
 
-predichos10 = list()
+predichos_df13 = list()
 for(i in 1:10){
-  testIndexes <- which(folds_index == i,arr.ind=TRUE)
-  testData <- df_fold[testIndexes, ]
-  trainData <- df_fold[-testIndexes, ]
+  testIndexes_13 <- which(folds_index_13 == i,arr.ind=TRUE)
+  testData_13 <- df_fold[testIndexes_13, ]
+  trainData_13 <- df_fold[-testIndexes_13, ]
   nombre <- paste("yhats", i, sep="_")
-  predichos10[[nombre]] = main_function_pred(trainData,testData,"mpi_Other", link_phi = "log", link_mu = "logit", distancia = "hellinger")
+  predichos_df13[[nombre]] = main_function_pred(trainData_13,testData_13,"mpi_Other",corte=0.2, link_phi = "log", link_mu = "logit", distancia = "hellinger")
 }
 View(predichos[["yhats_1"]]$predicted)
 
@@ -434,21 +436,21 @@ View(predichos10[["yhats_8"]]$predicted)
 View(predichos10[["yhats_9"]]$predicted) 
 View(predichos10[["yhats_10"]]$predicted) 
 
-saveRDS(df_fold, "df_fold.Rdata")
-saveRDS(predichos10, "predichos_mpi.Rdata")
+saveRDS(df_fold_13, "df_fold_13.Rdata")
+saveRDS(predichos_df13, "predichos_mpi_df13.Rdata")
 
 # Folds for A and H
 # cortes: mpi=0.2, h=0.2,a=0.5
-df_fold$a_Other = df_fold$a_Other / 100
-df_fold$h_Other = df_fold$h_Other / 100
+df_fold_13$a_Other = df_fold_13$a_Other / 100
+df_fold_13$h_Other = df_fold_13$h_Other / 100
 
-predichos_a = list()
+predichos_a_df13 = list()
 for(i in 1:10){
-  testIndexes <- which(folds_index == i,arr.ind=TRUE)
-  testData <- df_fold[testIndexes, ]
-  trainData <- df_fold[-testIndexes, ]
+  testIndexes_13 <- which(folds_index_13 == i,arr.ind=TRUE)
+  testData_13 <- df_fold[testIndexes_13, ]
+  trainData_13 <- df_fold[-testIndexes_13, ]
   nombre <- paste("ahats", i, sep="_")
-  predichos_a[[nombre]] = main_function_pred(trainData,testData,"a_Other", corte=0.5, link_phi = "log", link_mu = "logit", distancia = "hellinger")
+  predichos_a_df13[[nombre]] = main_function_pred(trainData_13,testData_13,"a_Other", corte=0.5, link_phi = "log", link_mu = "logit", distancia = "hellinger")
 }
 
 View(predichos_a[["ahats_1"]]$predicted)
@@ -463,16 +465,16 @@ View(predichos_a[["ahats_9"]]$predicted)
 View(predichos_a[["ahats_10"]]$predicted) 
 
 
-saveRDS(predichos_a,"predichos_a.Rdata")
+saveRDS(predichos_a_df13,"predichos_a_df13.Rdata")
+readRDS("predichos_a_df13.Rdata")
 
-
-predichos_h = list()
+predichos_h_df13 = list()
 for(i in 1:10){
-  testIndexes <- which(folds_index == i,arr.ind=TRUE)
-  testData <- df_fold[testIndexes, ]
-  trainData <- df_fold[-testIndexes, ]
+  testIndexes_13 <- which(folds_index_13 == i,arr.ind=TRUE)
+  testData_13 <- df_fold[testIndexes_13, ]
+  trainData_13 <- df_fold[-testIndexes_13, ]
   nombre <- paste("hhats", i, sep="_")
-  predichos_h[[nombre]] = main_function_pred(trainData,testData,"h_Other", corte=0.2, link_phi = "log", link_mu = "logit", distancia = "hellinger")
+  predichos_h_df13[[nombre]] = main_function_pred(trainData_13,testData_13,"h_Other", corte=0.2, link_phi = "log", link_mu = "logit", distancia = "hellinger")
 }
 
 View(predichos_h[["hhats_1"]]$predicted)
@@ -487,8 +489,8 @@ View(predichos_h[["hhats_9"]]$predicted)
 View(predichos_h[["hhats_10"]]$predicted) 
 
 
-saveRDS(predichos_h,"predichos_h.Rdata")
-
+saveRDS(predichos_h_df13,"predichos_h_df13.Rdata")
+readRDS("predichos_h_df13.Rdata")
 #######################################################################
 
 library(dplyr)
