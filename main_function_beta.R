@@ -335,9 +335,85 @@ readRDS("rep_mpi_df1.Rdata")
 # 
 
 
+# df2
+rep_mpi_df2 = readRDS("rep_mpi_df2.Rdata")
+rep_a_df2 = readRDS("rep_a_df2.Rdata")
+rep_h_df2 = readRDS("rep_h_df2.Rdata")
+# df1
+rep_mpi_df1 = readRDS("rep_mpi_df1.Rdata")
+rep_a_df1 = readRDS("rep_a_df1.Rdata")
+rep_h_df1 = readRDS("rep_h_df1.Rdata")
+# df13
+rep_mpi_df13 = readRDS("rep_mpi_df13.Rdata")
+rep_a_df13 = readRDS("rep_a_df13.Rdata")
+rep_h_df13 = readRDS("rep_h_df13.Rdata")
+
+lapply(rep_mpi_df13, function(x) mean(na.omit(x)))
+lapply(rep_mpi_df13, function(x) sd(na.omit(x)))[1]
+
+tabla_exp2 = function(lista, df){
+  
+  average = lapply(lista, function(x) round(mean(na.omit(x)),4))
+  deviation = lapply(lista, function(x) round(sd(na.omit(x)),4))
+
+  return(deviation)
+}
+
+View(cbind(tabla_exp1(predichos_mpi_df1,df_1),tabla_exp1(predichos10,df),tabla_exp1(predichos_mpi_df13,df_13)))
+
+View(tabla_exp2(rep_mpi_df13))
+
+reps_mpi = data.frame(cbind(tabla_exp2(rep_mpi_df1),tabla_exp2(rep_mpi_df2),tabla_exp2(rep_mpi_df13)))
+colnames(reps_mpi) = c("df1","df2","df13")
+
+reps_a = data.frame(cbind(tabla_exp2(rep_a_df1),tabla_exp2(rep_a_df2),tabla_exp2(rep_a_df13)))
+colnames(reps_a) = c("df1","df2","df13")
+
+reps_h = data.frame(cbind(tabla_exp2(rep_h_df1),tabla_exp2(rep_h_df2),tabla_exp2(rep_h_df13)))
+colnames(reps_h) = c("df1","df2","df13")
+
+
+reps_mpi_sd = data.frame(cbind(tabla_exp2(rep_mpi_df1),tabla_exp2(rep_mpi_df2),tabla_exp2(rep_mpi_df13)))
+colnames(reps_mpi) = c("df1","df2","df13")
+
+reps_a_sd = data.frame(cbind(tabla_exp2(rep_a_df1),tabla_exp2(rep_a_df2),tabla_exp2(rep_a_df13)))
+colnames(reps_a) = c("df1","df2","df13")
+
+reps_h_sd = data.frame(cbind(tabla_exp2(rep_h_df1),tabla_exp2(rep_h_df2),tabla_exp2(rep_h_df13)))
+colnames(reps_h) = c("df1","df2","df13")
+
+library("openxlsx")
+ 
+reps_excel <- createWorkbook()
+addWorksheet(reps_excel, "mpi - mean")
+addWorksheet(reps_excel, "a - mean")
+addWorksheet(reps_excel, "h - mean")
+
+
+addWorksheet(reps_excel, "mpi - sd")
+addWorksheet(reps_excel, "a - sd")
+addWorksheet(reps_excel, "h - sd")
+
+
+reps_mpi$meandev_df1 = paste0(reps_mpi$df1, " (",reps_mpi_sd$X1, ")")
+reps_mpi$meandev_df2 = paste0(reps_mpi$df2, " (",reps_mpi_sd$X2, ")")
+reps_mpi$meandev_df13 = paste0(reps_mpi$df13, " (",reps_mpi_sd$X3, ")")
+
+reps_a$meandev_df1 = paste0(reps_a$df1, " (",reps_a_sd$X1, ")")
+reps_a$meandev_df2 = paste0(reps_a$df2, " (",reps_a_sd$X2, ")")
+reps_a$meandev_df13 = paste0(reps_a$df13, " (",reps_a_sd$X3, ")")
+
+reps_h$meandev_df1 = paste0(reps_h$df1, " (",reps_h_sd$X1, ")")
+reps_h$meandev_df2 = paste0(reps_h$df2, " (",reps_h_sd$X2, ")")
+reps_h$meandev_df13 = paste0(reps_h$df13, " (",reps_h_sd$X3, ")")
 
 
 
+writeData(reps_excel, "mpi - mean", reps_mpi, startRow = 1, startCol = 1)
+writeData(reps_excel, "a - mean", reps_a, startRow = 1, startCol = 1)
+writeData(reps_excel, "h - mean", reps_h, startRow = 1, startCol = 1)
+writeData(reps_excel, "mpi - sd", reps_mpi_sd, startRow = 1, startCol = 1)
+writeData(reps_excel, "a - sd", reps_a_sd, startRow = 1, startCol = 1)
+writeData(reps_excel, "h - sd", reps_h_sd, startRow = 1, startCol = 1)
 
-
-
+saveWorkbook(reps_excel, file = "reps_excel.xlsx", overwrite = TRUE)
