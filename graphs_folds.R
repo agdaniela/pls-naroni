@@ -404,7 +404,7 @@ readRDS("predichos_h_df1.Rdata")
 
 #######################################################################
 # Ten fold experiment df13 
-#######################################################################
+################:#######################################################
 
 df_fold_13  = datas[[7]] 
 df_fold_13$h_Other = df_fold_13$h_Other /100
@@ -491,7 +491,56 @@ predichos_mpi_df13 = readRDS("predichos_mpi_df13.Rdata")
 predichos_a_df13 = readRDS("predichos_a_df13.Rdata")
 predichos_h_df13 = readRDS("predichos_h_df13.Rdata")
 
- 
+lapply(9:16, function(x) predichos10[[1]]$results[x])
+
+lapply(1:10, function(y) lapply(9:16, function(x) predichos10[[y]]$results[x]))
+
+lapply(1:10, function(y) lapply(9:16, function(x) predichos10[[y]]$predicted[x]))
+
+
+
+#recalculating distances
+#df2
+colnames(folds)[35:43]
+as.numeric(philentropy::distance(rbind(density(folds$y_test, from = 0,to = 1,)$y,density(folds$yhat.pls_tc,from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE))
+as.numeric(philentropy::distance(rbind(density(folds$y_test, from = 0,to = 1,)$y,density(folds[,36],from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE))
+
+# MPI
+#df2  
+dist_mpi_df2 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds$y_test, from = 0,to = 1,)$y,density(folds[,x],from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
+
+# df1 
+folds_df1 = graph_data(df_1, predichos_mpi_df1)
+dist_mpi_df1 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_df1$y_test, from = 0,to = 1,)$y,density(na.omit(folds_df1[,x]),from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
+
+# df13 
+folds_df13 = graph_data(df_13, predichos_mpi_df13)
+dist_mpi_df13 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_df13$y_test, from = 0,to = 1,)$y,density(na.omit(folds_df13[,x]),from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
+
+# A
+#df2  
+dist_a_df2 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_a$y_test, from = 0.3,to = 1,)$y,density(folds_a[,x],from=0.3,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
+
+# df1 
+folds_a_df1 = graph_data(df_1, predichos_a_df1)
+dist_a_df1 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_a_df1$y_test, from = 0.3,to = 1,)$y,density(na.omit(folds_a_df1[,x]),from=0.3,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
+
+# df13 
+folds_a_df13 = graph_data(df_13, predichos_a_df13)
+dist_a_df13 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_a_df13$y_test, from = 0.3,to = 1,)$y,density(na.omit(folds_a_df13[,x]),from=0.3,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
+
+# H
+#df2  
+dist_h_df2 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_h$y_test, from = 0,to = 1,)$y,density(na.omit(folds_h[,x]),from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
+
+# df1 
+folds_h_df1 = graph_data(df_1, predichos_h_df1)
+dist_h_df1 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_h_df1$y_test, from = 0,to = 1,)$y,density(na.omit(folds_h_df1[,x]),from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
+
+# df13 
+folds_h_df13 = graph_data(df_13, predichos_h_df13)
+dist_h_df13 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds_h_df13$y_test, from = 0,to = 1,)$y,density(na.omit(folds_h_df13[,x]),from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
+
 
 tabla_exp1 = function(lista, df){
   results = data.frame()
@@ -513,11 +562,17 @@ View(cbind(tabla_exp1(predichos_mpi_df1,df_1),tabla_exp1(predichos10,df),tabla_e
 results_mpi = data.frame(cbind(tabla_exp1(predichos_mpi_df1,df_1),tabla_exp1(predichos10,df),tabla_exp1(predichos_mpi_df13,df_13)))
 colnames(results_mpi) = c("df1","df2","df13")
 
+cbind(dist_mpi_df1,dist_mpi_df2,dist_mpi_df13)
+
+results_mpi[9:16,] = cbind(dist_mpi_df1,dist_mpi_df2,dist_mpi_df13)
+
 results_a = data.frame(cbind(tabla_exp1(predichos_a_df1,df_1),tabla_exp1(predichos_a,df),tabla_exp1(predichos_a_df13,df_13)))
 colnames(results_a) = c("df1","df2","df13")
+results_a[9:16,] = cbind(dist_a_df1,dist_a_df2,dist_a_df13)
 
 results_h = data.frame(cbind(tabla_exp1(predichos_h_df1,df_1),tabla_exp1(predichos_h,df),tabla_exp1(predichos_h_df13,df_13)))
 colnames(results_h) = c("df1","df2","df13")
+results_h[9:16,] = cbind(dist_h_df1,dist_h_df2,dist_h_df13)
 
 xtable::xtable(results_mpi, digits = 4)
 xtable::xtable(results_a, digits = 4)
