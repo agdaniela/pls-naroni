@@ -497,8 +497,15 @@ lapply(1:10, function(y) lapply(9:16, function(x) predichos10[[y]]$results[x]))
 
 lapply(1:10, function(y) lapply(9:16, function(x) predichos10[[y]]$predicted[x]))
 
+l = lapply(1:10, function(y) lapply(9:16, function(x) predichos10[[y]]$results[x]))
+dists_fold = data.frame(matrix(unlist(l), nrow=length(l), byrow=TRUE))
+colnames(dists_fold) = c("dist pls_tc", 
+                         "dist beta_tc_cr",
+                         "dist beta_tc_tree_cr","dist elastic_tc",     "dist beta_tc_ela",              "dist beta_tc_tree_ela",                         "dist xgb_tc",
+                         "dist betaboost_tc" )
+sapply(dists_fold, function(x) mean(na.omit(x)))
 
-
+combis = rbind(sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds$y_test)$y,density(folds[,x])$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE))), sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds$y_test, from=0,to=1)$y,density(folds[,x], from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE))), sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds$y_test, from=0,to=1)$y,density(folds[,x])$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE))),sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds$y_test)$y,density(folds[,x], from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE))))
 #recalculating distances
 #df2
 colnames(folds)[35:43]
@@ -508,6 +515,8 @@ as.numeric(philentropy::distance(rbind(density(folds$y_test, from = 0,to = 1,)$y
 # MPI
 #df2  
 dist_mpi_df2 = sapply(36:43, function(x) as.numeric(philentropy::distance(rbind(density(folds$y_test, from = 0,to = 1,)$y,density(folds[,x],from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE)))
+as.numeric(philentropy::distance(rbind(density(folds$y_test, from = 0,to = 1,)$y,density(folds[,40],from=0,to=1)$y),est.prob = "empirical",method = "hellinger",mute.message = TRUE))
+
 
 # df1 
 folds_df1 = graph_data(df_1, predichos_mpi_df1)
@@ -1313,13 +1322,43 @@ ggplot(data = errors_graph, aes(x=Methods, y=Distance)) +
   scale_fill_discrete(labels= c("Linear-PLS","Beta-PLS","Beta-Tree-PLS","Elastic Net","Beta (elastic)","Beta-Tree (elastic)","XGBoost","Betaboost") )
 
 
+#barplot surveys
+ggplot(as.data.frame(table(df_1$year_Other)) , aes(x = Var1, y = Freq)) + 
+  geom_bar(stat = "identity", fill = "dodgerblue4",width = 0.5, show.legend = F)+
+  xlab("Years")+
+  ylab("Number of Surveys")+
+  geom_text(aes(label=Freq), vjust=1.6, color="white", size=2.8)+
+  theme_light()+ 
+  theme(panel.grid.major.x = element_blank() ,
+        panel.grid.major.y = element_line( size=.1, color="grey" ),
+        panel.border = element_blank(),
+        axis.text.x = element_text(angle = 70,  hjust=1)
+  )
 
 
+ggplot(df_1, aes(x=year_Other, y=len, fill=dose)) +
+  geom_bar(stat="identity")+theme_minimal()
 
-
-
-
-
+library(dplyr)
+df_1 %>%
+  group_by(region_Other) %>%
+  count(year_Other) %>%
+  ggplot(aes(x = year_Other, y = n, fill = region_Other)) + 
+    geom_bar(stat = "identity",width = 0.5, show.legend = T)+
+    scale_fill_brewer(palette="Blues", name="Regions")+
+    xlab("Years")+
+    ylab("Number of Surveys")+
+    theme_light()+ 
+    theme(panel.grid.major.x = element_blank() ,
+        panel.grid.major.y = element_line( size=.1, color="grey" ),
+        panel.border = element_blank(),
+        axis.text.x = element_text(angle = 70,  hjust=1),
+        legend.position="bottom")
+        
+  
+  
+  
+#  summarise(count=n())
 
 
 
