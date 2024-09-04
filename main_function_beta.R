@@ -30,7 +30,7 @@ datas[[nombre]] = selectdfs(plsdata,i)
 # 1.. PLS with optimal $d$ using beta tree model for prediction.
 
 
-# 2. Based on Regularized Regresion/Variable Selection
+# 2. Based on Regularized Regression/Variable Selection
 
 # 2.1 Elastic Net.
 # 2.2 Beta regression using selected covariates with elastic net.

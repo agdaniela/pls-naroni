@@ -17,19 +17,11 @@ cv.betalasso <- function(X, y, nfolds, nlambda = 100, ...) {
       
       # fit
       fit <- penalizedbeta::betareg_lasso(Xtrain,ytrain,lambda = s)
-      
       # predict
       #y_pred_train <- predict(fit, newdata = Xtrain)
       y_pred_test <- predict(fit, newdata = Xtest)
-
       
       MSE_test <- mean(c(ytest-y_pred_test)^2, na.rm=TRUE)
-      
-      
-      # beta.fit <- lm("ytrain~.",data=data.frame(ytrain,Pr_train), na.action="na.exclude")
-      # Predictions in test
-      #  y_pred_test <- predict.lm(lm.fit, newdata = data)
-      #  MSE_test <- mean(c(ytest-y_pred_test)^2, na.rm=TRUE)
       
       results[which(S==s), i] <- MSE_test
     }
