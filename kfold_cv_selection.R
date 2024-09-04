@@ -1,6 +1,5 @@
 ## k-fold CV for selecting LASSO and PLS hyperparameter
 source("pls.R")
-source("cv.betalasso.R")
 kfoldCV.selection <- function(Xtrain, ytrain, nfolds, max.d) {
   
   Xtrain <- as.matrix(Xtrain)
@@ -122,19 +121,55 @@ kfoldCV.betalasso <- function(Xtrain, ytrain, nfolds) {
 kfoldCV.xgboost <- function(Xtrain, ytrain, nfolds) {
   
   Xtrain <- as.matrix(Xtrain)
+  ytrain <- as.matrix(ytrain)
   
-  train_control = caret::trainControl(method = "cv", number = nfolds)
-  gbmGrid <-  expand.grid(max_depth = c(3, 5, 7), 
-                          nrounds = (1:10)*20,    # number of trees
+  #train_control = caret::trainControl(method = "cv", number = nfolds)
+  XGBparams <-  list(objective = "reg:squarederror",
+                      max_depth = 5, 
+                        # number of trees
                           # default values below
-                          eta = 0.3,
-                          gamma = c(0,0.1,0.01,0.001),
-                          subsample = 1,
-                          min_child_weight = 1,
-                          colsample_bytree = 0.6)
-  xgb.fit = train(ytrain~., data = cbind(ytrain,Xtrain), method = "xgbTree", trControl = train_control, tuneGrid = gbmGrid, verbosity = 0)
+                      eta = 0.3,
+                      gamma = 0,
+                      subsample = 1,
+                      min_child_weight = 1,
+                      colsample_bytree = 0.6)
   
   
-  return(list( xgb.model = xgb.fit))
+  xgbcv <- xgboost::xgb.cv(data= Xtrain, 
+                          params = XGBparams, label = ytrain,
+                 nfold=nfolds, nrounds = 100,  
+                 verbose = F, nthread=2)
+  
+  optimal.rounds <- which.min(xgbcv$evaluation_log$test_rmse_mean)
+  
+  
+  #xgb.fit = caret::train(ytrain~., data = cbind(ytrain,Xtrain), method = "xgbTree", trControl = train_control, tuneGrid = gbmGrid, verbosity = 0)
+  
+  
+  return(list( xgb.model = optimal.rounds, xgb.params = XGBparams))
+}
+
+kfoldCV.stack <- function(Xtrain, ytrain, nfolds) {
+  K <- nfolds
+  n <- dim(Xtrain)[1]; p <- dim(Xtrain)[2] #number of observations and number of predictors
+  id <- sample(1:K, n, replace=TRUE, prob=rep(1/K,K))
+  
+  results <- list()
+  for(i in 1:K){
+    y <- ytrain[id!=i]
+    yval <- ytrain[id==i]
+    X <- Xtrain[id!=i,]
+    Xval <- Xtrain[id==i,]
+    
+    # Fit linear model
+    lm.fit <- lm("y ~ . - 1", data = data.frame(y,X))
+    # Predictions in test
+    lm.preds <- predict(lm.fit, data.frame(Xval))
+    mse_val <- mean(c(yval-lm.preds)^2, na.rm=TRUE)
+      
+    results[[i]] <- list(model = lm.fit, error = mse_val)
+    }
+  min.MSE <- which.min(apply(results, MARGIN = 1, FUN = mean))
+  return(list(d.min = min.MSE))
 }
 
