@@ -20,7 +20,7 @@ boostrap <- function(in_sample, out_of_sample, ...){
   #                                  control = mboost::boost_control(mstop = 2000))
   betaboost.fit <- mboost::blackboost(y ~ ., data = boot.data, family = betaboost::BetaReg(),
                                       control = mboost::boost_control(mstop = 2000),
-                                      tree_controls = partykit::ctree_control(maxdepth = 5))
+                                      tree_controls = partykit::ctree_control(maxdepth = 3))
 
   # Predict out-of-sample
   betaboost.pred <- predict(betaboost.fit, newdata = df.oos[,-1], type = "response")
