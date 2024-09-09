@@ -133,7 +133,7 @@ df$a <- df$a / 100
 
 # Prepare model frame -----------------------------------------------------
 # Define the target (either MPI, H, or A)
-target <- "a"
+target <- "mpi"
 y <- df[,target] + 1e-05 # ensure response between 0 and 1 bounds
 X <- df[,c(8:ncol(df))]
 
