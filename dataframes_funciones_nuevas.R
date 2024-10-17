@@ -16,6 +16,8 @@ dataprep = function(file){
   df = categoriavar(df)
   df = dummiesregion(df)
   df = dummiesyear(df)
+  # Prevent including MPI in the predictors
+  df <- df[,!grepl("multidimensional",colnames(df))]
   return(df)
 }
 

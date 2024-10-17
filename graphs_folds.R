@@ -3,8 +3,14 @@
 
 
 
-#Xtrain =trainData
-#Xtest = testData
+Xtrain =trainData_13
+Xtest = testData_13
+target = "mpi_Other" 
+corte=0.2
+link_phi = "log"
+link_mu = "logit"
+
+
 main_function_pred = function(Xtrain, Xtest , target,corte, link_phi, link_mu, distancia){
   
   predicted = data.frame()
@@ -148,14 +154,24 @@ main_function_pred = function(Xtrain, Xtest , target,corte, link_phi, link_mu, d
   # Fit
   hyperparam_xgb_tc = kfoldCV.xgboost(data_tc_sr, ytrain, nfolds)
   # Predict over Xtest
-  ytest_pred.xgb_tc <- tryCatch(predict(hyperparam_xgb_tc$xgb.model, newdata_tc_sr), error= function(e) {return(NA)}  )
-  # distance
+  ytest_pred.xgb_tc <- predict(hyperparam_xgb_tc$xgb.model, newdata_tc_sr)
+  #ytest_pred.xgb_tc <- tryCatch(predict(hyperparam_xgb_tc$xgb.model, newdata_tc_sr), error= function(e) {return(NA)}  )
+  
+   # distance
   dist_xgb_tc = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.xgb_tc)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
   
   # 3.2 Beta Boost.
   # Fit
+  #hyper = kfoldCV.betaboost(data_tc_sr, nfolds)
   formu_boost_tc = as.formula(paste("ytrain", paste(names(data_tc_sr)[-1], collapse=" + "), sep=" ~ ")) 
-  betaboost.fit_tc <- tryCatch(mboost::glmboost(formu_boost_tc, data = data_tc_sr, family = betaboost::BetaReg()), error= function(e) {return(NA)}  )
+  betaboost.fit_tc <- mboost::blackboost(formu_boost_tc , data = data.frame(ytrain,data_tc_sr), family = betaboost::BetaReg(),
+                                      control = mboost::boost_control(mstop = 200))
+                                      #tree_controls = partykit::ctree_control(maxdepth =  3))
+  
+  
+  
+  
+  #betaboost.fit_tc <- tryCatch(mboost::glmboost(formu_boost_tc, data = data.frame(ytrain,data_tc_sr), family = betaboost::BetaReg()), error= function(e) {return(NA)}  )
   # Predict over Xtest
   ytest_pred.betaboost_tc = tryCatch(predict(betaboost.fit_tc, newdata = newdata_tc_sr, type = "response"), error= function(e) {return(NA)}  )
   dist_betaboost_tc  = tryCatch(as.numeric(philentropy::distance(rbind(density(ytest)$y, density(ytest_pred.betaboost_tc)$y), est.prob = "empirical",  method = distancia, mute.message = TRUE) ), error= function(e) {return(NA)}  )
@@ -191,14 +207,14 @@ main_function_pred = function(Xtrain, Xtest , target,corte, link_phi, link_mu, d
     "dist beta_tc_tree_ela" = dist_beta_tc_tree_ela,
 
     "dist xgb_tc" = dist_xgb_tc,
-    "dist betaboost_tc" = dist_betaboost_tc,
+    "dist betaboost_tc" = dist_betaboost_tc
     
    
     
     
-    "n" = nrow(df),  
-    "p"= length(colnames(df)[!((colnames(df) %in% c(colnames(df)[1:33])))]),
-    "Total de paises" = length(unique(df$iso))
+    #"n" = nrow(df),  
+    #"p"= length(colnames(df)[!((colnames(df) %in% c(colnames(df)[1:33])))]),
+    #"Total de paises" = length(unique(df$iso))
     
     
   )
@@ -405,8 +421,14 @@ readRDS("predichos_h_df1.Rdata")
 #######################################################################
 # Ten fold experiment df13 
 ################:#######################################################
+datas = list()
+for (i in c(13)){
+  nombre <- paste("plsdata", i, sep="_")
+  datas[[nombre]] = selectdfs(plsdata,i)
+}
 
-df_fold_13  = datas[[7]] 
+
+df_fold_13  = datas[[1]] 
 df_fold_13$h_Other = df_fold_13$h_Other /100
 df_fold_13$a_Other = df_fold_13$a_Other /100
 
@@ -427,6 +449,16 @@ for(i in 1:10){
   predichos_df13[[nombre]] = main_function_pred(trainData_13,testData_13,"mpi_Other",corte=0.2, link_phi = "log", link_mu = "logit", distancia = "hellinger")
 }
 View(predichos[["yhats_1"]]$predicted)
+
+predichos_df13_nuevo = list()
+for(i in 1:10){
+  testIndexes_13_n <- which(folds_index_13 == i,arr.ind=TRUE)
+  testData_13_n <- df_fold_13[testIndexes_13_n, ]
+  trainData_13_n<- df_fold_13[-testIndexes_13_n, ]
+  nombre_n <- paste("yhats", i, sep="_")
+  predichos_df13_nuevo[[nombre_n]] = main_function_pred(trainData_13_n,testData_13_n,"mpi_Other",corte=0.2, link_phi = "log", link_mu = "logit", distancia = "hellinger")
+}
+View(predichos_df13[["yhats_"]]$predicted)
 
 
 saveRDS(df_fold_13, "df_fold_13.Rdata")

@@ -118,37 +118,55 @@ kfoldCV.betalasso <- function(Xtrain, ytrain, nfolds) {
   return(list( s.min = betalasso.fit$s.min))
 }
 
+# kfoldCV.xgboost <- function(Xtrain, ytrain, nfolds) {
+#   
+#   Xtrain <- as.matrix(Xtrain)
+#   ytrain <- as.matrix(ytrain)
+#   
+#   #train_control = caret::trainControl(method = "cv", number = nfolds)
+#   XGBparams <-  list(objective = "reg:squarederror",
+#                      max_depth = 5, 
+#                      # number of trees
+#                      # default values below
+#                      eta = 0.3,
+#                      gamma = 0,
+#                      subsample = 1,
+#                      min_child_weight = 1,
+#                      colsample_bytree = 0.6)
+#   
+#   
+#   xgbcv <- xgboost::xgb.cv(data= Xtrain, 
+#                            params = XGBparams, label = ytrain,
+#                            nfold=nfolds, nrounds = 100,  
+#                            verbose = F, nthread=2)
+#   
+#   optimal.rounds <- which.min(xgbcv$evaluation_log$test_rmse_mean)
+#   
+#   
+#   #xgb.fit = caret::train(ytrain~., data = cbind(ytrain,Xtrain), method = "xgbTree", trControl = train_control, tuneGrid = gbmGrid, verbosity = 0)
+#   
+#   
+#   return(list( xgb.model = optimal.rounds, xgb.params = XGBparams))
+# }
+
 kfoldCV.xgboost <- function(Xtrain, ytrain, nfolds) {
   
   Xtrain <- as.matrix(Xtrain)
-  ytrain <- as.matrix(ytrain)
   
-  #train_control = caret::trainControl(method = "cv", number = nfolds)
-  XGBparams <-  list(objective = "reg:squarederror",
-                      max_depth = 5, 
-                        # number of trees
+  train_control = caret::trainControl(method = "cv", number = nfolds)
+  gbmGrid <-  expand.grid(max_depth = c(3, 5, 7), 
+                          nrounds = (1:10)*20,    # number of trees
                           # default values below
-                      eta = 0.3,
-                      gamma = 0,
-                      subsample = 1,
-                      min_child_weight = 1,
-                      colsample_bytree = 0.6)
+                          eta = 0.3,
+                          gamma = c(0,0.1,0.01,0.001),
+                          subsample = 1,
+                          min_child_weight = 1,
+                          colsample_bytree = 0.6)
+  xgb.fit = caret::train(ytrain~., data = cbind(ytrain,Xtrain), method = "xgbTree", trControl = train_control, tuneGrid = gbmGrid, verbosity = 0)
   
   
-  xgbcv <- xgboost::xgb.cv(data= Xtrain, 
-                          params = XGBparams, label = ytrain,
-                 nfold=nfolds, nrounds = 100,  
-                 verbose = F, nthread=2)
-  
-  optimal.rounds <- which.min(xgbcv$evaluation_log$test_rmse_mean)
-  
-  
-  #xgb.fit = caret::train(ytrain~., data = cbind(ytrain,Xtrain), method = "xgbTree", trControl = train_control, tuneGrid = gbmGrid, verbosity = 0)
-  
-  
-  return(list( xgb.model = optimal.rounds, xgb.params = XGBparams))
+  return(list( xgb.model = xgb.fit))
 }
-
 kfoldCV.stack <- function(Xtrain, ytrain, nfolds) {
   K <- nfolds
   n <- dim(Xtrain)[1]; p <- dim(Xtrain)[2] #number of observations and number of predictors
@@ -173,15 +191,21 @@ kfoldCV.stack <- function(Xtrain, ytrain, nfolds) {
   return(list(d.min = min.MSE))
 }
 
+data = data_tc_sr
+nfolds=5
+lambda = 1
 
-kfoldCV.betaboost <- function(data, nfolds) {
+i = 1
+kfoldCV.betaboost <- function(data, nfolds, ytrain) {
   print("kfold working")
   K <- nfolds
   n <- nrow(data)
+  data$response = ytrain
+   
   id <- sample(1:K, n, replace=TRUE, prob=rep(1/K,K))
   print(id)
   # Hyperparameters
-  hyper_max_depth <- c(3,5,7)
+  hyper_max_depth <- c(3,5)
   
     # empty array to save results
   results <- array(NA, dim=c(length(hyper_max_depth),K))
@@ -191,12 +215,25 @@ kfoldCV.betaboost <- function(data, nfolds) {
     print(paste("Hyperparam: ", hyperparam))
     for(i in 1:K){
       data_train.i <- data[id!=i,]
+      data_train.i$response = NULL
       data_test.i <- data[id==i,]
+      data_test.i$response <- NULL
+      
+      response.i = data[id !=i, "response"]
+      
+      response.i = unique(response.i)
+      
+      data_train.i <- data_train.i[-c(25,23),]
+      
+       
+      
+      
       
       print(dim(data_train.i))
+      print(dim(data_test.i))
+      
     
-    
-      betaboost.fit <- mboost::blackboost(y ~ ., data = data_train.i, family = betaboost::BetaReg(),
+      betaboost.fit <- mboost::blackboost(response.i ~ ., data = data_train.i, family = betaboost::BetaReg(),
                                         control = mboost::boost_control(mstop = 200),
                                         tree_controls = partykit::ctree_control(maxdepth = hyperparam))
       
