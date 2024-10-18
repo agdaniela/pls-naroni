@@ -5,6 +5,7 @@ source("kfold_cv_selection.R")
 source("pls.R")
 library(xgboost)
 library(caret)
+library(censored)
 source("repetitions.R")
 source("cv.betalasso.R")
 #devtools::install_github("https://github.com/girelaignacio/penalizedbeta.git")
@@ -35,12 +36,19 @@ main_function_pred = function(Xtrain, Xtest , target,corte, link_phi, link_mu, d
   predicted = data.frame()
   results = data.frame()
   nfolds <- 5
+  # 
+  # Xtrain$year_trend <- as.numeric(as.character(Xtrain$year_Other))
+  # Xtrain$year_trend <- Xtrain$year_trend - min(Xtrain$year_trend)
+  # 
+  # Xtest$year_trend <- as.numeric(as.character(Xtest$year_Other))
+  # Xtest$year_trend <- Xtest$year_trend - min(Xtest$year_trend)
+  # 
   
-  Xtrain$year_trend <- as.numeric(as.character(Xtrain$year_Other))
-  Xtrain$year_trend <- Xtrain$year_trend - min(Xtrain$year_trend)
+  Xtrain$year_trend <- as.numeric(as.character(Xtrain$year))
+  Xtrain$year_trend <- Xtrain$year_trend - min(Xtrain$year)
   
-  Xtest$year_trend <- as.numeric(as.character(Xtest$year_Other))
-  Xtest$year_trend <- Xtest$year_trend - min(Xtest$year_trend)
+  Xtest$year_trend <- as.numeric(as.character(Xtest$year))
+  Xtest$year_trend <- Xtest$year_trend - min(Xtest$year)
   
   # Train and test datasets
   ytrain <- Xtrain[, target] 
