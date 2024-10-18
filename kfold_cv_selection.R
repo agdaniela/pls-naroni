@@ -121,33 +121,24 @@ kfoldCV.betalasso <- function(Xtrain, ytrain, nfolds) {
 kfoldCV.xgboost <- function(Xtrain, ytrain, nfolds) {
   
   Xtrain <- as.matrix(Xtrain)
-  ytrain <- as.matrix(ytrain)
   
-  #train_control = caret::trainControl(method = "cv", number = nfolds)
-  XGBparams <-  list(objective = "reg:squarederror",
-                      max_depth = 5, 
-                        # number of trees
+  train_control = caret::trainControl(method = "cv", number = nfolds)
+  gbmGrid <-  expand.grid(max_depth = c(3, 5, 7), 
+                          nrounds = (1:10)*20,    # number of trees
                           # default values below
-                      eta = 0.3,
-                      gamma = 0,
-                      subsample = 1,
-                      min_child_weight = 1,
-                      colsample_bytree = 0.6)
+                          eta = 0.3,
+                          gamma = c(0,0.1,0.01,0.001),
+                          subsample = 1,
+                          min_child_weight = 1,
+                          colsample_bytree = 0.6)
+  xgb.fit = caret::train(ytrain~., data = cbind(ytrain,Xtrain), method = "xgbTree", trControl = train_control, tuneGrid = gbmGrid, verbosity = 0)
   
   
-  xgbcv <- xgboost::xgb.cv(data= Xtrain, 
-                          params = XGBparams, label = ytrain,
-                 nfold=nfolds, nrounds = 100,  
-                 verbose = F, nthread=2)
-  
-  optimal.rounds <- which.min(xgbcv$evaluation_log$test_rmse_mean)
-  
-  
-  #xgb.fit = caret::train(ytrain~., data = cbind(ytrain,Xtrain), method = "xgbTree", trControl = train_control, tuneGrid = gbmGrid, verbosity = 0)
-  
-  
-  return(list( xgb.model = optimal.rounds, xgb.params = XGBparams))
+  return(list( xgb.model = xgb.fit))
 }
+
+
+
 
 kfoldCV.stack <- function(Xtrain, ytrain, nfolds) {
   K <- nfolds

@@ -216,6 +216,17 @@ main_function_tcyd = function(df, target, corte , link_phi, link_mu, distancia){
     "MSE xgb_tc" = mean((ytest-ytest_pred.xgb_tc)^2),
     "MSE betaboost_tc" = mean((ytest-ytest_pred.betaboost_tc)^2),
     
+    "nas pls_tc" = sum(length(which(is.na(ytest_pred.pls_tc)))),
+    "nas beta_tc_cr" = sum(length(which(is.na(ytest_pred.beta_tc_cr)))),
+    "nas beta_tc_tree_cr" = sum(length(which(is.na(ytest_pred.beta_tc_tree_cr)))),
+    
+    "nas elastic_tc" = sum(length(which(is.na(ytest_pred.elastic_tc)))),
+    "nas beta_tc_ela" = sum(length(which(is.na(ytest_pred.beta_tc_ela)))),
+    "nas beta_tc_tree_ela" = sum(length(which(is.na(ytest_pred.beta_tc_tree_ela)))),
+    
+    "nas xgb_tc" = sum(length(which(is.na(ytest_pred.xgb_tc)))),
+    "nas betaboost_tc" = sum(length(which(is.na(ytest_pred.betaboost_tc)))),
+    
     
    
     
@@ -237,6 +248,7 @@ main_function_tcyd = function(df, target, corte , link_phi, link_mu, distancia){
     "n" = nrow(df),  
     "p"= length(colnames(df)[!((colnames(df) %in% c(colnames(df)[1:33])))]),
     "Total de paises" = length(unique(df$iso))
+   
     
     
   )
@@ -280,7 +292,7 @@ readRDS("rep_a_df1.Rdata")
 df_13 = datas[[7]] #94 observations 477 WBI
 df_13$h_Other = df_13$h_Other/100
 df_13$a_Other = df_13$a_Other/100
-
+repetitions(df_13,"mpi_Other", corte=0.2,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=5)
 # #MPI
 # rep_mpi_df13 = repetitions(df_13,"mpi_Other", corte=0.2,link_phi = "log", link_mu = "logit",distancia = "hellinger",nreps=50)
 # saveRDS(rep_mpi_df13,"rep_mpi_df13.Rdata")

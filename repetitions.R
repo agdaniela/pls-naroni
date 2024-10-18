@@ -47,6 +47,10 @@ repetitions = function(df, target, corte,link_phi,link_mu, distancia, nreps){
       results$MSE.xgb_tc[rep] = main$MSE.xgb_tc
       results$MSE.betaboost_tc[rep] = main$MSE.betaboost_tc
       
+       
+     
+      
+      
       #distancias
       
       
@@ -68,6 +72,17 @@ repetitions = function(df, target, corte,link_phi,link_mu, distancia, nreps){
       results$p[rep] = main$p
       results$Total.de.paises[rep] = main$Total.de.paises
        
+      results$nas.pls_tc[rep] = main$nas.pls_tc
+      results$nas.beta_tc_cr[rep] = main$nas.beta_tc_cr
+      results$nas.beta_tc_tree_cr[rep] = main$nas.beta_tc_tree_cr
+      
+      results$nas.elastic_tc[rep] = main$nas.elastic_tc
+      results$nas.beta_tc_ela[rep] = main$nas.beta_tc_ela
+      results$nas.beta_tc_tree_ela[rep] = main$nas.beta_tc_tree_ela
+      
+      
+      results$nas.xgb_tc[rep] = main$nas.xgb_tc
+      results$nas.betaboost_tc[rep] = main$nas.betaboost_tc
       
     }else{
       paste("Algo está mal con la rep", i)
