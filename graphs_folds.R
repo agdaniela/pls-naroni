@@ -1,3 +1,22 @@
+
+source("dataframes.R")
+source("splits.R")
+source("kfold_cv_selection.R")
+source("pls.R")
+library(xgboost)
+library(caret)
+source("repetitions.R")
+source("cv.betalasso.R")
+#devtools::install_github("https://github.com/girelaignacio/penalizedbeta.git")
+#########################################################
+#dataframes (correr en caso de no tener la lista "datas")
+datas = list()
+for (i in c(1,2,5,8,9,10,13,15)){
+  nombre <- paste("plsdata", i, sep="_")
+  datas[[nombre]] = selectdfs(plsdata,i)
+}
+
+
 # Crear 5 folds disjuntos - predecir en uno
 
 
@@ -252,9 +271,9 @@ main_function_pred = function(Xtrain, Xtest , target,corte, link_phi, link_mu, d
 # Ten fold experiment df2
 #######################################################################
 
-df_fold  = datas[[2]] 
+df_fold_2  = datas[[2]] 
 
-df_fold  <- df_fold[sample(nrow(df_fold)),]
+df_fold_2  <- df_fold_2[sample(nrow(df_fold_2)),]
 
 folds_index <- cut(seq(1,nrow(df_fold)),breaks=10,labels=FALSE) #indices
 
@@ -476,17 +495,7 @@ for(i in 1:10){
   predichos_a_df13[[nombre]] = main_function_pred(trainData_13,testData_13,"a_Other", corte=0.5, link_phi = "log", link_mu = "logit", distancia = "hellinger")
 }
 
-View(predichos_a[["ahats_1"]]$predicted)
-View(predichos_a[["ahats_2"]]$predicted)
-View(predichos_a[["ahats_3"]]$predicted)
-View(predichos_a[["ahats_4"]]$predicted)
-View(predichos_a[["ahats_5"]]$predicted)
-View(predichos_a[["ahats_6"]]$predicted)
-View(predichos_a[["ahats_7"]]$predicted) 
-View(predichos_a[["ahats_8"]]$predicted) 
-View(predichos_a[["ahats_9"]]$predicted) 
-View(predichos_a[["ahats_10"]]$predicted) 
-
+View(predichos_a_df13)
 
 saveRDS(predichos_a_df13,"predichos_a_df13.Rdata")
 readRDS("predichos_a_df13.Rdata")
@@ -501,6 +510,7 @@ for(i in 1:10){
 }
 
 
+View(predichos_h_df13)
 
 saveRDS(predichos_h_df13,"predichos_h_df13.Rdata")
 readRDS("predichos_h_df13.Rdata")
