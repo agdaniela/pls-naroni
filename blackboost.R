@@ -1,9 +1,22 @@
-
+target = "mpi_Other"
 ytrain = trainData_13[,target]
 Xtrain = trainData_13[,-c(1:7,13:33)]
 ytrain_nacho = dataset13[,"mpi"]
 Xtrain_nacho = dataset13[,-c(1:7)]
 
+mboost::blackboost(ytrain_nacho ~ ., data = Xtrain_nacho, family = betaboost::BetaReg(),
+                                   control = mboost::boost_control(mstop = 200),
+                                  tree_controls = partykit::ctree_control(maxdepth =  3))
+ 
+mboost::blackboost(ytrain ~ ., data = Xtrain[,1:120], family = betaboost::BetaReg(),
+                   control = mboost::boost_control(mstop = 200),
+                   tree_controls = partykit::ctree_control(maxdepth =  2))
+
+trace(inum:::inum.data.frame, at = list(c(7, 4, 3, 4, 3, 8)), 
+      tracer = quote({
+        tol <- max(tol, 10 * .Machine$double.eps)
+      }))
+mboost::mboost(ytrain ~ ., Xtrain)
 
 for ( col in 1:ncol(Xtrain_nacho)){
   colnames(Xtrain_nacho)[col] <-  sub("_2.*", "", colnames(Xtrain_nacho)[col])
